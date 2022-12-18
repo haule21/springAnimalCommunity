@@ -1,0 +1,136 @@
+@charset "UTF-8";
+
+body{
+	display: block;  	
+  	width: 100%;
+}
+
+/*
+=======================MainBanner===========================
+*/
+.header {
+	max-width: 1300px; /* 정렬하려는 요소의 넓이를 반드시 지정 */
+	min-width: 900px;
+	height:75px;
+	padding: 5px;
+  	margin: 0 auto;
+}
+
+.header ul{
+	display: inline;
+	list-style-type: none;
+	padding: 0px;
+}
+
+.header li{
+	float: left;
+}
+
+/*
+=======================MainNav===========================
+*/
+
+
+.mainNav{
+	position: -webkt-sticky;
+	position: sticky;
+	max-width: 100%;
+	min-width: 900px;
+  	margin: 0 auto;
+  	padding: 20px;
+	list-style-type: none;
+	text-align: center;
+  	overflow: hidden;
+  	background-color: #000000;
+}
+
+.mainNav li{
+	display: inline-block;
+	margin-right: 20px;
+	font-size: 20px
+}
+
+.mainNav li a{
+	color: #000000;
+	text-align: center;
+	padding: 14px 16px;
+	text-decoration: none;
+	background-color: #ffffff;
+}
+
+.mainNav li a:hover:not(.active) {
+  background-color: #dddddd;
+}
+
+.mainNav .active {
+  background-color: #04AA6D;
+}
+
+/*
+=======================MainBody===========================
+*/
+
+.mainBody{
+	max-width: 1300px;
+	min-width: 900px; /* 정렬하려는 요소의 넓이를 반드시 지정 */
+  	margin: 0 auto;
+}
+
+.mainBody ul{
+	padding: 3px;
+	margin-top: 55px;
+	font-size: 24px
+}
+
+.mainBody li{
+	list-style-type: none;
+}
+
+/*
+=======================MainBody left, right===========================
+*/
+
+.mainBody .left, .right{
+	width: 620px;
+	left: 15px;
+	right: 15px;
+	max-width: 650px;
+	min-width: 450px;
+}
+
+.mainBody .left {
+	float: left;	
+}
+.mainBody .right {
+	float: right;	
+}
+
+/*
+=======================MainBody left===========================
+*/
+
+
+/*
+=======================MainBody right===========================
+*/
+
+
+
+.mainBody .right .imgContainer{
+	display: grid;
+	grid-template-columns: 210px 210px 210px;
+	grid-template-rows: 230px 230px 230px;
+}
+
+.mainBody .right .imgTextContainer{
+	text-align: center;
+}
+
+.mainBody .right .imgImg{
+	width: 200px;
+	height: 200px;
+}
+
+.mainBody .right .imgText{
+	height: 20px;
+}

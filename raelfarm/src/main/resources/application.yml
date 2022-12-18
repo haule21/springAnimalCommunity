@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    hikari:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:mysql://localhost:3306/test?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
+      username: tester
+      password: haul2
+      
+  security:
+    user:
+      name: user
+      password: 1234
+  devtools:
+    livereload:
+      enabled: true
+      
+server:
+  port: 443
+  
+  ssl:
+    key-store: C:\Users\sungw\springAnimalCommunitySSL\test.jks
+    key-store-password: 123456
+    key-store-type: jks
+    key-alias: test
+    
+mybatis:
+  mapper-locations: classpath:mapper/**/*.xml 

@@ -1,0 +1,6 @@
+java 버전 맞추기 - properties - java compiler, project facets, tomcat jre 환경
+ - java 버전이 맞지 않으면 톰켓과 스프링이 연동이 안 된다. jdk 17 , tomcat 10.0.27 사용
+DB 설정
+ViewResolver 설정
+톰켓 / open launch configuration : -Dfile.encoding=UTF-8 -Duser.language=en -Duser.region=en
+버전 호환 정확히 확인 하기

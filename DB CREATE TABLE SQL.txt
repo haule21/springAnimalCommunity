@@ -1,0 +1,117 @@
+create table CATEGORY_BOARD(
+	CATEGORY_NUM VARCHAR(5) not null,
+	CATEGORY_NAME VARCHAR(100) not null,
+	constraint CATEGORY_BOARD_PK primary key CATGORY_NUM
+)  engine=INNODB default CHARSET=UTF8MB4
+
+create table BOARD(
+	CATEGORY_NUM VARCHAR(5) not null,
+	BOARD_NUM INT not_null auto_increment,
+	REGISTERED_DATE DATETIME not null default CURRENT_TIMESTAMP,
+	TITLE VARCHAR(300) not null,
+	WRITER VARCHAR(33) not null,
+	MODIFIED_DATE DATETIME not null default CURRENT_TIMESTAMP,
+	DELETED ENUM('Y','N') not null default 'N',
+	EXIST_IMGFILE not null,
+	CONTENT VARCHAR(65535) not null,
+	constraint BOARD_PK primary key (CATEGORY_NUM, BOARD_NUM, REGISTERED_DATE),
+	constraint BOARD_FK foreign key CATEGORY_NUM references CATEGORY_BOARD(CATEGORY_NUM)	
+) engine=INNODB default CHARSET=UTF8MB4
+partition by range( convert(CATEGORY_NUM, DECIMAL) )(
+	PARTITION C1 VALUES LESS THAN (200) ENGINE = INNODB
+	PARTITION C2 VALUES LESS THAN (300) ENGINE = INNODB
+	PARTITION C3 VALUES LESS THAN (400) ENGINE = INNODB
+	PARTITION C4 VALUES LESS THAN (500) ENGINE = INNODB
+	PARTITION C5 VALUES LESS THAN (600) ENGINE= INNODB
+	PARTITION C6 VALUES LESS THAN (700) ENGINE = INNODB
+	PARTITION C7 VALUES LESS THAN (800) ENGINE = INNODB
+	PARTITION C8 VALUES LESS THAN (900) ENGINE = INNODB
+	PARTITION C9 VALUES LESS THAN (1000) ENGINE = INNODB
+	PARTITION CM VALUES LESS THAN (MAXVALUE) ENGINE = INNODB
+)
+
+create table BOARD_MEDIAFILE(
+	I_BOARD_NUM VARCHAR(20) not null,
+	CONTENT_TYPE VARCHAR(10) not null,
+	FILE_NAME VARCHAR(100) not null,
+	FILE_PATH VARCHAR(300) not null,
+	constraint BOARD_MEDIAFILE_PK primary key(I_BOARD_NUM)
+)engine=INNODB default CHARSET=UTF8MB4
+
+create table BOARD_DATA(
+	I_BOARD_NUM VARCHAR(20) not null,
+	VIEWS_COUNT INT not null default 0,
+	RECOMMEND_COUNT INT not null default 0,
+	NO_RECOMMEND_COUNT INT not null default 0,
+	constraint BOARD_DATA_PK primary key(I_BOARD_NUM)
+) engine=INNODB default CHARSET=UTF8MB4
+
+create table BOARD_RECOMMEND_HISTORY(
+	I_BOARD_NUM VARCHAR(20) not null,
+	USERID VARCHAR(16) not null,
+	RECOMMEND ENUM('Y','N') not null default 'Y',
+	constraint BOARD_RECOMMEND_HISTORY_PK primary key(I_BOARD_NUM, USERID)
+) engine=INNODB default CHARSET=UTF8MB4
+
+create table BOARD_COMMENT(
+	I_BOARD_NUM VARCHAR(20) not null, 
+	COMMENT_NO INT not null,
+	SEQ INT not null,
+	REGISTERED_DATE DATETIME not null default CURRENT_TIMESTAMP,
+	WRITER VARCHAR(33) not null,
+	CONTENT VARCHAR(1500) not null,
+	MODIFIED_DATE DATETIME not null default CURRENT_TIMESTAMP,
+	RECOMMEND_COUNT INT not null default 0,
+	NO_RECOMMEND_COUNT INT not null default 0,
+	DELETED ENUM('Y','N') not null default 'N',
+	constraint BOARD_COMMENT_PK primary key(I_BOARD_NUM, COMMENT_NO, SEQ)
+)engine=INNODB default CHARSET=UTF8MB4
+
+create table BOARD_COMMENT_RECOMMEND_HISTORY(
+	I_REPLY_NUM VARCHAR(20) not null,
+	USERID VARCHAR(16) not null,
+	RECOMMEND CHAR(1) not null default 'Y',
+	constraint BOARD_COMMENT_RECOMMEND_HISTORY_PK primary key(I_REPLY_NUM, USERID)
+) engine=INNODB default CHARSET=UTF8MB4
+
+create table USERS(
+	USERID VARCHAR(16) not null,
+	PASSWORD VARCHAR(64) not null,
+	NICKNAME VARCHAR(33) not null,
+	REGISTERED_DATE DATETIME not null default CURRENT_TIMESTAMP,
+	ROLE_NUM tinyint(1) not null,
+	DELETED ENUM('Y','N') not null default 'N',
+	constraint USERS_PK primary key(USERID),
+	constraint USERS_FK foreign key(ROLE_NUM) references USER_ROLE(ROLE_NUM)
+) engine=INNODB default CHARSET=UTF8MB4
+
+create table USER_PRIVACY(
+	USERID VARCHAR(16) not null,
+	NAME VARCHAR(15) not null,
+	EMAIL VARCHAR(100) not null,
+	PHONE_NUMBER VARCHAR(15) not null,
+	ADDRESS VARCHAR(300) not null
+	constraint USER_PRIVACY_PK primary key(USERID),
+	constraint USER_PRIVACY_FK foreign key(USERID) references USERS(USERID)
+) engine=INNODB default CHARSET=UTF8MB4
+
+create table USER_STAT(
+	USERID VARCHAR(16) not null,
+	level tinyint(3) not null,
+	exp smallint not null,
+	GRADE tinyint(3) not null,
+	USER_POINT INT not null,
+	constraint USER_STAT_PK primary key(USERID)
+) engine=INNODB default CHARSET=UTF8MB4
+
+create table USER_ROLE(
+	ROLE_NUM tinyint(1) not null,
+	ROLE_NAME VARCHAR(20) not null,
+	constraint USER_ROLE_PK primary key(ROLE_NUM)
+) engine=INNODB default CHARSET=UTF8MB4
+
+create table ACCESS_LOG(
+	IP_ADDRESS VARCHAR(30) not null,
+	ACCESS_DATE DATETIME not null default CURRENT_TIMESTAMP,
+	ACCESS_USERID VARCHAR(16) default null,
+) engine= ARCHIVE default CHARSET=UTF8MB4
