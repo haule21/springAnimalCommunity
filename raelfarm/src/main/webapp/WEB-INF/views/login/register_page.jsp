@@ -13,6 +13,9 @@
 </head>
 <body>
 	<script>
+	let passwordcheck = { pwdck : (pw) => user.pwCheck(pw)} 
+	
+	// userid 한글, 특수문자, 공백 사용 금지
 	$(function() {
 		$( "#userid" ).on("blur change keyup paste", function(){
 			$(this).val( $(this).val().replace(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]| |[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi, '' ));
@@ -23,10 +26,10 @@
 		});
 		console.log("idck : "+idck);
 	})
-		
+	// 패스워드 확인 란 동일 패스워드 확인
 	$(function() {
-		$( "#recheck-password" ).on("blur input", function(){
-			if($(this).val == $( "#keyup" ).val && pwck == 0){
+		$( "#recheck-password" ).on("blur", function(){
+			if($(this).val() == $( "#password" ).val() && pwck == 0){
 				alert('동일한 패스워드 입니다.');
 				pwck = 1;
 			}
@@ -36,6 +39,13 @@
 			console.log("pwck : "+pwck)
 		});	
 	})
+	// 패스워드 채크
+	$(function() {
+		$( "#password" ).on("blur", function(){
+			passwordcheck.pwdck( $(this).val() );
+			return false;
+		});	
+	});
 	
 	</script>
 	<form id='register_form' onsubmit="return false;">

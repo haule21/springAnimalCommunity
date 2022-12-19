@@ -8,12 +8,14 @@ let re2 = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-z
 let idck = 0;
 let pwck = 0;
 
-const user = { id : '' };
+var header = $("meta[name='_csrf_header']").attr('content');
+var token = $("meta[name='_csrf']").attr('content');
+
+const user = { id : '', pwCheck : (pw) => chkPW(pw) };
 
 function clickidcheck(){
     let userid =  $("#userid").val(); 
-    var header = $("meta[name='_csrf_header']").attr('content');
-	var token = $("meta[name='_csrf']").attr('content');
+    
     
     $.ajax({
         async: true,
@@ -51,18 +53,48 @@ function clickidcheck(){
 function submit_register_data(){
 	if(idck == 0){
 		alter('아이디 중복 체크를 해주세요!');
+		$("#userid").focus();
 		return false;
 	}
 	else if(pwck == 0){
-		alter('패스워드 중복을 확인해주세요!');
+		alter('패스워드가 다릅니다. 다시 한번 입력해주세요.');
 		return false;
 	}
-	else if($(userid).val.length < 6){
+	else if($("#userid").val().length < 6){
 		alter('아이디가 너무 짧습니다! 6자리 이상으로 작성해주세요.');
+		$("#userid").focus();
 		return false;
 	}
 	var pw = $("#password").val();
-	if(pw.length < 8 || pw.length > 20){
+	if(chkPw(pw)){
+		var registerform = document.getElementById('register_form');
+		registerform.action = 'register_page/register.do'
+		registerform.method = 'POST'
+		registerform.submit();
+	}
+	else{
+		return false;
+	}
+	
+	
+}
+
+function chkPW(pw){
+	
+	console.log("CHKPW 실행 됐다. :" + pw);
+	var num = pw?.search(/[0-9]/g);
+	var eng = pw?.search(/[a-z]/ig);
+	var spe = pw?.search(/[`~!@@#$%^&*|₩₩₩'₩";:₩/?]/gi);
+	
+	if(num == null || eng == null || spe == null){
+		return false;
+	}
+	
+	if(num < 0 || eng < 0 || spe < 0){
+		alert("영문,숫자, 특수문자를 혼합하여 입력해주세요.");
+		return false;
+	}
+	else if(pw.length < 8 || pw.length > 20){
 		alert("8자리 ~ 20자리 이내로 입력해주세요.");
   		return false;
 	}
@@ -70,27 +102,17 @@ function submit_register_data(){
 		alert("비밀번호는 공백 없이 입력해주세요.");
   		return false;
 	}
-	else if(chkPw(pw)){
-		var registerform = document.getElementById('register_form');
-		registerform.action = 'register_page/register.do'
-		registerform.method = 'POST'
-		registerform.submit();
-	}
-	
-	
-}
-
-function chkPW(pw){
-	var num = pw.search(/[0-9]/g);
-	var eng = pw.search(/[a-z]/ig);
-	var spe = pw.search(/[`~!@@#$%^&*|₩₩₩'₩";:₩/?]/gi);
-	
-	if(num < 0 || eng < 0 || spe < 0){
-		alert("영문,숫자, 특수문자를 혼합하여 입력해주세요.");
-		return false;
-	}
 	else{
 		return true;
+	}
+}
+
+function chkFocus(ele){
+	if(document.activeElement == ele){
+		
+	}
+	else{
+		ele.focus();
 	}
 }
 
