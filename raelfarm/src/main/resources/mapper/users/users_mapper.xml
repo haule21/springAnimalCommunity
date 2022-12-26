@@ -8,4 +8,31 @@
 			DUAL
 		
 	</select>
+	<select id="nicknameCheck" parameterType="String" resultType="integer">
+		SELECT 
+			IFNULL((SELECT 1 FROM DUAL WHERE EXISTS (SELECT 1 FROM USERS_TEST WHERE NICKNAME = #{param0} )), 0) 
+		FROM 
+			DUAL
+	</select>
+	<select id="phoneCheck" parameterType="String" resultType="integer">
+		SELECT 
+			IFNULL((SELECT 1 FROM DUAL WHERE EXISTS (SELECT 1 FROM USER_PRIVACY_TEST WHERE PHONE_NUMBER = #{param0} )), 0) 
+		FROM 
+			DUAL
+	</select>
+	
+	<insert id="createUser" parameterType="haule.raelfarm.dto.UserInsertDTO">
+		<![CDATA[
+			{ call USER_INSERT_PROCEDURE_TEST
+				(
+					#{userid}, 
+					#{password}, 
+					#{nickname}, 
+					#{name}, 
+					#{email}, 
+					#{phone_number}, 
+					#{address}
+			)}
+		]]> 
+	</insert>
 </mapper>
