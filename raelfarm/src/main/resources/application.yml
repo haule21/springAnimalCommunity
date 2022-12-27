@@ -5,17 +5,17 @@ spring:
       jdbc-url: jdbc:mysql://localhost:3306/test?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
       username: tester
       password: haul2
+  mvc:
+    view:
+      prefix: /WEB-INF/views
+      suffix: .jsp
       
-  security:
-    user:
-      name: user
-      password: 1234
   devtools:
     livereload:
       enabled: true
       
 server:
-  port: 443
+  port: 8443
   
   ssl:
     key-store: C:\Users\sungw\springAnimalCommunitySSL\test.jks
@@ -25,3 +25,7 @@ server:
     
 mybatis:
   mapper-locations: classpath:mapper/**/*.xml 
+  
+logging:
+  level:
+    '[org.springframework.web]': debug

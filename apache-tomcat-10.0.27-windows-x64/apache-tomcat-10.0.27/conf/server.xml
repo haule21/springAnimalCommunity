@@ -87,7 +87,8 @@
                maxThreads="150" SSLEnabled="true">
         <UpgradeProtocol className="org.apache.coyote.http2.Http2Protocol" />
         <SSLHostConfig>
-            <Certificate certificateKeystoreFile="C:\Users\sungw\springAnimalCommunitySSL\certtest"
+            <Certificate certificateKeystoreFile="C:\Users\sungw\springAnimalCommunitySSL\test.jks"
+                         certificateKeystorePassword="123456"
                          type="RSA" />
         </SSLHostConfig>
     </Connector>
@@ -130,7 +131,7 @@
                resourceName="UserDatabase"/>
       </Realm>
 
-      <Host name="localhost"  appBase="webapps"
+      <Host name="localhost"  appBase="C:\Users\sungw\springAnimalCommunity\raelfarm\src\main\webapps"
             unpackWARs="true" autoDeploy="true">
 
         <!-- SingleSignOn valve, share authentication between web applications
