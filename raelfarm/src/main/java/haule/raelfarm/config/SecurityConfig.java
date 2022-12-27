@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -27,6 +28,9 @@ public class SecurityConfig{
 	private final AuthSuccessHandler authSuccessHandler;
 	private final AuthFailureHandler authFailureHandler;
 	
+	//	@Autowired
+	// CustomAuthorizationManager customAuthorizationManager;
+	
 	@Bean
     public PasswordEncoder passwordEncoder() {
 		String encodingId = "sha256";
@@ -35,32 +39,53 @@ public class SecurityConfig{
 		return new DelegatingPasswordEncoder(encodingId, encoders);
     }
 	
-//	@Bean
-//	public BCryptPasswordEncoder passwordEncoder() {
-//		return new BCryptPasswordEncoder();
-//	}
+//		http
+//			.authorizeHttpRequests(
+//					(requests) -> requests.requestMatchers("/WEB-INF/views/login/login.jsp").anonymous()
+//								.requestMatchers("/WEB-INF/views/login/register_agree.jsp").anonymous()
+//								.requestMatchers("/WEB-INF/views/login/register_page.jsp").anonymous()
+//								.requestMatchers("/WEB-INF/views/test.jsp").authenticated()
+//								.requestMatchers("/css/*.css","/js/*.js","/img/*.img").permitAll()
+//			)
+//			
+//			.formLogin((form) ->
+//			form
+//				.usernameParameter("username")
+//				.passwordParameter("password")
+//				.defaultSuccessUrl("/")
+//				.failureUrl("/login?error=true")
+//				.loginPage("/login").permitAll()
+//				.loginProcessingUrl("/loginProc")
+//				.successHandler(authSuccessHandler)
+//			    .failureHandler(authFailureHandler)
+//			)
+//			.logout((logout) -> logout.permitAll());
 	
-	//.hasAnyRole("ADMIN","USER","MEMBER","MANAGER")s
 	@Bean
  	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		
- 		http
- 			.authorizeHttpRequests()
-						 			.requestMatchers("/").hasAnyRole("USER","MEMBER","MANAGER","ADMIN")
-						 			.requestMatchers("/**", "/login_/**").permitAll()
- 			.and()
- 			
- 			.formLogin((formLogin) ->
-				formLogin
-					.usernameParameter("username")
-					.passwordParameter("password")
-					.defaultSuccessUrl("/")
-					.failureUrl("/login?error=true")
-					.loginPage("/login")
-					.loginProcessingUrl("/loginProc")
-					.successHandler(authSuccessHandler)
-				    .failureHandler(authFailureHandler)
-			);
+		http
+			.authorizeHttpRequests()
+				.requestMatchers("/WEB-INF/views/login/**").permitAll()
+				.requestMatchers("/register_agree","/register_page").permitAll()
+				.requestMatchers("/static/**").permitAll()
+				.requestMatchers("/js/*.js","/css/*.css","/img/*.png").permitAll()
+				.anyRequest()
+				//.access(customAuthorizationManager)
+				.authenticated()
+				.and()
+				
+			.formLogin()
+				.usernameParameter("username")
+				.passwordParameter("password")
+				.defaultSuccessUrl("/")
+				.loginPage("/login").permitAll()
+				.loginProcessingUrl("/loginProc").permitAll()
+				.failureHandler(authFailureHandler)
+				.successHandler(authSuccessHandler).and()
+			.logout().permitAll().and()
+			.exceptionHandling().accessDeniedPage("/404");
+			
  		return http.build();
  	}
 	

@@ -4,7 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.context.annotation.Bean;
 import org.springframework.web.filter.CharacterEncodingFilter;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import jakarta.servlet.FilterRegistration;
 import jakarta.servlet.ServletContext;
@@ -23,15 +25,15 @@ public class RaelfarmApplication extends SpringBootServletInitializer{
 		return builder.sources(RaelfarmApplication.class);
 	}
 	
-//	@Bean
-//	public InternalResourceViewResolver setupViewResolver() 
-//	{
-//		InternalResourceViewResolver resolver = new InternalResourceViewResolver();
-//		resolver.setPrefix("/WEB-INF/views/");
-//		resolver.setSuffix(".jsp");
-//		resolver.setContentType("text/html; charset=UTF-8");
-//		return resolver;
-//	}
+	@Bean
+	public InternalResourceViewResolver setupViewResolver() 
+	{
+		InternalResourceViewResolver resolver = new InternalResourceViewResolver();
+		resolver.setPrefix("/WEB-INF/views/");
+		resolver.setSuffix(".jsp");
+		resolver.setContentType("text/html; charset=UTF-8");
+		return resolver;
+	}
 	
 	@Override
     public void onStartup(ServletContext servletContext) throws ServletException {

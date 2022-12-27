@@ -5,7 +5,10 @@ import java.util.Map;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,15 +21,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import haule.raelfarm.dto.UserInsertDTO;
 import haule.raelfarm.service.UsersService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import net.nurigo.sdk.NurigoApp;
-import net.nurigo.sdk.message.model.Message;
-import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
-import net.nurigo.sdk.message.response.SingleMessageSentResponse;
 import net.nurigo.sdk.message.service.DefaultMessageService;
 
 @RestController
-@RequestMapping("/main")
 public class MainController {
 	
 	@Autowired
@@ -45,7 +45,7 @@ public class MainController {
 	
 	@RequestMapping("/login")
 	public ModelAndView login(ModelAndView mv) {
-		mv.setViewName("login");
+		mv.setViewName("login/login");
 		return mv;
 	}
 	
@@ -156,8 +156,20 @@ public class MainController {
     	
     	int result = usersService.createUser(user);
     	re.addFlashAttribute("result", result >  0 ? 1 : 0);
-    	mv.setViewName("login");
+    	mv.setViewName("redirect:/login");
     	return mv;
+    }
+    
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    public ModelAndView loout(HttpServletRequest request, HttpServletResponse response, ModelAndView mv) throws Exception {
+    	
+    	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+        }
+        
+        mv.setViewName("redirect:login");
+        return mv;
     }
     
     public String excuteGenerate() {
