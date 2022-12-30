@@ -5,10 +5,17 @@ spring:
       jdbc-url: jdbc:mysql://localhost:3306/test?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
       username: tester
       password: haul2
+<<<<<<< HEAD
   thymeleaf:  
     prefix: classpath:templates/
     suffix: .html
    
+=======
+  mvc:
+    view:
+      prefix: /WEB-INF/views
+      suffix: .jsp
+>>>>>>> 6e30bc7c347545c3b7b44a224ef2ac7745e8f12f
       
   devtools:
     livereload:

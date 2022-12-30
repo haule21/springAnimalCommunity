@@ -86,7 +86,11 @@ public class MainController {
 	
 	@RequestMapping("/login")
 	public ModelAndView login(ModelAndView mv) {
+<<<<<<< HEAD
 		mv.setViewName("content/login/login");
+=======
+		mv.setViewName("login/login");
+>>>>>>> 6e30bc7c347545c3b7b44a224ef2ac7745e8f12f
 		return mv;
 	}
 	
