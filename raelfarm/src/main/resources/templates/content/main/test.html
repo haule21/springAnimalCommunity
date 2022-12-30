@@ -1,37 +1,21 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html>
-<head>
-	<meta charset="UTF-8">
-	<link rel="stylesheet" href="css/test.css">
-	<title>TEST PAGE</title>
-</head>
-<body>
-	<div class="header">
-		<ul>
-			<li><img src="img/animalLogo.PNG" width="450" height="75"></li>
-			<li>
-				<div class="BestAnimal">
-					<a>오늘의 최고의 반려! 바우!</a>
-				</div>
-			</li>
-			<li style="float:right;"><a class="active">태그 별 보기</a></li>
-		</ul>
-	</div>
-	
-	<ul class="mainNav">
-		<li><a href="#BestBoard">인기글</a></li>
-		<li><a href="#MyAnimal">나의 반려</a></li>
-		<li><a href="#AnimalBest">동물 최고</a></li>
-		<li><a href="#Community">커뮤니티</a></li>
-		<li><a href="#GoodMan">좋은 집사 되기</a></li>
-		<li><a href="#SoSick">소식</a></li>
-		<li><a href="#Jungo">중고장터</a></li>
-		<li><a href="#BestMan">명예의 전당</a></li>	
-	</ul>
-	
-	<div class="mainBody">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+    
+    <th:block layout:fragment="head">
+    	<title>TEST PAGE</title>
+		
+        <!--/* css */-->
+        <link th:href="@{/css/common.css}" rel="stylesheet" />
+        <link th:href="@{/css/test.css}" rel="stylesheet" />
+    </th:block>
+    <body>
+        <th:block layout:fragment="header" th:include="@{/fragments/header}"></th:block>
+		
+        <div layout:fragment="content" class="content">
+            	<div class="mainBody">
 		<div class="left">
 			<ul>
 				<li><h2>동물가 뉴스</h2></li>
@@ -98,5 +82,8 @@
 			</div>
 		</div>
 	</div>
-</body>
+        </div>
+        
+        <th:block layout:fragment="footer" th:include="@{/fragments/footer}"></th:block>	
+    </body>
 </html>

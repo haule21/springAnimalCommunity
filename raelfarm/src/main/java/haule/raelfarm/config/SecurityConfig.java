@@ -66,10 +66,10 @@ public class SecurityConfig{
 		
 		http
 			.authorizeHttpRequests()
-				.requestMatchers("/WEB-INF/views/login/**").permitAll()
+				.requestMatchers("/templates/content/login/**").permitAll()
 				.requestMatchers("/register_agree","/register_page").permitAll()
 				.requestMatchers("/static/**").permitAll()
-				.requestMatchers("/js/*.js","/css/*.css","/img/*.png").permitAll()
+				.requestMatchers("/js/*.js","/css/*.css","/img/*.PNG").permitAll()
 				.anyRequest()
 				//.access(customAuthorizationManager)
 				.authenticated()

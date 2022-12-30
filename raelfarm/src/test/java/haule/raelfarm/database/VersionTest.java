@@ -10,4 +10,9 @@ public class VersionTest {
 		System.out.println("version : "+version);
 		
 	}
+	
+	@Test
+	public void testParseInt() {
+		System.out.println((int)(Integer.valueOf("000123")/100));
+	}
 }

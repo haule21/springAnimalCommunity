@@ -1,6 +1,8 @@
 package haule.raelfarm.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -18,7 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import haule.raelfarm.dto.MainSelectDTO;
 import haule.raelfarm.dto.UserInsertDTO;
+import haule.raelfarm.service.BoardService;
 import haule.raelfarm.service.UsersService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -33,25 +37,62 @@ public class MainController {
 	UsersService usersService;
 	
 	@Autowired
+	BoardService boardService;
+	
+	@Autowired
 	PasswordEncoder passwordEncoder;
 	
 	final DefaultMessageService messageService = NurigoApp.INSTANCE.initialize("NCSFJFSUH6L6KCO8","XBLUZEB202BUC5GIAA2RENJRS5NLPQKM","https://api.coolsms.co.kr");
 	
 	@RequestMapping("/")
 	public ModelAndView Main(ModelAndView mv) {
-		mv.setViewName("test");
+		
+		List<MainSelectDTO> datas = boardService.SelectMainDatas();
+		
+		List<MainSelectDTO> dataList1 = new ArrayList<MainSelectDTO>();
+		List<MainSelectDTO> dataList2 = new ArrayList<MainSelectDTO>();
+		List<MainSelectDTO> dataList3 = new ArrayList<MainSelectDTO>();
+		List<MainSelectDTO> dataList4 = new ArrayList<MainSelectDTO>();
+		
+		for(MainSelectDTO data : datas) {
+			switch((int)(data.getCategorynum()/100)) {
+				case 1:
+					dataList1.add(data);
+					break;
+				case 2:
+					dataList2.add(data);
+					break;
+				case 3:
+					dataList3.add(data);
+					break;
+				case 4:
+					dataList4.add(data);
+					break;
+			}
+		}
+		
+		System.out.println("dataList1 :" + dataList1);
+		System.out.println("dataList2 :" + dataList2);
+		System.out.println("dataList3 :" + dataList3);
+		System.out.println("dataList4 :" + dataList4);
+		
+		mv.addObject("dataList1", dataList1);
+		mv.addObject("dataList2", dataList2);
+		mv.addObject("dataList3", dataList3);
+		mv.addObject("dataList4", dataList4);
+		mv.setViewName("content/main/main");
 		return mv;
 	}
 	
 	@RequestMapping("/login")
 	public ModelAndView login(ModelAndView mv) {
-		mv.setViewName("login/login");
+		mv.setViewName("content/login/login");
 		return mv;
 	}
 	
 	@RequestMapping("/register_agree")
 	public ModelAndView register_agree(ModelAndView mv) {
-		mv.setViewName("login/register_agree");
+		mv.setViewName("content/login/register_agree");
 		return mv;
 	}
 	
@@ -63,7 +104,7 @@ public class MainController {
 		if(request.getParameterValues("agree1") == null ? false : true 
 				&& request.getParameterValues("agree2") == null ? false : true) {
 			
-			mv.setViewName("login/register_page");
+			mv.setViewName("content/login/register_page");
 			return mv;
 			
 		}
@@ -79,7 +120,8 @@ public class MainController {
 	@RequestMapping(value = "/register_page/idcheck", method = RequestMethod.POST)
 	public @ResponseBody Map<Object, Object> idcheck(@RequestBody String userid) {
 		
-		Map<Object, Object> map = new HashMap<Object, Object>(); 
+		Map<Object, Object> map = new HashMap<Object, Object>();
+		System.out.println("userid : " + userid + " result : " + usersService.idCheck(userid));
 		map.put("cnt", usersService.idCheck(userid));
 		
 		return map;

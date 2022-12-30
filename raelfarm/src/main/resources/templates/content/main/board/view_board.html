@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+    
+    <th:block layout:fragment="head">
+    	<title>${board_title}</title>
+		
+        <!--/* css */-->
+        <link th:href="@{/css/common.css}" rel="stylesheet" />
+    </th:block>
+    <body>
+        <th:block layout:fragment="header" th:include="@{/fragments/header}"></th:block>
+		
+        <div layout:fragment="content" class="content">
+        	<hr class="firstline">
+        		<div class="boardtitle_div">
+        			<p class="boardtitle">${board_title}</p>
+        			<p class="boardregisterdate">${register_date}</p>
+        		</div>
+            <hr class="secondline">
+            	<div class="boardwriter_div">
+	            	<p class="boardwriter">${board_writer}</p>
+	            	<p class="viewcount">${view_count}</p>
+	            	<p class="recommendcount">${recommend_count}</p>
+            	</div>
+            <hr class="thirdline">
+            <div class="boardcontent">
+            	<p>${content}</p>
+            </div>
+            <button class="recommendbutton">추천</button>
+            <button class="norecommendbutton">비추천</button>
+		</div>
+		
+		
+		<div layout:fragment="content_comment" class="content_comment">
+            <div class="comment_div">
+            	<ul th:each="comment : ${commentlist}">
+            		<th:block th:if="${comment.seq eq 0}">
+	            		<li>
+	            			<p> ${comment.writer} </p>
+	            			<p> ${comment.register_date} </p>
+	            			<p>	<button>추천</button> ${comment.recommend_count} </p>
+	            			<p>	<button>비추천</button> ${comment.norecommend_count} </p>
+	            			<div>
+	            				<p>${comment.content}</p>
+	            			</div>
+	            		</li>
+            		</th:block>
+            		<th:block th:unless="${comment.seq eq 0}">
+            			<li class="comment_seq">
+            				<div class="${comment.seq}">
+            					<p> ${comment.writer} </p>
+		            			<p> ${comment.register_date} </p>
+		            			<p>	<button>추천</button> ${comment.recommend_count} </p>
+		            			<p>	<button>비추천</button> ${comment.norecommend_count} </p>
+		            			<div>
+		            				<p>${comment.content}</p>
+		            			</div>
+            				</div>
+	            		</li>
+            		</th:block>
+            	</ul>
+            </div>
+            <div class="comment_page_div">
+            	<th:block th:each="num : ${#numbers.sequence(1,${comment_total_count})}">
+            		<button>${num}</button>
+            	</th:block>
+            </div>
+            <div class="comment_write_div">
+            	<span>댓글 쓰기</span>
+            	<span><input class="comment_write_input"> <button type="submit" class="comment_submit_button"></button></span>
+            </div>
+        </div>
+        
+        
+        <th:block layout:fragment="footer" th:include="@{/fragments/footer}"></th:block>	
+    </body>
+</html>

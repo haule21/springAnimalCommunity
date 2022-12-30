@@ -73,9 +73,8 @@ function clickidcheck(){
                 console.log("user.id :" + user.id + " idck :" + idck);
             }
         },
-        error : function(error) {
-            
-            alert("error : " + error);
+        error : function(request,status,error) {
+            alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
         }
     });
 }

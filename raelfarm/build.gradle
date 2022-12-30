@@ -25,6 +25,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-devtools'
 	
 	implementation 'org.springframework.security:spring-security-web'
@@ -42,25 +43,14 @@ dependencies {
 	implementation 'mysql:mysql-connector-java'
 	
 	implementation 'com.zaxxer:HikariCP'
-	
-	implementation 'org.apache.tiles:tiles-jsp:3.0.8'
-	implementation 'org.apache.tiles:tiles-servlet:3.0.8'
-	implementation 'org.apache.tiles:tiles-extras:3.0.8'
-	implementation 'org.apache.tiles:tiles-api:3.0.8'
-	implementation 'org.apache.tiles:tiles-el:3.0.8'
-	implementation 'org.apache.tiles:tiles-request-api:1.0.7'
-	
-	implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1'
+
 	implementation 'org.eclipse.jetty:apache-jstl:11.0.0'
 	implementation 'jakarta.el:jakarta.el-api:4.0.0'
-	implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0'
 	
 	compileOnly 'org.projectlombok:lombok'
 	
 	compileOnly 'jakarta.platform:jakarta.jakartaee-api:9.0.0'
 	compileOnly 'jakarta.servlet:jakarta.servlet-api:5.0.0'
-	compileOnly 'jakarta.servlet.jsp:jakarta.servlet.jsp-api:3.0.0'
-	compileOnly 'jakarta.websocket:jakarta.websocket-api:2.0.0'
 	
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'

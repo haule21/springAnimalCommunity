@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mtbatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="haule.raelfarm.mapper.BoardMapper">
+	<select id="SelectMainDatas" resultType="haule.raelfarm.dto.MainSelectDTO">
+		<![CDATA[
+			SELECT 
+				A.CATEGORY_NUM,
+				CONVERT(A.BOARD_NUM, CHAR) AS BOARD_NUM,
+				A.TITLE,
+				NULL
+			FROM ( 
+				SELECT
+					ROW_NUMBER() OVER (PARTITION BY CATEGORY_NUM ORDER BY REGISTERED_DATE) AS 'RN',
+					CATEGORY_NUM,
+					BOARD_NUM,
+					TITLE
+				FROM BOARD_TEST
+			) AS A
+			WHERE A.RN <= 5;
+		]]>
+	</select>
+</mapper>

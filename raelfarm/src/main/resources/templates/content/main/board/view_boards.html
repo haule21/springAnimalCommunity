@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+    
+    <th:block layout:fragment="head">
+    	<title>${cateogory_name}</title>
+		
+        <!--/* css */-->
+        <link th:href="@{/css/common.css}" rel="stylesheet" />
+    </th:block>
+    <body>
+        <th:block layout:fragment="header" th:include="@{/fragments/header}"></th:block>
+		
+        <div layout:fragment="content" class="content">
+	        <div th:if="${not #lists.isEmpty(boardList)}">
+				 <ul th:each="board : ${boardList}">
+	            	<li>
+	            		<p>${board.title} ${board.exist_imgfile} ${board.writer} ${board.register_date} ${board.viewcount} ${board.recommendcount}</p>
+	            	</li>
+	            </ul>
+			</div>
+			<div th:if="${not #lists.isEmpty(boardList)}">
+				<p>게시물이 존재하지 않습니다.</p>
+			</div>
+            
+        </div>
+        
+        <th:block layout:fragment="footer" th:include="@{/fragments/footer}"></th:block>	
+    </body>
+</html>
+

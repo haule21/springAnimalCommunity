@@ -1,12 +1,28 @@
 create table CATEGORY_BOARD(
-	CATEGORY_NUM VARCHAR(5) not null,
+	CATEGORY_NUM INT not null,
 	CATEGORY_NAME VARCHAR(100) not null,
 	constraint CATEGORY_BOARD_PK primary key CATGORY_NUM
 )  engine=INNODB default CHARSET=UTF8MB4
 
+create table CATEGORY_100(
+	ID INT not null auto_increment primary key
+)
+
+create table CATEGORY_200(
+	ID INT not null auto_increment primary key
+)
+
+create table CATEGORY_300(
+	ID INT not null auto_increment primary key
+)
+
+create table CATEGORY_400(
+	ID INT not null auto_increment primary key
+)
+
 create table BOARD(
-	CATEGORY_NUM VARCHAR(5) not null,
-	BOARD_NUM INT not_null auto_increment,
+	CATEGORY_NUM INT not null,
+	BOARD_NUM INT not_null,
 	REGISTERED_DATE DATETIME not null default CURRENT_TIMESTAMP,
 	TITLE VARCHAR(300) not null,
 	WRITER VARCHAR(33) not null,
@@ -14,10 +30,9 @@ create table BOARD(
 	DELETED ENUM('Y','N') not null default 'N',
 	EXIST_IMGFILE not null,
 	CONTENT VARCHAR(65535) not null,
-	constraint BOARD_PK primary key (CATEGORY_NUM, BOARD_NUM, REGISTERED_DATE),
-	constraint BOARD_FK foreign key CATEGORY_NUM references CATEGORY_BOARD(CATEGORY_NUM)	
+	constraint BOARD_PK primary key (CATEGORY_NUM, BOARD_NUM, REGISTERED_DATE)
 ) engine=INNODB default CHARSET=UTF8MB4
-partition by range( convert(CATEGORY_NUM, DECIMAL) )(
+partition by range( CATEGORY_NUM )(
 	PARTITION C1 VALUES LESS THAN (200) ENGINE = INNODB
 	PARTITION C2 VALUES LESS THAN (300) ENGINE = INNODB
 	PARTITION C3 VALUES LESS THAN (400) ENGINE = INNODB
