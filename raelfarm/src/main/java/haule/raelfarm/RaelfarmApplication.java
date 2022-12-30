@@ -21,8 +21,6 @@ public class RaelfarmApplication extends SpringBootServletInitializer{
 	}
 	
 	@Override
-<<<<<<< HEAD
-=======
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
 		return builder.sources(RaelfarmApplication.class);
 	}
@@ -38,7 +36,6 @@ public class RaelfarmApplication extends SpringBootServletInitializer{
 	}
 	
 	@Override
->>>>>>> 6e30bc7c347545c3b7b44a224ef2ac7745e8f12f
     public void onStartup(ServletContext servletContext) throws ServletException {
         // 파라미터 인코딩 설정
         FilterRegistration.Dynamic filter = servletContext.addFilter("encodingFilter", CharacterEncodingFilter.class);
