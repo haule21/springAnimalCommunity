@@ -55,7 +55,7 @@ create table BOARD_MEDIAFILE(
 
 create table BOARD_DATA(
 	I_BOARD_NUM VARCHAR(20) not null,
-	VIEWS_COUNT INT not null default 0,
+	VIEW_COUNT INT not null default 0,
 	RECOMMEND_COUNT INT not null default 0,
 	NO_RECOMMEND_COUNT INT not null default 0,
 	constraint BOARD_DATA_PK primary key(I_BOARD_NUM)

@@ -51,7 +51,6 @@ function clickidcheck(){
         type : 'POST',
         data : userid,
         url : "register_page/idcheck",
-        dataType : "json",
         contentType: "application/json",
         beforeSend: function(xhr){
         	xhr.setRequestHeader(header, token);
@@ -88,7 +87,6 @@ function clicknicknamecheck(){
         type : 'POST',
         data : nickname,
         url : "register_page/nicknamecheck",
-        dataType : "json",
         contentType: "application/json",
         beforeSend: function(xhr){
         	xhr.setRequestHeader(header, token);
@@ -134,7 +132,6 @@ function click_authenticate_phonenumber(){
         type : 'POST',
         data : phonenumber,
         url : "/register_page/send-one",
-        dataType : "json",
         contentType: "application/json",
         beforeSend: function(xhr){
         	xhr.setRequestHeader(header, token);

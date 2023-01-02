@@ -7,12 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import haule.raelfarm.dto.ViewBoardsDTO;
 import haule.raelfarm.service.BoardService;
 
-public class Category300 implements CategoryStrategy{
+public class Category500 implements CategoryStrategy{
 	@Autowired
 	BoardService boardService;
 	
-	int StartCategoryNum = 301;
-	int EndCategoryNum = 399;
+	int StartCategoryNum = 501;
+	int EndCategoryNum = 599;
 
 	public void WriteBoard(int category_num, BoardService boardService) {
 		

@@ -65,15 +65,13 @@ public class SecurityConfig{
  	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		
 		http
+			.csrf().and()
+			
 			.authorizeHttpRequests()
 				.requestMatchers("/templates/content/login/**").permitAll()
-				.requestMatchers("/register_agree","/register_page").permitAll()
+				.requestMatchers("/register_agree","/register_page","/register_page/**").permitAll()
 				.requestMatchers("/static/**").permitAll()
 				.requestMatchers("/js/*.js","/css/*.css","/img/*.PNG").permitAll()
-				.requestMatchers("/WEB-INF/views/login/**").permitAll()
-				.requestMatchers("/register_agree","/register_page").permitAll()
-				.requestMatchers("/static/**").permitAll()
-				.requestMatchers("/js/*.js","/css/*.css","/img/*.png").permitAll()
 				.anyRequest()
 				//.access(customAuthorizationManager)
 				.authenticated()

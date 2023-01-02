@@ -19,22 +19,7 @@ public class RaelfarmApplication extends SpringBootServletInitializer{
 	public static void main(String[] args) {
 		SpringApplication.run(RaelfarmApplication.class, args);
 	}
-	
-	@Override
-	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-		return builder.sources(RaelfarmApplication.class);
-	}
-	
-	@Bean
-	public InternalResourceViewResolver setupViewResolver() 
-	{
-		InternalResourceViewResolver resolver = new InternalResourceViewResolver();
-		resolver.setPrefix("/WEB-INF/views/");
-		resolver.setSuffix(".jsp");
-		resolver.setContentType("text/html; charset=UTF-8");
-		return resolver;
-	}
-	
+
 	@Override
     public void onStartup(ServletContext servletContext) throws ServletException {
         // 파라미터 인코딩 설정

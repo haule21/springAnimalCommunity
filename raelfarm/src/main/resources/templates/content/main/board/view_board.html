@@ -14,21 +14,27 @@
         <th:block layout:fragment="header" th:include="@{/fragments/header}"></th:block>
 		
         <div layout:fragment="content" class="content">
-        	<hr class="firstline">
-        		<div class="boardtitle_div">
-        			<p class="boardtitle">${board_title}</p>
-        			<p class="boardregisterdate">${register_date}</p>
-        		</div>
-            <hr class="secondline">
-            	<div class="boardwriter_div">
-	            	<p class="boardwriter">${board_writer}</p>
-	            	<p class="viewcount">${view_count}</p>
-	            	<p class="recommendcount">${recommend_count}</p>
-            	</div>
-            <hr class="thirdline">
-            <div class="boardcontent">
-            	<p>${content}</p>
-            </div>
+	        <article>
+	        	<div class="content_header">
+		        	<hr class="firstline">
+		        		<div class="boardtitle_div">
+		        			<p class="boardtitle">${board_title}</p>
+		        			<p class="boardregisterdate">${register_date}</p>
+		        		</div>
+		            <hr class="secondline">
+		            	<div class="boardwriter_div">
+			            	<p class="boardwriter">${board_writer}</p>
+			            	<p class="viewcount">${view_count}</p>
+			            	<p class="recommendcount">${recommend_count}</p>
+		            	</div>
+		            <hr class="thirdline">
+	        	</div>
+	            
+	           	<div class="boardcontent">
+	            	${content}
+	            </div>
+			</article>
+            
             <button class="recommendbutton">추천</button>
             <button class="norecommendbutton">비추천</button>
 		</div>

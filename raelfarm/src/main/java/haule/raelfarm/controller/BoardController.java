@@ -1,21 +1,36 @@
 package haule.raelfarm.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import haule.raelfarm.controller.StrategyCategory.Category100;
 import haule.raelfarm.controller.StrategyCategory.Category200;
+import haule.raelfarm.controller.StrategyCategory.Category300;
+import haule.raelfarm.controller.StrategyCategory.Category400;
+import haule.raelfarm.controller.StrategyCategory.Category500;
 import haule.raelfarm.controller.StrategyCategory.CategoryStrategy;
+import haule.raelfarm.dto.ViewBoardsDTO;
+import haule.raelfarm.repository.CategoryRepository;
+import haule.raelfarm.service.BoardService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-@RequestMapping("/board")
+@RestController
 public class BoardController {
 	
+	@Autowired
+	BoardService boardService;
+	
 	private static final CategoryStrategy[] categoryStrategyList = new CategoryStrategy[] {
-			null, new Category100(), new Category200()
+			null, new Category100(), new Category200(), new Category300(), new Category400(), new Category500()
 	};
 	
 	/* 
@@ -29,9 +44,19 @@ public class BoardController {
 	 	exist_imgfile Y, N
 	 	content
 	 */
-	@RequestMapping("/{categorynum}")
-	public ModelAndView View_Boards( @PathVariable String categorynum ) {
+	@RequestMapping("/board/c{categorynum}")
+	public ModelAndView View_Boards( @PathVariable("categorynum") String categorynum ) {
 		ModelAndView mv = new ModelAndView();
+		
+		List<ViewBoardsDTO> data = CategoryStrategyViewBoard(categoryStrategyList[(int)(Integer.valueOf(categorynum) / 100)], Integer.valueOf(categorynum));
+		for(ViewBoardsDTO data_ : data) {
+			data_.SetRegisterDate();
+		}
+		
+		mv.addObject("boardList", data);
+		mv.addObject("category_name", boardService.ViewCategoryName(Integer.parseInt(categorynum)));
+		mv.setViewName("content/main/board/view_boards");
+		
 		return mv;
 	}
 	
@@ -40,15 +65,20 @@ public class BoardController {
 		ModelAndView mv = new ModelAndView();
 		
 		// For Procedure
-		CategoryStrategyWriteBoard(categoryStrategyList[(int)(Integer.valueOf(categorynum) / 100)]);
+		CategoryStrategyWriteBoard(categoryStrategyList[(int)(Integer.valueOf(categorynum) / 100)], Integer.valueOf(categorynum));
 		
 		
 		
 		return mv;
 	}
 	
-	public ModelAndView View_Board( String board_num ) {
+	@RequestMapping("/board/c{categorynum}/b{boardnum}")
+	public ModelAndView View_Board( @PathVariable(value ="categorynum") String categorynum, @PathVariable(value ="boardnum") String boardnum, 
+									HttpServletRequest req, HttpServletResponse res) {
 		ModelAndView mv = new ModelAndView();
+		
+		ViewCountUp(categorynum+boardnum, req, res);
+		mv.setViewName("content/main/board/view_board");
 		return mv;
 	}
 	
@@ -99,7 +129,40 @@ public class BoardController {
 		return mv;	
 	}
 	
-	public void CategoryStrategyWriteBoard(CategoryStrategy categoryStrategy) {
-		categoryStrategy.WriteBoard();
+	public void CategoryStrategyWriteBoard(CategoryStrategy categoryStrategy, int category_num) {
+		categoryStrategy.WriteBoard(category_num, boardService);
 	}
+	public List<ViewBoardsDTO> CategoryStrategyViewBoard(CategoryStrategy categoryStrategy, int category_num) {
+		return categoryStrategy.ViewBoard(category_num, boardService);
+	}
+	
+	private void ViewCountUp(String id, HttpServletRequest req, HttpServletResponse res) {
+
+			Cookie oldCookie = null;
+
+			Cookie[] cookies = req.getCookies();
+	        if (cookies != null) {
+	            for (Cookie cookie : cookies) {
+	                if (cookie.getName().equals("boardView")) {
+	                    oldCookie = cookie;
+	                }
+	            }
+	        }
+
+	        if (oldCookie != null) {
+	            if (!oldCookie.getValue().contains("[" + id.toString() + "]")) {
+	                boardService.ViewCount(id);
+	                oldCookie.setValue(oldCookie.getValue() + "_[" + id + "]");
+	                oldCookie.setPath("/");
+	                oldCookie.setMaxAge(60 * 60 * 24);
+	                res.addCookie(oldCookie);
+	            }
+	        } else {
+	            boardService.ViewCount(id);
+	            Cookie newCookie = new Cookie("boardView","[" + id + "]");
+	            newCookie.setPath("/");
+	            newCookie.setMaxAge(60 * 60 * 24);
+	            res.addCookie(newCookie);
+	        }
+	    }
 }

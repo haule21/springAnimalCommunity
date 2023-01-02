@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mtbatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="haule.raelfarm.mapper.BoardMapper">
+	<select id="SelectBoards" resultType="haule.raelfarm.dto.ViewBoardsDTO">
+		<![CDATA[
+			SELECT 
+				(SELECT CATEGORY_NAME FROM CATEGORY_BOARD_TEST WHERE A.CATEGORY_NUM = CATEGORY_NUM) AS categoryname,
+				A.TITLE as title,
+				A.EXIST_IMGFILE as existimgfile,
+				A.WRITER as writer,
+				DATE_FORMAT(A.REGISTERED_DATE, '%Y-%m-%d %H:%i:%S') AS registerdate,
+				B.VIEW_COUNT AS viewcount,
+				B.RECOMMEND_COUNT AS recommendcount
+			FROM 
+				BOARD_TEST A, BOARD_DATA_TEST B
+			WHERE
+				B.I_BOARD_NUM = CONCAT(LPAD(A.CATEGORY_NUM, 5, '0'), A.BOARD_NUM)
+		]]>
+			
+		<choose>
+			<when test = "category_num % 100 == 0">
+				<![CDATA[
+					AND A.CATEGORY_NUM BETWEEN #{category_num_st} AND #{category_num_ed}
+				]]>	
+			</when>
+			<otherwise>
+				<![CDATA[
+					AND A.CATEGORY_NUM = #{category_num}
+				]]>	
+			</otherwise>
+		</choose>
+		ORDER BY A.REGISTERED_DATE DESC
+	</select>
+</mapper>

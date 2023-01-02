@@ -86,11 +86,8 @@ public class MainController {
 	
 	@RequestMapping("/login")
 	public ModelAndView login(ModelAndView mv) {
-<<<<<<< HEAD
+
 		mv.setViewName("content/login/login");
-=======
-		mv.setViewName("login/login");
->>>>>>> 6e30bc7c347545c3b7b44a224ef2ac7745e8f12f
 		return mv;
 	}
 	
@@ -153,7 +150,6 @@ public class MainController {
         else if(usersService.phoneCheck(tophonenum) == 1) {
         	Map<Object,Object> map = new HashMap<Object,Object>();
             map.put("duplicate", "duplicate");
-            
             return map;
         }
 //        Message message = new Message();

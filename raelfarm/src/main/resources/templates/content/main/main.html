@@ -18,53 +18,80 @@
         <div class="mainBody">
 			<div class="left">
 				<div class="container">
-					<h2>동물가 뉴스</h2>
+					<a th:href="|/board/c100|">인기글</a>
 					<th:block th:if="${!#lists.isEmpty(dataList1)}">
 						<ul>
-							<li th:each="content : ${dataList1}"><a href="board/${content.categorynum}/${content.boardnum}" th:text="${content.title}"></a></li>
+							<li th:each="content : ${dataList1}">
+								<a th:href="@{'/board/' + ${content.categorynum} + '/' + ${content.boardnum}}" th:text="${content.title}"></a>
+							</li>
 						</ul>
 					</th:block>
 					<th:block th:unless="${!#lists.isEmpty(dataList1)}">
-						<a>등록된 게시물이 없습니다.</a>
+						<div class="none-div">
+							<a>등록된 게시물이 없습니다.</a>
+						</div>
 					</th:block>
 				</div>
 				<hr>
 				<div class="container">
-					<h2>좋은 집사 되기</h2>
+					<h2 th:href="|/board/c200|">유머</h2>
 					<th:block th:if="${!#lists.isEmpty(dataList2)}">
 						<ul>
-							<li th:each="content : ${dataList2}"><a href="board/${content.categorynum}/${content.boardnum}" th:text = "${content.title}"></a></li>
+							<li th:each="content : ${dataList2}">
+								<a th:href="@{'/board/' + ${content.categorynum} + '/' + ${content.boardnum}}" th:text="${content.title}"></a>
+							</li>
 						</ul>
 					</th:block>
 					<th:block th:unless="${!#lists.isEmpty(dataList2)}">
-						<a>등록된 게시물이 없습니다.</a>
+						<div class="none-div">
+							<a>등록된 게시물이 없습니다.</a>
+						</div>
 					</th:block>
 				</div>
 				<hr>
 				<div class="container">
-					<h2>유머</h2>
+					<h2 th:href="|/board/c300|">좋은 집사 되기</h2>
 					<th:block th:if="${!#lists.isEmpty(dataList3)}">
 						<ul>
-							<li th:each="content : ${dataList3}"><a href="board/${content.categorynum}/${content.boardnum}" th:text = "${content.title}"></a></li>
+							<li th:each="content : ${dataList3}">
+								<a th:href="@{'/board/' + ${content.categorynum} + '/' + ${content.boardnum}}" th:text="${content.title}"></a>
+							</li>
 						</ul>
 					</th:block>
 					<th:block th:unless="${!#lists.isEmpty(dataList3)}">
-						<a>등록된 게시물이 없습니다.</a>
+						<div class="none-div">
+							<a>등록된 게시물이 없습니다.</a>
+						</div>
 					</th:block>
 				</div>
 				
 			</div>
 			<div class="right">
-				<h2>나의 반려</h2>
+				<h2 th:href="|/board/c400|">나의 반려</h2>
 				<div class="imgContainer">
 					<th:block th:if="${!#lists.isEmpty(dataList4)}">
 						<div th:each="content : ${datalist4}" class="imgTextContainer">
-							<img class="imgImg" src="${content.imgpath}">
-							<a class="imgText">${content.title}</a>
+							<img class="imgImg" src="${content.imgpath}" th:href="@{'/board/' + ${content.categorynum} + '/' + ${content.boardnum}}">
+							<a class="imgText" th:href="@{'/board/' + ${content.categorynum} + '/' + ${content.boardnum}}" th:text="${content.title}"></a>
 						</div>
 					</th:block>
 					<th:block th:unless="${!#lists.isEmpty(dataList4)}">
-						<div>
+						<div class="none-div">
+							<a>게시물이 없습니다.</a>
+						</div>
+					</th:block>
+	
+				</div>
+				<h2 th:href="|/board/c500|">동물가 뉴스</h2>
+				<div class="imgContainer_news">
+					<th:block th:if="${!#lists.isEmpty(dataList5)}">
+						<div th:each="content : ${datalist4}" class="imgTextContainer_news">
+							<img class="imgImg" src="${content.imgpath}" th:href="@{'/board/' + ${content.categorynum} + '/' + ${content.boardnum}}">
+							<a class="imgText" th:href="@{'/board/' + ${content.categorynum} + '/' + ${content.boardnum}}" th:text="${content.title}"></a>
+						</div>
+					</th:block>
+					<th:block th:unless="${!#lists.isEmpty(dataList5)}">
+						<div class="none-div">
 							<a>게시물이 없습니다.</a>
 						</div>
 					</th:block>
