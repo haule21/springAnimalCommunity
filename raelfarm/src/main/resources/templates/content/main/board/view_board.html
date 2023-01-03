@@ -5,7 +5,7 @@
       layout:decorate="~{layout/default_layout}">
     
     <th:block layout:fragment="head">
-    	<title>${board_title}</title>
+    	<title>[[${data.title}]] / 라엘동물원</title>
 		
         <!--/* css */-->
         <link th:href="@{/css/common.css}" rel="stylesheet" />
@@ -18,66 +18,112 @@
 	        	<div class="content_header">
 		        	<hr class="firstline">
 		        		<div class="boardtitle_div">
-		        			<p class="boardtitle">${board_title}</p>
-		        			<p class="boardregisterdate">${register_date}</p>
+		        			<p class="boardtitle">[[${data.title}]]</p>
+		        			<p class="boardregisterdate">[[${data.registerdate}]]</p>
 		        		</div>
 		            <hr class="secondline">
 		            	<div class="boardwriter_div">
-			            	<p class="boardwriter">${board_writer}</p>
-			            	<p class="viewcount">${view_count}</p>
-			            	<p class="recommendcount">${recommend_count}</p>
+			            	<p class="boardwriter">[[${data.writer}]]</p>
+			            	<p class="viewcount">[[${data.viewcount}]]</p>
+			            	<p class="recommendcount">[[${data.recommendcount}]]</p>
 		            	</div>
 		            <hr class="thirdline">
 	        	</div>
 	            
 	           	<div class="boardcontent">
-	            	${content}
+	            	[[${data.content}]]
 	            </div>
 			</article>
             
             <button class="recommendbutton">추천</button>
             <button class="norecommendbutton">비추천</button>
+            <hr class="commentfirstline">
 		</div>
 		
 		
 		<div layout:fragment="content_comment" class="content_comment">
             <div class="comment_div">
-            	<ul th:each="comment : ${commentlist}">
-            		<th:block th:if="${comment.seq eq 0}">
-	            		<li>
-	            			<p> ${comment.writer} </p>
-	            			<p> ${comment.register_date} </p>
-	            			<p>	<button>추천</button> ${comment.recommend_count} </p>
-	            			<p>	<button>비추천</button> ${comment.norecommend_count} </p>
-	            			<div>
-	            				<p>${comment.content}</p>
-	            			</div>
-	            		</li>
-            		</th:block>
-            		<th:block th:unless="${comment.seq eq 0}">
-            			<li class="comment_seq">
-            				<div class="${comment.seq}">
-            					<p> ${comment.writer} </p>
-		            			<p> ${comment.register_date} </p>
-		            			<p>	<button>추천</button> ${comment.recommend_count} </p>
-		            			<p>	<button>비추천</button> ${comment.norecommend_count} </p>
+            	<th:block th:if="${not #lists.isEmpty(commentList)}">
+					<ul th:each="comment : ${commentList}">
+	            		<th:block th:if="${comment.seq eq 0}">
+		            		<li>
+		            			<p> ${comment.writer} </p>
+		            			<p> ${comment.registerdate} </p>
+		            			<p>	<button>추천</button> ${comment.recommendcount} </p>
+		            			<p>	<button>비추천</button> ${comment.norecommendcount} </p>
 		            			<div>
 		            				<p>${comment.content}</p>
 		            			</div>
-            				</div>
-	            		</li>
-            		</th:block>
-            	</ul>
-            </div>
-            <div class="comment_page_div">
-            	<th:block th:each="num : ${#numbers.sequence(1,${comment_total_count})}">
-            		<button>${num}</button>
+		            		</li>
+	            		</th:block>
+	            		<th:block th:unless="${comment.seq eq 0}">
+	            			<li class="comment_seq">
+	            				<div class="${comment.seq}">
+	            					<p> ${comment.writer} </p>
+			            			<p> ${comment.registerdate} </p>
+			            			<p>	<button>추천</button> ${comment.recommendcount} </p>
+			            			<p>	<button>비추천</button> ${comment.norecommendcount} </p>
+			            			<div>
+			            				<p>${comment.content}</p>
+			            			</div>
+	            				</div>
+		            		</li>
+	            		</th:block>
+	            	</ul>
             	</th:block>
+            	<th:block th:unless="${not #lists.isEmpty(commentList)}">
+            		댓글이 존재하지 않습니다.
+            	</th:block>
+
             </div>
+            <!--  div class="comment_page_div">
+            	<th:block th:each="num : ${#numbers.sequence(1,${comment_total_count})}">
+            		<button>[[${num}]]</button>
+            	</th:block>
+            </div-->
             <div class="comment_write_div">
             	<span>댓글 쓰기</span>
             	<span><input class="comment_write_input"> <button type="submit" class="comment_submit_button"></button></span>
+            	<hr>
+            	
             </div>
+        </div>
+        <div layout:fragment="content_boards" class="content_boards">
+       	<p>이전 게시판</p>
+	        <th:block th:if="${pboard != null}">
+	        	<table>
+	        		<tr>
+	        			<td><a th:href="'/board' + '/c' + ${pboard.categorynum}" th:text="${pboard.categoryname}"></a> </td>
+		            	<td><a 	th:href="'/board' + '/c' + ${pboard.categorynum} + '/b' + ${pboard.boardnum} + '?previouscategorynum=' + ${category_num}" 
+		            			th:text="${pboard.title} + ' ' +${pboard.existimgfile}"></a></td>
+		            	<td th:text="${pboard.writer}"></td>
+		            	<td th:text="${pboard.registerdate}"></td>
+		            	<td th:text="${pboard.viewcount}"></td>
+		            	<td th:text="${pboard.recommendcount}"></td>
+	        		</tr>
+	        	</table>
+	        </th:block>
+	        <th:block th:unless="${pboard != null}">
+	        	<span>게시물이 존재하지 않습니다.</span>
+	        </th:block>
+		<p>다음 게시판</p>
+	        <th:block th:if="${nboard != null}">
+	        	<table>
+	        		<tr>
+	        			<td><a th:href="'/board' + '/c' + ${nboard.categorynum}" th:text="${nboard.categoryname}"></a> </td>
+		            	<td><a 	th:href="'/board' + '/c' + ${nboard.categorynum} + '/b' + ${nboard.boardnum} + '?previouscategorynum=' + ${category_num}" 
+		            			th:text="${nboard.title} + ' ' +${nboard.existimgfile}"></a></td>
+		            	<td th:text="${nboard.writer}"></td>
+		            	<td th:text="${nboard.registerdate}"></td>
+		            	<td th:text="${nboard.viewcount}"></td>
+		            	<td th:text="${nboard.recommendcount}"></td>
+	        		</tr>
+	        	</table>
+	        </th:block>
+	        <th:block th:unless="${nboard != null}">
+	        	<span>게시물이 존재하지 않습니다.</span>
+	        </th:block>
+
         </div>
         
         

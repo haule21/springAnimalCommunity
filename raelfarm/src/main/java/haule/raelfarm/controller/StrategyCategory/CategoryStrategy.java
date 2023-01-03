@@ -8,4 +8,5 @@ import haule.raelfarm.service.BoardService;
 public interface CategoryStrategy {
 	void WriteBoard(int category_num, BoardService boardService);
 	List<ViewBoardsDTO> ViewBoard(int category_num, BoardService boardService);
+	List<ViewBoardsDTO> ViewPreviousNextBoards(int category_num, int board_num, String iboardnum, BoardService boardService);
 }

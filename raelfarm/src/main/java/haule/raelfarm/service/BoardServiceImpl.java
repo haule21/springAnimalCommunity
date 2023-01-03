@@ -40,6 +40,11 @@ public class BoardServiceImpl implements BoardService{
 	}
 	
 	@Override
+	public List<ViewBoardsDTO> SelectPreviousNextBoards(int category_num, int board_num, String iboardnum, int Starting, int Ending){
+		return boardMapper.SelectPreviousNextBoards(category_num, board_num, iboardnum, Starting, Ending);
+	}
+	
+	@Override
 	public String ViewCategoryName(int category_num) {
 		return categoryRepository.ViewCategoryName(category_num);
 	}

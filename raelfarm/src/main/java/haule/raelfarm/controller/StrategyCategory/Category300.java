@@ -21,4 +21,7 @@ public class Category300 implements CategoryStrategy{
 	public List<ViewBoardsDTO> ViewBoard(int category_num, BoardService boardService) {
 		return boardService.SelectBoards(category_num, StartCategoryNum, EndCategoryNum); 
 	}
+	public List<ViewBoardsDTO> ViewPreviousNextBoards(int category_num, int board_num, String iboardnum, BoardService boardService){
+		return boardService.SelectPreviousNextBoards(category_num, board_num, iboardnum, category_num, category_num);
+	}
 }

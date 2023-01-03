@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,7 +18,6 @@ import haule.raelfarm.controller.StrategyCategory.Category400;
 import haule.raelfarm.controller.StrategyCategory.Category500;
 import haule.raelfarm.controller.StrategyCategory.CategoryStrategy;
 import haule.raelfarm.dto.ViewBoardsDTO;
-import haule.raelfarm.repository.CategoryRepository;
 import haule.raelfarm.service.BoardService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -55,6 +55,7 @@ public class BoardController {
 		
 		mv.addObject("boardList", data);
 		mv.addObject("category_name", boardService.ViewCategoryName(Integer.parseInt(categorynum)));
+		mv.addObject("category_num", categorynum);
 		mv.setViewName("content/main/board/view_boards");
 		
 		return mv;
@@ -73,11 +74,39 @@ public class BoardController {
 	}
 	
 	@RequestMapping("/board/c{categorynum}/b{boardnum}")
-	public ModelAndView View_Board( @PathVariable(value ="categorynum") String categorynum, @PathVariable(value ="boardnum") String boardnum, 
+	public ModelAndView View_Board( @PathVariable(value ="categorynum") String categorynum, @PathVariable(value ="boardnum") String boardnum,  
+									@ModelAttribute("previouscategorynum") String previous_cn,
 									HttpServletRequest req, HttpServletResponse res) {
 		ModelAndView mv = new ModelAndView();
+		String iboardnum = String.format("%05d",Integer.valueOf(categorynum)) + boardnum; 
+		System.out.println(iboardnum);
+		ViewCountUp(iboardnum, req, res);
 		
-		ViewCountUp(categorynum+boardnum, req, res);
+		List<ViewBoardsDTO> pndatas = CategoryStrategyViewPreviousNextBoards(
+				categoryStrategyList[(int)(Integer.valueOf(previous_cn) / 100)], 
+				Integer.valueOf(categorynum), 
+				Integer.valueOf(boardnum), 
+				iboardnum);
+		
+		for(ViewBoardsDTO tempdata : pndatas) {
+			System.out.println("getSeqtext : " + tempdata.getSeqtext());
+			switch(tempdata.getSeqtext()) {
+				case "CURRENT":
+					mv.addObject("data" , tempdata);
+					System.out.println("data : " + tempdata);
+				break;
+				case "NEXT":
+					mv.addObject("nboard" , tempdata);
+					System.out.println("nboard : " + tempdata);
+				break;
+				case "PREVIOUS":
+					mv.addObject("pboard" , tempdata);
+					System.out.println("pboard : " + tempdata);
+				break;
+			}
+		}
+		
+		mv.addObject("category_num", previous_cn);
 		mv.setViewName("content/main/board/view_board");
 		return mv;
 	}
@@ -134,6 +163,9 @@ public class BoardController {
 	}
 	public List<ViewBoardsDTO> CategoryStrategyViewBoard(CategoryStrategy categoryStrategy, int category_num) {
 		return categoryStrategy.ViewBoard(category_num, boardService);
+	}
+	public List<ViewBoardsDTO> CategoryStrategyViewPreviousNextBoards(CategoryStrategy categoryStrategy, int category_num, int board_num, String iboardnum) {
+		return categoryStrategy.ViewPreviousNextBoards(category_num, board_num, iboardnum, boardService);
 	}
 	
 	private void ViewCountUp(String id, HttpServletRequest req, HttpServletResponse res) {

@@ -4,13 +4,17 @@
 	<select id="SelectBoards" resultType="haule.raelfarm.dto.ViewBoardsDTO">
 		<![CDATA[
 			SELECT 
-				(SELECT CATEGORY_NAME FROM CATEGORY_BOARD_TEST WHERE A.CATEGORY_NUM = CATEGORY_NUM) AS categoryname,
+				A.CATEGORY_NUM as categorynum,
+				A.BOARD_NUM as boardnum,
+				(SELECT CATEGORY_NAME FROM CATEGORY_BOARD_TEST WHERE A.CATEGORY_NUM = CATEGORY_NUM) as categoryname,
 				A.TITLE as title,
 				A.EXIST_IMGFILE as existimgfile,
 				A.WRITER as writer,
-				DATE_FORMAT(A.REGISTERED_DATE, '%Y-%m-%d %H:%i:%S') AS registerdate,
-				B.VIEW_COUNT AS viewcount,
-				B.RECOMMEND_COUNT AS recommendcount
+				DATE_FORMAT(A.REGISTERED_DATE, '%Y-%m-%d %H:%i:%S') as registerdate,
+				null as content,
+				B.VIEW_COUNT as viewcount,
+				B.RECOMMEND_COUNT as recommendcount,
+				null as sqltext
 			FROM 
 				BOARD_TEST A, BOARD_DATA_TEST B
 			WHERE
@@ -30,5 +34,79 @@
 			</otherwise>
 		</choose>
 		ORDER BY A.REGISTERED_DATE DESC
+	</select>
+	<select id="SelectPreviousNextBoards" resultType="haule.raelfarm.dto.ViewBoardsDTO">
+		<![CDATA[
+			SELECT 
+				X.CATEGORYNUM as categorynum,
+				X.BOARDNUM as boardnum,
+				(SELECT CATEGORY_NAME FROM CATEGORY_BOARD_TEST WHERE CATEGORY_NUM = X.CATEGORYNUM) as categoryname,
+				X.TITLE as title,
+				X.EXISTIMGFILE as existimgfile,
+				X.WRITER as writer,
+				X.REGISTERDATE as registerdate,
+				X.CONTENT as content,
+				B.VIEW_COUNT as viewcount,
+				B.RECOMMEND_COUNT as recommendcount,
+				X.SEQTEXT as seqtext
+			FROM
+			(
+				SELECT
+					A.CATEGORY_NUM AS CATEGORYNUM,
+					A.BOARD_NUM AS BOARDNUM,
+					A.TITLE AS TITLE,
+					A.WRITER AS WRITER,
+					A.EXIST_IMGFILE AS EXISTIMGFILE,
+					A.REGISTERED_DATE AS REGISTERDATE,
+					NULL AS CONTENT,
+					CASE
+						WHEN A.PREVIOUS_CBN = #{iboardnum}
+							THEN 'NEXT'
+						WHEN A.NEXT_CBN = #{iboardnum}
+							THEN 'PREVIOUS'
+					END AS SEQTEXT
+				FROM
+					(SELECT
+						*,
+						CONCAT(LPAD(LAG(CATEGORY_NUM) OVER(ORDER BY REGISTERED_DATE ASC),5,'0'),LAG(BOARD_NUM) OVER(ORDER BY REGISTERED_DATE ASC)) AS PREVIOUS_CBN,
+						CONCAT(LPAD(LEAD(CATEGORY_NUM) OVER(ORDER BY REGISTERED_DATE ASC),5,'0'),LEAD(BOARD_NUM) OVER(ORDER BY REGISTERED_DATE ASC)) AS NEXT_CBN
+					FROM BOARD_TEST
+					WHERE
+					]]>
+					<choose>
+						<when test = "category_num % 100 == 0">
+							<![CDATA[
+								CATEGORY_NUM BETWEEN #{category_num_st} AND #{category_num_ed}
+							]]>	
+						</when>
+						<otherwise>
+							<![CDATA[
+								CATEGORY_NUM = #{category_num}
+							]]>	
+						</otherwise>
+					</choose>
+						<![CDATA[
+					) A
+				WHERE
+					A.PREVIOUS_CBN = #{iboardnum} OR A.NEXT_CBN = #{iboardnum}
+				UNION ALL
+					SELECT 
+						CATEGORY_NUM AS CATEGORYNUM,
+						BOARD_NUM AS BOARDNUM,
+						TITLE AS TITLE,
+						WRITER AS WRITER,
+						EXIST_IMGFILE AS EXISTIMGFILE,
+						REGISTERED_DATE AS REGISTERDATE,
+						CONTENT AS CONTENT,
+						'CURRENT' AS SEQTEXT
+					FROM
+						BOARD_TEST 
+					WHERE
+						CATEGORY_NUM = #{category_num} AND BOARD_NUM = #{board_num}
+				) X, 
+				BOARD_DATA_TEST B 
+			WHERE 
+				B.I_BOARD_NUM = CONCAT(LPAD(X.CATEGORYNUM,5,'0'), X.BOARDNUM)
+		]]>
 	</select>
 </mapper>

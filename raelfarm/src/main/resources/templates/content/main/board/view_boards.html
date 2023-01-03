@@ -28,8 +28,9 @@
         			</thead>
         			<tbody>
         				<tr th:each="board : ${boardList}">
-			            	<td th:text="${board.categoryname}"></td>
-			            	<td>[[${board.title}]][[${board.existimgfile}]]</td>
+			            	<td><a th:href="'/board' + '/c' + ${board.categorynum}" th:text="${board.categoryname}"></a> </td>
+			            	<td><a 	th:href="'/board' + '/c' + ${board.categorynum} + '/b' + ${board.boardnum} + '?previouscategorynum=' + ${category_num}" 
+			            			th:text="${board.title} + ' ' +${board.existimgfile}"></a></td>
 			            	<td th:text="${board.writer}"></td>
 			            	<td th:text="${board.registerdate}"></td>
 			            	<td th:text="${board.viewcount}"></td>

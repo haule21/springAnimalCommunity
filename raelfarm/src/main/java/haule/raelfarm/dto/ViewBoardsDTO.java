@@ -13,13 +13,17 @@ import lombok.Getter;
 @Getter
 public class ViewBoardsDTO {
 	String categoryname;
+	int categorynum;
+	int boardnum;
 	String title;
 	String existimgfile;
 	String writer;
 	// "year-month-day hour:minutes:second"
 	String registerdate;
+	String content;
 	int viewcount;
 	int recommendcount;
+	String seqtext;
 	
 	public void SetRegisterDate() {
 		Date date = new Date(System.currentTimeMillis());

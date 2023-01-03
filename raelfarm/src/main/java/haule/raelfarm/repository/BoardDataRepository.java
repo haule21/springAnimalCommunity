@@ -6,10 +6,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import haule.raelfarm.jpa.BoardData;
+import jakarta.transaction.Transactional;
 
 public interface BoardDataRepository extends JpaRepository<BoardData, String> {
 
+	@Transactional
 	@Modifying(clearAutomatically = true)
-	@Query(value = "UPDATE BOARD_DATA_TEST SET VIEWS_COUNT = VIEWS_COUNT + 1 WHERE I_BOARD_NUM = :id", nativeQuery = true)
+	@Query(value = "UPDATE BOARD_DATA_TEST SET VIEW_COUNT = VIEW_COUNT + 1 WHERE I_BOARD_NUM = :id", nativeQuery = true)
 	void updateViewCount(@Param(value="id") String id);
 }

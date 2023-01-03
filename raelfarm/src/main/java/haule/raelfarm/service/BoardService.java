@@ -9,5 +9,6 @@ public interface BoardService {
 	public List<MainSelectDTO> SelectMainDatas();
 	public void ViewCount(String iboardnum);
 	public List<ViewBoardsDTO> SelectBoards(int category_num, int Starting, int Ending);
+	public List<ViewBoardsDTO> SelectPreviousNextBoards(int category_num, int board_num,String iboardnum,int Starting, int Ending);
 	public String ViewCategoryName(int category_num);
 }

@@ -75,11 +75,13 @@ public class MainController {
 		System.out.println("dataList2 :" + dataList2);
 		System.out.println("dataList3 :" + dataList3);
 		System.out.println("dataList4 :" + dataList4);
+		System.out.println("dataList5 :" + dataList4);
 		
 		mv.addObject("dataList1", dataList1);
 		mv.addObject("dataList2", dataList2);
 		mv.addObject("dataList3", dataList3);
 		mv.addObject("dataList4", dataList4);
+		mv.addObject("dataList5", dataList4);
 		mv.setViewName("content/main/main");
 		return mv;
 	}
