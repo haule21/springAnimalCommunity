@@ -42,7 +42,7 @@ public class MainController {
 	@Autowired
 	PasswordEncoder passwordEncoder;
 	
-	final DefaultMessageService messageService = NurigoApp.INSTANCE.initialize("","","https://api.coolsms.co.kr");
+	final DefaultMessageService messageService = NurigoApp.INSTANCE.initialize("NCSFJFSUH6L6KCO8","XBLUZEB202BUC5GIAA2RENJRS5NLPQKM","https://api.coolsms.co.kr");
 	
 	@RequestMapping("/")
 	public ModelAndView Main(ModelAndView mv) {
