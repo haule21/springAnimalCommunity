@@ -64,8 +64,10 @@ public class FileUploadController {
 		JsonObject jsonObject = new JsonObject();
 		String[] files = file.split("/");
 		File deleteFile = new File("C:\\summernote_image\\"+files[4]+"\\"+files[5]+"\\"+files[6], files[7]);
+		String filePath = "/summernoteImage/"+ files[4]+"/"+files[5]+"/"+files[6]+"/"+files[7];
 		
 		if(deleteFile.delete()) {
+			jsonObject.addProperty("filePath", filePath.trim());
 			jsonObject.addProperty("responseCode", "success");
 		}
 		else {

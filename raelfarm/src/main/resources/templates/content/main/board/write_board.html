@@ -27,7 +27,7 @@
         <th:block layout:fragment="header" th:include="@{/fragments/header}"></th:block>
 		
         <div layout:fragment="content" class="content">
-        	<form method="post">
+        	<form id="summernote_form" method="post">
         		<label for="summernote_title" >제목 : 
         			<input id="summernote_title" type="text" maxlength='50' style="width:100%; margin: 5px; outline: none;">
         		</label>

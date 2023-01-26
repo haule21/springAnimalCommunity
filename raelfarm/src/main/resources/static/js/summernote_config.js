@@ -54,6 +54,7 @@ function uploadSummernoteImageFile(file, editor){
 			console.log(data);
         	//항상 업로드된 파일의 url이 있어야 한다.
 			$(editor).summernote('insertImage', data.url);
+			$("#summernote_form").append("<input name=\"uploaded_images\" type=\"hidden\" value=\""+data.url+"\" readonly/>");
 		}
 	});
 }
@@ -72,7 +73,17 @@ function deleteSummernoteImageFile(file, editor){
         	xhr.setRequestHeader(header, token);
     	},
 		success : function(data) {
-			
+			var images = $("input[name=uploaded_images]");
+			if(images.length === 1){
+				$("input[name=uploaded_images]").remove();
+			}
+			else{
+				for(let i=0; i < images.length; i++){
+					if(images[i].value.trim() == data.filePath){
+						images[i].remove();
+					} 	
+				}
+			}
 		}
 	});
 }
