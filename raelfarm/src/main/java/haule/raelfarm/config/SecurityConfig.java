@@ -38,28 +38,7 @@ public class SecurityConfig{
 		encoders.put("sha256", new org.springframework.security.crypto.password.StandardPasswordEncoder());
 		return new DelegatingPasswordEncoder(encodingId, encoders);
     }
-	
-//		http
-//			.authorizeHttpRequests(
-//					(requests) -> requests.requestMatchers("/WEB-INF/views/login/login.jsp").anonymous()
-//								.requestMatchers("/WEB-INF/views/login/register_agree.jsp").anonymous()
-//								.requestMatchers("/WEB-INF/views/login/register_page.jsp").anonymous()
-//								.requestMatchers("/WEB-INF/views/test.jsp").authenticated()
-//								.requestMatchers("/css/*.css","/js/*.js","/img/*.img").permitAll()
-//			)
-//			
-//			.formLogin((form) ->
-//			form
-//				.usernameParameter("username")
-//				.passwordParameter("password")
-//				.defaultSuccessUrl("/")
-//				.failureUrl("/login?error=true")
-//				.loginPage("/login").permitAll()
-//				.loginProcessingUrl("/loginProc")
-//				.successHandler(authSuccessHandler)
-//			    .failureHandler(authFailureHandler)
-//			)
-//			.logout((logout) -> logout.permitAll());
+
 	
 	@Bean
  	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -72,6 +51,7 @@ public class SecurityConfig{
 				.requestMatchers("/register_agree","/register_page","/register_page/**").permitAll()
 				.requestMatchers("/static/**").permitAll()
 				.requestMatchers("/js/*.js","/css/*.css","/img/*.PNG").permitAll()
+				.requestMatchers("/img/*/*/*/*").permitAll()
 				.anyRequest()
 				//.access(customAuthorizationManager)
 				.authenticated()

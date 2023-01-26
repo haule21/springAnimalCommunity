@@ -10,13 +10,15 @@ spring:
     prefix: classpath:templates/
     suffix: .html
    
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
 
   mvc:
-    view:
-      prefix: /WEB-INF/views
-      suffix: .jsp
+    converters:
+      preferred-json-mapper: gson
 
-      
   devtools:
     livereload:
       enabled: true

@@ -61,7 +61,16 @@ public class BoardController {
 		return mv;
 	}
 	
-	public ModelAndView Write_Board( String categorynum, String title, String writer, String exist_imgfile, String content) {
+	@RequestMapping("/board/c{categorynum}/write")
+	public ModelAndView Write_Board( @PathVariable("categorynum") String categorynum ) {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("content/main/board/write_board");
+		
+		return mv;
+	}
+	
+	
+	public ModelAndView Write_Board_Submit( String categorynum, String title, String writer, String exist_imgfile, String content) {
 		
 		ModelAndView mv = new ModelAndView();
 		
@@ -89,19 +98,15 @@ public class BoardController {
 				iboardnum);
 		
 		for(ViewBoardsDTO tempdata : pndatas) {
-			System.out.println("getSeqtext : " + tempdata.getSeqtext());
 			switch(tempdata.getSeqtext()) {
 				case "CURRENT":
 					mv.addObject("data" , tempdata);
-					System.out.println("data : " + tempdata);
 				break;
 				case "NEXT":
 					mv.addObject("nboard" , tempdata);
-					System.out.println("nboard : " + tempdata);
 				break;
 				case "PREVIOUS":
 					mv.addObject("pboard" , tempdata);
-					System.out.println("pboard : " + tempdata);
 				break;
 			}
 		}

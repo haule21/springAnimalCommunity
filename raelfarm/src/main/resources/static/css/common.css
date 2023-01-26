@@ -34,8 +34,7 @@ body, html{
 .mainNav{
 	position: -webkt-sticky;
 	position: sticky;
-	max-width: 100%;
-	min-width: 1200px;
+	width: 100%;
   	margin: 0 auto;
   	padding: 20px;
 	list-style-type: none;
