@@ -29,6 +29,16 @@
 	float: right;	
 }
 
+.mainBody .left a{
+	text-decoration-line: none;	
+	color: #333;
+}
+
+.mainBody .right a{
+	text-decoration-line: none;	
+	color: #333;
+}
+
 /*
 =======================MainBody left===========================
 */
@@ -43,11 +53,6 @@
 
 .mainBody .left .container li{
 	list-style-type: none;
-}
-
-.mainBody .left a{
-	text-decoration-line: none;	
-	color: #333;
 }
 
 
