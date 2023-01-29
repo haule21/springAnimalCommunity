@@ -14,5 +14,5 @@ public class Category {
 	private int CATEGORY_NUM;
 	
 	@Column(name = "CATEGORY_NAME")
-	private int CATEGORY_NAME;
+	private String CATEGORY_NAME;
 }

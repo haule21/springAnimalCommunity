@@ -3,9 +3,9 @@ var token = $("meta[name='_csrf']").attr('content');
 
 function summernote_config(){
 	$('#summernote').summernote({
-		height: 900,                 // set editor height
-		minHeight: 900,             // set minimum height of editor
-		maxHeight: 900,             // set maximum height of editor
+		height: 850,                 // set editor height
+		minHeight: 850,             // set minimum height of editor
+		maxHeight: 850,             // set maximum height of editor
 		focus: true,                  // set focus to editable area after initializing summernote
 		lang: 'ko-KR',
 		toolbar: [

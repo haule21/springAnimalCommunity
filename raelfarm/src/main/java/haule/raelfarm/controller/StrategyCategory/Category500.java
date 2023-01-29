@@ -14,8 +14,8 @@ public class Category500 implements CategoryStrategy{
 	int StartCategoryNum = 501;
 	int EndCategoryNum = 599;
 
-	public void WriteBoard(int category_num, BoardService boardService) {
-		
+	public List<String> ViewCategorysData(BoardService boardService) {
+		return boardService.ViewCategorysName(StartCategoryNum, EndCategoryNum);
 	}
 	
 	public List<ViewBoardsDTO> ViewBoard(int category_num, BoardService boardService) {

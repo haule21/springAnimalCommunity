@@ -28,10 +28,18 @@
 		
         <div layout:fragment="content" class="content">
         	<form id="summernote_form" method="post">
+        	<p th:text="${summernote_categorynames}"></p>
+        	<select class="summernote_categorynum" id="summernote_categorynum" th:field="*{ctdatas}">
+        		<option value="" selected="selected">== 카테고리를 선택해주세요 ==</option>
+				<option th:each="ctdata : ${ctdatas}" 
+					th:value=${ctdata.categorynum} th:text="${ctdata.categoryname}"></option>
+		        
+		    </select>
         		<label for="summernote_title" >제목 : 
         			<input id="summernote_title" type="text" maxlength='50' style="width:100%; margin: 5px; outline: none;">
         		</label>
         		<div id="summernote"><p>Hello Summernote</p></div>
+        		<button type="submit">제출</button>
         	</form>
 			<script>
 				$(document).ready(summernote_config());

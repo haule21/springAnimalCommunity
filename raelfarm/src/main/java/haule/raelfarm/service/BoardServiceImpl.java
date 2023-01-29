@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import haule.raelfarm.dto.CategorySelectDTO;
 import haule.raelfarm.dto.MainSelectDTO;
 import haule.raelfarm.dto.ViewBoardsDTO;
 import haule.raelfarm.mapper.BoardMapper;
@@ -47,6 +48,11 @@ public class BoardServiceImpl implements BoardService{
 	@Override
 	public String ViewCategoryName(int category_num) {
 		return categoryRepository.ViewCategoryName(category_num);
+	}
+	
+	@Override
+	public List<String> ViewCategorysName(int ctn_st, int ctn_ed){
+		return categoryRepository.ViewCategorysName(ctn_st, ctn_ed);
 	}
 	
 }

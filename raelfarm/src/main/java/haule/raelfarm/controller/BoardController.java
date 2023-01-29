@@ -1,5 +1,6 @@
 package haule.raelfarm.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,7 @@ import haule.raelfarm.controller.StrategyCategory.Category300;
 import haule.raelfarm.controller.StrategyCategory.Category400;
 import haule.raelfarm.controller.StrategyCategory.Category500;
 import haule.raelfarm.controller.StrategyCategory.CategoryStrategy;
+import haule.raelfarm.dto.CategorySelectDTO;
 import haule.raelfarm.dto.ViewBoardsDTO;
 import haule.raelfarm.service.BoardService;
 import jakarta.servlet.http.Cookie;
@@ -64,8 +66,16 @@ public class BoardController {
 	@RequestMapping("/board/c{categorynum}/write")
 	public ModelAndView Write_Board( @PathVariable("categorynum") String categorynum ) {
 		ModelAndView mv = new ModelAndView();
+		List<String> datas = CategoryStrategyViewCategorysData(categoryStrategyList[(int)(Integer.valueOf(categorynum) / 100)]);
+		List<CategorySelectDTO> ctn_datas = new ArrayList<CategorySelectDTO>();
+		for(String a : datas) {
+			String[] temp = a.split(";");
+			ctn_datas.add(
+					CategorySelectDTO.builder().categorynum(Integer.parseInt(temp[0])).categoryname(temp[1]).build()
+			);
+		}
+		mv.addObject("ctdatas", ctn_datas);
 		mv.setViewName("content/main/board/write_board");
-		
 		return mv;
 	}
 	
@@ -73,12 +83,6 @@ public class BoardController {
 	public ModelAndView Write_Board_Submit( String categorynum, String title, String writer, String exist_imgfile, String content) {
 		
 		ModelAndView mv = new ModelAndView();
-		
-		// For Procedure
-		CategoryStrategyWriteBoard(categoryStrategyList[(int)(Integer.valueOf(categorynum) / 100)], Integer.valueOf(categorynum));
-		
-		
-		
 		return mv;
 	}
 	
@@ -163,8 +167,8 @@ public class BoardController {
 		return mv;	
 	}
 	
-	public void CategoryStrategyWriteBoard(CategoryStrategy categoryStrategy, int category_num) {
-		categoryStrategy.WriteBoard(category_num, boardService);
+	public List<String> CategoryStrategyViewCategorysData(CategoryStrategy categoryStrategy) {
+		return categoryStrategy.ViewCategorysData(boardService);
 	}
 	public List<ViewBoardsDTO> CategoryStrategyViewBoard(CategoryStrategy categoryStrategy, int category_num) {
 		return categoryStrategy.ViewBoard(category_num, boardService);
