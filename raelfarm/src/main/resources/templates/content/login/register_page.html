@@ -159,7 +159,7 @@
 		
         <div layout:fragment="content" class="content">
             <form id='register_form' action="register_page/register" method="POST">
-				<input type="hidden" value="${_csrf.token}" name="${_csrf.parameterName}">
+				<input type="hidden" th:value="${_csrf.token}" th:name="${_csrf.parameterName}">
 				<ul class="register_ul">
 					<li>
 						<label for='userid'>* 아이디</label>		

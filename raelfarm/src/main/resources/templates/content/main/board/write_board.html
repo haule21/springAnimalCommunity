@@ -18,6 +18,7 @@
         
         <script src="/js/jquery-3.6.2.min.js"></script>
         <script src="/js/summernote_config.js"></script>
+        <script src="/js/check-board.js"></script>
     	<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     	<script src="/summernote/summernote.js"></script>
     	<script src="/summernote/summernote.min.js"></script>
@@ -27,22 +28,29 @@
         <th:block layout:fragment="header" th:include="@{/fragments/header}"></th:block>
 		
         <div layout:fragment="content" class="content">
-        	<form id="summernote_form" method="post">
-        	<p th:text="${summernote_categorynames}"></p>
-        	<select class="summernote_categorynum" id="summernote_categorynum" th:field="*{ctdatas}">
-        		<option value="" selected="selected">== 카테고리를 선택해주세요 ==</option>
-				<option th:each="ctdata : ${ctdatas}" 
-					th:value=${ctdata.categorynum} th:text="${ctdata.categoryname}"></option>
-		        
-		    </select>
+        	<form id="summernote_form" method="post" th:action="@{/board/write}">
+        		<input type="hidden" th:value="${_csrf.token}" th:name="${_csrf.parameterName}">
+	        	<p th:text="${summernote_categorynames}"></p>
+	        	<select class="summernote_categorynum" id="summernote_categorynum" th:name="summernote_categorynum">
+	        	
+	        		<option value="" selected="selected">== 카테고리를 선택해주세요 ==</option>
+					<option th:each="ctdata : ${ctdatas}" 
+						th:value=${ctdata.categorynum} th:text="${ctdata.categoryname}"></option>
+			        
+			    </select>
         		<label for="summernote_title" >제목 : 
-        			<input id="summernote_title" type="text" maxlength='50' style="width:100%; margin: 5px; outline: none;">
+        			<input id="summernote_title" th:name="summernote_title" type="text" maxlength='50' style="width:100%; margin: 5px; outline: none;">
         		</label>
-        		<div id="summernote"><p>Hello Summernote</p></div>
-        		<button type="submit">제출</button>
+        		<div id="summernote" th:name="summernote"></div>
+        		<div style="display:none">
+        			<textarea id="summernote_content" th:name="summernote_content"></textarea>
+        		</div>
+
+        		<button type="button" onclick="javascript:check_board_before_submit()">제출</button>
         	</form>
 			<script>
 				$(document).ready(summernote_config());
+
 			</script>
         </div>
         

@@ -109,4 +109,66 @@
 				B.I_BOARD_NUM = CONCAT(LPAD(X.CATEGORYNUM,5,'0'), X.BOARDNUM)
 		]]>
 	</select>
+	<select id="SelectBoardNum" resultType="haule.raelfarm.dto.BoardNumSelectDTO">
+		<![CDATA[
+			SELECT 
+				B.CATEGORY_NUM as categorynum, IFNULL(A.BOARD_NUM, 0) as boardnum
+			FROM 
+				(
+				SELECT 
+					* 
+				FROM (
+					SELECT 
+						CATEGORY_NUM ,  
+						RANK() OVER(PARTITION BY CATEGORY_NUM ORDER BY BOARD_NUM DESC) AS BOARD_RANKING,
+						BOARD_NUM
+					FROM 
+						BOARD_TEST) TEMP 
+				WHERE 
+					TEMP.BOARD_RANKING = 1) A 
+				RIGHT JOIN 
+					CATEGORY_BOARD_TEST B 
+						ON A.CATEGORY_NUM = B.CATEGORY_NUM
+		]]>
+	</select>
+	<insert id="InsertBoardData" parameterType="string">
+		<![CDATA[
+			INSERT INTO BOARD_DATA_TEST VALUES(
+				#{iboardnum},
+				default,
+				default,
+				default
+			)
+		]]>
+	</insert>
+	<insert id="InsertBoardMedia" parameterType="haule.raelfarm.dto.BoardMediaFileInsertDTO">
+		<![CDATA[
+			INSERT INTO BOARD_MEDIAFILE_TEST VALUES(
+				#{I_BOARD_NUM},
+				#{SEQ},
+				#{CONTENT_TYPE},
+				#{FILE_NAME},
+				#{FILE_PATH} 
+			)
+		]]>
+		
+	</insert>
+	
+	<!-- categorynum, boardnum, registereddate, title, writer, modefieddate, deleted, existimgfile, content -->
+	<insert id="InsertBoard">
+		<![CDATA[
+			INSERT INTO BOARD_TEST VALUES(
+				#{arg0},
+				#{arg1},
+				default, 
+				#{arg2}, 
+				#{arg3},
+				default,
+				default, 
+				#{arg4}, 
+				#{arg5}
+			)
+		]]>
+		
+	</insert>
 </mapper>

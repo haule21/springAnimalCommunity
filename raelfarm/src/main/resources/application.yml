@@ -42,3 +42,4 @@ mybatis:
 logging:
   level:
     '[org.springframework.web]': debug
+    

@@ -1,14 +1,18 @@
 package haule.raelfarm.controller;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -18,9 +22,11 @@ import haule.raelfarm.controller.StrategyCategory.Category300;
 import haule.raelfarm.controller.StrategyCategory.Category400;
 import haule.raelfarm.controller.StrategyCategory.Category500;
 import haule.raelfarm.controller.StrategyCategory.CategoryStrategy;
+import haule.raelfarm.dto.BoardMediaFileInsertDTO;
 import haule.raelfarm.dto.CategorySelectDTO;
 import haule.raelfarm.dto.ViewBoardsDTO;
 import haule.raelfarm.service.BoardService;
+import haule.raelfarm.singleton.BoardInfo;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -80,9 +86,58 @@ public class BoardController {
 	}
 	
 	
-	public ModelAndView Write_Board_Submit( String categorynum, String title, String writer, String exist_imgfile, String content) {
+	@RequestMapping(value="/board/write", method=RequestMethod.POST)
+	public ModelAndView Write_Board_Submit( 
+			Principal principal,
+			@RequestParam(value="summernote_categorynum") int summernote_categorynum, 
+			@RequestParam(value="summernote_title") String summernote_title, 
+			@RequestParam(value="summernote_content") String summernote_content,
+			@RequestParam(value="uploaded_images", required = false) List<String> summernote_images ) {
 		
 		ModelAndView mv = new ModelAndView();
+		
+		String existImage = "N";
+		List<BoardMediaFileInsertDTO> media = new ArrayList<BoardMediaFileInsertDTO>();
+		
+		// Writer 
+		String userid = principal.getName();
+		
+		int boardnum = BoardInfo.getInstance(boardService).getBoardNumber(summernote_categorynum);
+		String iboardnum = String.format("%05d", summernote_categorynum) + boardnum;
+
+		if(summernote_images != null && summernote_images.size() > 0) {
+			existImage = "Y";
+			int count = 0;
+			for(String temp : summernote_images) {
+				
+				// /summerImage/년/월/일/파일명.확장자
+				String[] mediadatas = temp.split("/");
+				// 년도 / 월 / 일 / 파일
+				String filepath = mediadatas[2] + "/" + mediadatas[3] + "/" + mediadatas[4];
+				String filename = mediadatas[5];
+				String contenttype = CheckImageType(mediadatas[5]);
+				System.out.println("mediadatas[5] : "+mediadatas[5]);
+				System.out.println("iboardnum : "+iboardnum);
+				System.out.println("contenttype : "+contenttype);
+				
+				media.add(
+					BoardMediaFileInsertDTO.builder()
+						.I_BOARD_NUM(iboardnum)
+						.SEQ(count)
+						.CONTENT_TYPE(contenttype)
+						.FILE_PATH(filepath)
+						.FILE_NAME(filename)
+						.build()
+					);
+				count ++;
+			}
+		}
+		if(existImage == "N") {
+			media = null;
+		}
+		
+		boardService.InvokeBoard(media, iboardnum, summernote_categorynum, boardnum, summernote_title, userid, existImage, summernote_content);		
+		mv.setViewName("redirect:/board/c"+summernote_categorynum);
 		return mv;
 	}
 	
@@ -206,4 +261,27 @@ public class BoardController {
 	            res.addCookie(newCookie);
 	        }
 	    }
+	
+	private String CheckImageType(String temp) {
+		System.out.println("temp : "+ temp);
+		System.out.println("temp : "+ temp.indexOf("PNG"));
+		System.out.println("temp : "+ temp.indexOf("JPEG"));
+		System.out.println("temp : "+ temp.indexOf("GIF"));
+		System.out.println("temp : "+ temp.indexOf("SVG"));
+		if(temp.indexOf("PNG") > 0) {
+			return "PNG";
+		}
+		else if(temp.indexOf("JPEG") > 0 || temp.indexOf("JPG") > 0) {
+			return "JPEG";
+		}
+		else if(temp.indexOf("GIF") > 0) {
+			return "GIF";
+		}
+		else if(temp.indexOf("SVG") > 0) {
+			return "SVG";
+		}
+		else {
+			return null;
+		}
+	}
 }

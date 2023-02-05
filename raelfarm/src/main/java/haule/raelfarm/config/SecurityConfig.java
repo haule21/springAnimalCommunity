@@ -48,7 +48,9 @@ public class SecurityConfig{
 			
 			.authorizeHttpRequests()
 				.requestMatchers("/templates/content/login/**").permitAll()
-				.requestMatchers("/register_agree","/register_page","/register_page/**").permitAll()
+				.requestMatchers("/register_agree","/register_page").permitAll()
+				.requestMatchers("/register_page/idcheck","/register_page/nicknamecheck"
+						,"/register_page/send-one","/register_page/register").permitAll()
 				.requestMatchers("/static/**").permitAll()
 				.requestMatchers("/js/*.js","/css/*.css","/img/*.PNG").permitAll()
 				.requestMatchers("/img/*/*/*/*").permitAll()

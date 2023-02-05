@@ -21,30 +21,38 @@ public class VersionTest {
 //		System.out.println((int)(Integer.valueOf("000123")/100));
 //	}
 	
+//	@Test
+//	public void SetRegisterDate() {
+//		Date date = new Date(System.currentTimeMillis());
+//		String register_date = "2023-01-02 13:15:02";
+//		SimpleDateFormat newFormat = new SimpleDateFormat("HH:mm");
+//		
+//        
+//		try {
+//			java.util.Date format2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(register_date);
+//			long diffSec = (date.getTime() - format2.getTime()) / 1000;
+//			long diffDays = diffSec / (24*60*60); //일자수 차이
+//			
+//			if(diffDays < 1) {
+//				register_date = newFormat.format(format2);
+//				System.out.println(register_date);
+//			}
+//			else {
+//				
+//			}
+//			
+//		} catch (ParseException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
+	
 	@Test
-	public void SetRegisterDate() {
-		Date date = new Date(System.currentTimeMillis());
-		String register_date = "2023-01-02 13:15:02";
-		SimpleDateFormat newFormat = new SimpleDateFormat("HH:mm");
+	public void checking_string() {
+		int a = 101;
+		int b = 8;
 		
-        
-		try {
-			java.util.Date format2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(register_date);
-			long diffSec = (date.getTime() - format2.getTime()) / 1000;
-			long diffDays = diffSec / (24*60*60); //일자수 차이
-			
-			if(diffDays < 1) {
-				register_date = newFormat.format(format2);
-				System.out.println(register_date);
-			}
-			else {
-				
-			}
-			
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		System.out.print(String.format("%05d", a) + 8);
 	}
 
 }

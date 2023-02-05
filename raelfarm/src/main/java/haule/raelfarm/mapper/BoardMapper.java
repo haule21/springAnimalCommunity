@@ -4,11 +4,15 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Component;
 
+import haule.raelfarm.dto.BoardMediaFileInsertDTO;
+import haule.raelfarm.dto.BoardNumSelectDTO;
 import haule.raelfarm.dto.MainSelectDTO;
 import haule.raelfarm.dto.ViewBoardsDTO;
 
 @Mapper
+@Component
 public interface BoardMapper {
 	List<MainSelectDTO> SelectMainDatas();
 	
@@ -23,4 +27,10 @@ public interface BoardMapper {
 			@Param("iboardnum") String iboardnum,
 			@Param("category_num_st") int Starting, 
 			@Param("category_num_ed") int Ending);
+	
+	List<BoardNumSelectDTO> SelectBoardNum();
+	
+	int InsertBoardData(String iboardnum);
+	int InsertBoardMedia(BoardMediaFileInsertDTO media);
+	int InsertBoard(int categorynum, int boardnum, String title, String writer, String existimgfile, String content);
 }

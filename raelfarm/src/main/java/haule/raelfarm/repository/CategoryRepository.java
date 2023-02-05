@@ -17,4 +17,5 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
 	@Query(value = 
 			"SELECT CONCAT(CATEGORY_NUM,\";\",CATEGORY_NAME) FROM CATEGORY_BOARD_TEST WHERE CATEGORY_NUM BETWEEN :st AND :ed", nativeQuery = true)
 	List<String> ViewCategorysName(@Param(value="st") int st, @Param(value="ed") int ed);
+	
 }

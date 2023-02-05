@@ -5,12 +5,14 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import haule.raelfarm.dto.CategorySelectDTO;
+import haule.raelfarm.dto.BoardMediaFileInsertDTO;
+import haule.raelfarm.dto.BoardNumSelectDTO;
 import haule.raelfarm.dto.MainSelectDTO;
 import haule.raelfarm.dto.ViewBoardsDTO;
 import haule.raelfarm.mapper.BoardMapper;
 import haule.raelfarm.repository.BoardDataRepository;
 import haule.raelfarm.repository.CategoryRepository;
+import jakarta.transaction.Transactional;
 
 @Service
 public class BoardServiceImpl implements BoardService{
@@ -54,5 +56,39 @@ public class BoardServiceImpl implements BoardService{
 	public List<String> ViewCategorysName(int ctn_st, int ctn_ed){
 		return categoryRepository.ViewCategorysName(ctn_st, ctn_ed);
 	}
+	
+	@Override
+	public List<BoardNumSelectDTO> SelectBoardNumMAX(){
+		return boardMapper.SelectBoardNum();
+	}
+	@Override
+	public int InsertBoardData(String iboardnum) {
+		return boardMapper.InsertBoardData(iboardnum);
+	}
+	@Override
+	public int InsertBoardMedia(BoardMediaFileInsertDTO media){
+		return boardMapper.InsertBoardMedia(media);
+	}
+	@Override
+	public int InsertBoard(int categorynum, int boardnum, String title, String writer, String existimgfile, String content){
+		return boardMapper.InsertBoard(categorynum, boardnum, title, writer, existimgfile, content);
+	}
+	
+	@Override
+	@Transactional
+	public void InvokeBoard(List<BoardMediaFileInsertDTO> media, String iboardnum, int categorynum, int boardnum, String title, String writer, String existimgfile, String content){
+		System.out.print("================InvokeBoard Start=================");
+		
+		InsertBoard(categorynum, boardnum, title, writer, existimgfile, content);
+		InsertBoardData(iboardnum);
+		if(media != null) {
+			for(BoardMediaFileInsertDTO temp : media) {
+				InsertBoardMedia(temp);
+			}
+		}
+		
+		System.out.print("================InvokeBoard End=================");
+	}
+	
 	
 }

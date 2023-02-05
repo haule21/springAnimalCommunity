@@ -3,11 +3,12 @@ var token = $("meta[name='_csrf']").attr('content');
 
 function summernote_config(){
 	$('#summernote').summernote({
-		height: 850,                 // set editor height
-		minHeight: 850,             // set minimum height of editor
-		maxHeight: 850,             // set maximum height of editor
+		height: 500,                 // set editor height
+		minHeight: 500,             // set minimum height of editor
+		maxHeight: 500,             // set maximum height of editor
 		focus: true,                  // set focus to editable area after initializing summernote
 		lang: 'ko-KR',
+		disableResizeEditor : true,
 		toolbar: [
           ['style', ['style']],
           ['font', ['bold', 'underline', 'clear']],
@@ -32,8 +33,11 @@ function summernote_config(){
 			},
 			onMediaDelete : function(files) {
 				deleteSummernoteImageFile(files[0], this);
-			}
-		}
+			},
+            onChange : function (contents) {
+                $('#summernote_content').val(contents);
+            }
+        }
 	});	
 }
 

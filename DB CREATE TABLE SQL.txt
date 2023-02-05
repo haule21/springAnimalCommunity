@@ -47,10 +47,11 @@ partition by range( CATEGORY_NUM )(
 
 create table BOARD_MEDIAFILE(
 	I_BOARD_NUM VARCHAR(20) not null,
+	SEQ INT not null,
 	CONTENT_TYPE VARCHAR(10) not null,
 	FILE_NAME VARCHAR(100) not null,
 	FILE_PATH VARCHAR(300) not null,
-	constraint BOARD_MEDIAFILE_PK primary key(I_BOARD_NUM)
+	constraint BOARD_MEDIAFILE_PK primary key(I_BOARD_NUM, SEQ)
 )engine=INNODB default CHARSET=UTF8MB4
 
 create table BOARD_DATA(

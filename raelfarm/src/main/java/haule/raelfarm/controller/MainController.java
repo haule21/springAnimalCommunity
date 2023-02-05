@@ -175,7 +175,6 @@ public class MainController {
     
     @RequestMapping(value="/register_page/register", method = RequestMethod.POST)
     public ModelAndView CreateUser(
-    		ModelAndView mv,
     		RedirectAttributes re,
     		@RequestParam(value="userid") String userid,
     		@RequestParam(value="password") String password,
@@ -186,6 +185,7 @@ public class MainController {
     		@RequestParam(value="address") String address,
     		@RequestParam(value="address_detail1") String address_detail1,
     		@RequestParam(value="address_detail2") String address_detail2) throws Exception {
+    	ModelAndView mv = new ModelAndView();
     	
     	address = address != null ? address + " "+ address_detail1 + " " + address_detail2 : "";
     	
@@ -205,7 +205,7 @@ public class MainController {
     }
     
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
-    public ModelAndView loout(HttpServletRequest request, HttpServletResponse response, ModelAndView mv) throws Exception {
+    public ModelAndView logout(HttpServletRequest request, HttpServletResponse response, ModelAndView mv) throws Exception {
     	
     	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {

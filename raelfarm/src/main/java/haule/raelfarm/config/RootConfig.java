@@ -17,6 +17,8 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+import haule.raelfarm.singleton.BoardInfo;
+
 @Configuration
 @ComponentScan(basePackages={"haule.raelfarm"})
 @MapperScan(basePackages={"haule.raelfarm.mapper"})
@@ -48,5 +50,6 @@ public class RootConfig {
         sessionFactoryBean.setConfigLocation(applicationContext.getResource("classpath:/mybatis-config.xml"));
         return sessionFactoryBean.getObject();
     }
+	
 	
 }
