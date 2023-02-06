@@ -51,6 +51,7 @@ create table BOARD_MEDIAFILE(
 	CONTENT_TYPE VARCHAR(10) not null,
 	FILE_NAME VARCHAR(100) not null,
 	FILE_PATH VARCHAR(300) not null,
+	DELETED ENUM('Y','N') not null default 'N',
 	constraint BOARD_MEDIAFILE_PK primary key(I_BOARD_NUM, SEQ)
 )engine=INNODB default CHARSET=UTF8MB4
 
@@ -60,6 +61,14 @@ create table BOARD_DATA(
 	RECOMMEND_COUNT INT not null default 0,
 	NO_RECOMMEND_COUNT INT not null default 0,
 	constraint BOARD_DATA_PK primary key(I_BOARD_NUM)
+) engine=INNODB default CHARSET=UTF8MB4
+
+create table BOARD_PREVIOUS_CONTENT_TEST(
+	I_BOARD_NUM VARCHAR(20) not null,
+	SEQ INT not null,
+	MODIFIED_DATE DATETIME not null default CURRENT_TIMESTAMP,
+	CONTENT BLOB not null,
+	constraint BOARD_PREVIOUS_CONTENT_TEST_PK primary key(I_BOARD_NUM, SEQ)
 ) engine=INNODB default CHARSET=UTF8MB4
 
 create table BOARD_RECOMMEND_HISTORY(

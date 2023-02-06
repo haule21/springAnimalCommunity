@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import haule.raelfarm.dto.BoardMediaFileInsertDTO;
 import haule.raelfarm.dto.BoardNumSelectDTO;
 import haule.raelfarm.dto.MainSelectDTO;
+import haule.raelfarm.dto.ViewBoardDTO;
 import haule.raelfarm.dto.ViewBoardsDTO;
 
 @Mapper
@@ -29,6 +30,9 @@ public interface BoardMapper {
 			@Param("category_num_ed") int Ending);
 	
 	List<BoardNumSelectDTO> SelectBoardNum();
+	ViewBoardDTO SelectBoard(int categorynum, int boardnum);
+	
+	List<String> SelectBoardMediaData(String iboardnum);
 	
 	int InsertBoardData(String iboardnum);
 	int InsertBoardMedia(BoardMediaFileInsertDTO media);

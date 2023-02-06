@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import haule.raelfarm.dto.BoardMediaFileInsertDTO;
 import haule.raelfarm.dto.BoardNumSelectDTO;
 import haule.raelfarm.dto.MainSelectDTO;
+import haule.raelfarm.dto.ViewBoardDTO;
 import haule.raelfarm.dto.ViewBoardsDTO;
 
 @Component
@@ -18,6 +19,7 @@ public interface BoardService {
 	public String ViewCategoryName(int category_num);
 	public List<String> ViewCategorysName(int category_num_st, int category_num_ed);
 	public List<BoardNumSelectDTO> SelectBoardNumMAX();
+	public ViewBoardDTO SelectBoard(int categorynum, int boardnum);
 	public int InsertBoardData(String iboardnum);
 	public int InsertBoardMedia(BoardMediaFileInsertDTO media);
 	public int InsertBoard(int categorynum, int boardnum, String title, String writer, String existimgfile, String content);

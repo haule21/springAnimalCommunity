@@ -20,6 +20,9 @@
 		        		<div class="boardtitle_div">
 		        			<p class="boardtitle">[[${data.title}]]</p>
 		        			<p class="boardregisterdate">[[${data.registerdate}]]</p>
+		        			<th:block th:if="${data.registerdate != data.modifieddate}">
+		        				<p class="boardmodifieddate">[[${data.modifieddate}]]</p>
+		        			</th:block>
 		        		</div>
 		            <hr class="secondline">
 		            	<div class="boardwriter_div">
@@ -49,6 +52,7 @@
 		            		<li>
 		            			<p> ${comment.writer} </p>
 		            			<p> ${comment.registerdate} </p>
+		            			
 		            			<p>	<button>추천</button> ${comment.recommendcount} </p>
 		            			<p>	<button>비추천</button> ${comment.norecommendcount} </p>
 		            			<div>

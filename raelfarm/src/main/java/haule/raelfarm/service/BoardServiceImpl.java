@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import haule.raelfarm.dto.BoardMediaFileInsertDTO;
 import haule.raelfarm.dto.BoardNumSelectDTO;
 import haule.raelfarm.dto.MainSelectDTO;
+import haule.raelfarm.dto.ViewBoardDTO;
 import haule.raelfarm.dto.ViewBoardsDTO;
 import haule.raelfarm.mapper.BoardMapper;
 import haule.raelfarm.repository.BoardDataRepository;
@@ -60,6 +61,10 @@ public class BoardServiceImpl implements BoardService{
 	@Override
 	public List<BoardNumSelectDTO> SelectBoardNumMAX(){
 		return boardMapper.SelectBoardNum();
+	}
+	@Override
+	public ViewBoardDTO SelectBoard(int categorynum, int boardnum) {
+		return boardMapper.SelectBoard(categorynum, boardnum);
 	}
 	@Override
 	public int InsertBoardData(String iboardnum) {

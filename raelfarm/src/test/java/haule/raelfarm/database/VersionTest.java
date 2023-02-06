@@ -1,9 +1,9 @@
 package haule.raelfarm.database;
 
-import java.sql.Date;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
 import org.junit.jupiter.api.Test;
 
@@ -49,10 +49,22 @@ public class VersionTest {
 	
 	@Test
 	public void checking_string() {
-		int a = 101;
-		int b = 8;
+		List<String> a = new ArrayList<>();
+		a.add("abc");
+		a.add("bcd");
 		
-		System.out.print(String.format("%05d", a) + 8);
+		List<String> b = new ArrayList<>();
+		b.add("abc");
+		b.add("cde");
+		
+		Queue<String> mediadata = new LinkedList<>(a);
+		Queue<String> modifieddata = new LinkedList<>(b);
+		
+		System.out.print(mediadata);
+		System.out.print(modifieddata.contains(mediadata.poll()));
+		System.out.print(modifieddata.contains(mediadata.poll()));
+		System.out.print(mediadata.size());
+			
 	}
 
 }

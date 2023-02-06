@@ -20,6 +20,8 @@ public class ViewBoardsDTO {
 	String writer;
 	// "year-month-day hour:minutes:second"
 	String registerdate;
+	// "year-month-day hour:minutes:second"
+	String modifieddate;
 	String content;
 	int viewcount;
 	int recommendcount;

@@ -45,6 +45,7 @@
 				X.EXISTIMGFILE as existimgfile,
 				X.WRITER as writer,
 				X.REGISTERDATE as registerdate,
+				X.MODIFIEDDATE as modifieddate,
 				X.CONTENT as content,
 				B.VIEW_COUNT as viewcount,
 				B.RECOMMEND_COUNT as recommendcount,
@@ -58,6 +59,7 @@
 					A.WRITER AS WRITER,
 					A.EXIST_IMGFILE AS EXISTIMGFILE,
 					A.REGISTERED_DATE AS REGISTERDATE,
+					A.MODIFIED_DATE AS MODIFIEDDATE,
 					NULL AS CONTENT,
 					CASE
 						WHEN A.PREVIOUS_CBN = #{iboardnum}
@@ -97,6 +99,7 @@
 						WRITER AS WRITER,
 						EXIST_IMGFILE AS EXISTIMGFILE,
 						REGISTERED_DATE AS REGISTERDATE,
+						MODIFIED_DATE AS MODIFIEDDATE,
 						CONTENT AS CONTENT,
 						'CURRENT' AS SEQTEXT
 					FROM
@@ -129,6 +132,23 @@
 				RIGHT JOIN 
 					CATEGORY_BOARD_TEST B 
 						ON A.CATEGORY_NUM = B.CATEGORY_NUM
+		]]>
+	</select>
+	
+	<select id="SelectBoard" resultType="haule.raelfarm.dto.ViewBoardDTO">
+		<![CDATA[
+			SELECT 
+				CATEGORY_NUM AS CATEGORYNUM,
+				(SELECT CATEGORY_NAME FROM CATEGORY_BOARD_TEST CBT WHERE A.CATEGORY_NUM = CATEGORY_NUM) AS CATEGORYNAME,
+				BOARD_NUM AS BOARDNUM,
+				TITLE,
+				CONTENT
+			FROM 
+				BOARD_TEST A
+			WHERE
+				CATEGORY_NUM = #{arg0}
+			AND
+				BOARD_NUM = #{arg1}
 		]]>
 	</select>
 	<insert id="InsertBoardData" parameterType="string">
@@ -169,6 +189,7 @@
 				#{arg5}
 			)
 		]]>
-		
 	</insert>
+	
+	
 </mapper>

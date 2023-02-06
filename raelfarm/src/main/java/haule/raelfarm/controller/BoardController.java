@@ -3,11 +3,12 @@ package haule.raelfarm.controller;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +25,11 @@ import haule.raelfarm.controller.StrategyCategory.Category500;
 import haule.raelfarm.controller.StrategyCategory.CategoryStrategy;
 import haule.raelfarm.dto.BoardMediaFileInsertDTO;
 import haule.raelfarm.dto.CategorySelectDTO;
+import haule.raelfarm.dto.ViewBoardDTO;
 import haule.raelfarm.dto.ViewBoardsDTO;
+import haule.raelfarm.jpa.BoardMediaFile;
+import haule.raelfarm.jpa.BoardMediaFile.BoardMediaFileBuilder;
+import haule.raelfarm.repository.BoardMediaFileRepository;
 import haule.raelfarm.service.BoardService;
 import haule.raelfarm.singleton.BoardInfo;
 import jakarta.servlet.http.Cookie;
@@ -36,6 +41,9 @@ public class BoardController {
 	
 	@Autowired
 	BoardService boardService;
+	
+	@Autowired
+	BoardMediaFileRepository boardMediaFileRepo;
 	
 	private static final CategoryStrategy[] categoryStrategyList = new CategoryStrategy[] {
 			null, new Category100(), new Category200(), new Category300(), new Category400(), new Category500()
@@ -96,6 +104,14 @@ public class BoardController {
 		
 		ModelAndView mv = new ModelAndView();
 		
+		// 이미지 필수 기입 ( check-board 에도 설정 해 놓았음 )
+		if((int)(summernote_categorynum/100) == 4) {
+			if(summernote_images == null) {
+				mv.setViewName("redirect:/");
+				return mv;
+			}
+		}
+		
 		String existImage = "N";
 		List<BoardMediaFileInsertDTO> media = new ArrayList<BoardMediaFileInsertDTO>();
 		
@@ -116,9 +132,7 @@ public class BoardController {
 				String filepath = mediadatas[2] + "/" + mediadatas[3] + "/" + mediadatas[4];
 				String filename = mediadatas[5];
 				String contenttype = CheckImageType(mediadatas[5]);
-				System.out.println("mediadatas[5] : "+mediadatas[5]);
-				System.out.println("iboardnum : "+iboardnum);
-				System.out.println("contenttype : "+contenttype);
+
 				
 				media.add(
 					BoardMediaFileInsertDTO.builder()
@@ -147,7 +161,6 @@ public class BoardController {
 									HttpServletRequest req, HttpServletResponse res) {
 		ModelAndView mv = new ModelAndView();
 		String iboardnum = String.format("%05d",Integer.valueOf(categorynum)) + boardnum; 
-		System.out.println(iboardnum);
 		ViewCountUp(iboardnum, req, res);
 		
 		List<ViewBoardsDTO> pndatas = CategoryStrategyViewPreviousNextBoards(
@@ -174,7 +187,62 @@ public class BoardController {
 		mv.setViewName("content/main/board/view_board");
 		return mv;
 	}
+	 
+	@RequestMapping("/board/c{categorynum}/b{boardnum}/modify")
+	public ModelAndView Modify_Board(	@PathVariable(value ="categorynum") String categorynum, 
+										@PathVariable(value ="boardnum") String boardnum) {
+		ModelAndView mv = new ModelAndView();
+		String iboardnum = String.format("%05d", Integer.parseInt(categorynum)) + boardnum;
+		List<String> mediavalues = boardMediaFileRepo.SelectBoardMediaData(iboardnum);
+		ViewBoardDTO data = boardService.SelectBoard(Integer.parseInt(categorynum), Integer.parseInt(boardnum));
+		
+		mv.addObject("mediaList", mediavalues);
+		mv.addObject("data", data);
+		mv.setViewName("content/main/board/modify_board");
+		return mv;
+	}
 	
+	@RequestMapping("/board/modify")
+	public ModelAndView Modify_Board_Submit(
+			Principal principal,
+			@RequestParam(value="summernote_categorynum") int summernote_categorynum,
+			@RequestParam(value="summernote_boardnum") int summernote_boardnum, 
+			@RequestParam(value="summernote_title") String summernote_title, 
+			@RequestParam(value="summernote_content") String summernote_content,
+			@RequestParam(value="uploaded_images", required = false) List<String> summernote_images) {
+		ModelAndView mv = new ModelAndView();
+		
+		String iboardnum = String.format("%05d", summernote_categorynum) + summernote_boardnum ;
+		
+		List<String> mediavalues = boardMediaFileRepo.SelectBoardMediaData(String.format("%05d", summernote_categorynum) + summernote_boardnum);
+		Queue<String> mediadata = new LinkedList<>(mediavalues);
+		Queue<String> modifieddata = new LinkedList<>(summernote_images);
+		Queue<String> deletedata = new LinkedList<>();
+		
+		// 이미지 추가 되거나 삭제 된거 있으면 mediadata 테이블에 갱신 해주어야 함
+		for(int i=0; i < mediadata.size(); i++) {
+			if(summernote_images.contains(mediadata.peek())) {
+				mediadata.remove();
+				modifieddata.remove();
+			}
+			else {
+				deletedata.add(mediadata.poll());
+			}
+		}
+		
+		if(modifieddata.size() > 0) {
+			List<BoardMediaFile> savedatas = new ArrayList<>();
+			int seq = boardMediaFileRepo.SelectSEQNumber(summernote_content);
+			for(int i=0; i > modifieddata.size(); i++) {
+				String[] temp = modifieddata.poll().split("/");
+				savedatas.add(BoardMediaFile.builder().iboardnum(iboardnum).seq(seq+i).contenttype(CheckImageType(temp[5])).filename(temp[5]).filepath(temp[2]+temp[3]+temp[4]).build());
+			}
+			boardMediaFileRepo.saveAll(savedatas);
+		}
+		
+		
+		return mv;
+	}
 	/*
 	 * check exist board_recommended_history where board_num = and userid =  
 	 */
@@ -263,11 +331,6 @@ public class BoardController {
 	    }
 	
 	private String CheckImageType(String temp) {
-		System.out.println("temp : "+ temp);
-		System.out.println("temp : "+ temp.indexOf("PNG"));
-		System.out.println("temp : "+ temp.indexOf("JPEG"));
-		System.out.println("temp : "+ temp.indexOf("GIF"));
-		System.out.println("temp : "+ temp.indexOf("SVG"));
 		if(temp.indexOf("PNG") > 0) {
 			return "PNG";
 		}
