@@ -191,5 +191,31 @@
 		]]>
 	</insert>
 	
+	<insert id="InsertBoardPreviousContent">
+		<![CDATA[
+			INSERT INTO BOARD_PREVIOUS_CONTENT_TEST VALUES(
+				#{arg0},
+				#{arg1},
+				default,
+				#{arg2}
+			)
+		]]>
+	</insert>
+	
+	<update id="UpdateBoardTitleContent">
+		<![CDATA[
+			UPDATE 
+				BOARD_TEST A
+			SET
+				A.TITLE = #{arg2},
+				A.CONTENT = #{arg3},
+				A.MODIFIED_DATE = (SELECT SYSDATE())
+			WHERE
+				A.CATEGORY_NUM = #{arg0}
+			AND
+				A.BOARD_NUM = #{arg1}
+		]]>
+	</update>
+	
 	
 </mapper>

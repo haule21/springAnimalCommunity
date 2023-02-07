@@ -1,11 +1,13 @@
 package haule.raelfarm.controller;
 
+import java.io.PrintWriter;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Queue;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,13 +30,17 @@ import haule.raelfarm.dto.CategorySelectDTO;
 import haule.raelfarm.dto.ViewBoardDTO;
 import haule.raelfarm.dto.ViewBoardsDTO;
 import haule.raelfarm.jpa.BoardMediaFile;
-import haule.raelfarm.jpa.BoardMediaFile.BoardMediaFileBuilder;
+import haule.raelfarm.jpa.PK.BoardMediaFile_PK;
 import haule.raelfarm.repository.BoardMediaFileRepository;
+import haule.raelfarm.repository.BoardPreviousRepository;
+import haule.raelfarm.repository.BoardRepository;
 import haule.raelfarm.service.BoardService;
 import haule.raelfarm.singleton.BoardInfo;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
+import okhttp3.Response;
 
 @RestController
 public class BoardController {
@@ -44,6 +50,12 @@ public class BoardController {
 	
 	@Autowired
 	BoardMediaFileRepository boardMediaFileRepo;
+	
+	@Autowired
+	BoardPreviousRepository boardPreviousRepo;
+	
+	@Autowired
+	BoardRepository boardRepository;
 	
 	private static final CategoryStrategy[] categoryStrategyList = new CategoryStrategy[] {
 			null, new Category100(), new Category200(), new Category300(), new Category400(), new Category500()
@@ -189,19 +201,33 @@ public class BoardController {
 	}
 	 
 	@RequestMapping("/board/c{categorynum}/b{boardnum}/modify")
-	public ModelAndView Modify_Board(	@PathVariable(value ="categorynum") String categorynum, 
+	public ModelAndView Modify_Board(	Principal principal, HttpServletResponse response,
+										@PathVariable(value ="categorynum") String categorynum, 
 										@PathVariable(value ="boardnum") String boardnum) {
 		ModelAndView mv = new ModelAndView();
-		String iboardnum = String.format("%05d", Integer.parseInt(categorynum)) + boardnum;
-		List<String> mediavalues = boardMediaFileRepo.SelectBoardMediaData(iboardnum);
-		ViewBoardDTO data = boardService.SelectBoard(Integer.parseInt(categorynum), Integer.parseInt(boardnum));
 		
-		mv.addObject("mediaList", mediavalues);
-		mv.addObject("data", data);
-		mv.setViewName("content/main/board/modify_board");
-		return mv;
+		String userid = principal.getName();
+		String writer = boardRepository.SelectWriter(Integer.parseInt(categorynum), Integer.parseInt(boardnum));
+		if(userid.equals(writer)) {
+			String iboardnum = String.format("%05d", Integer.parseInt(categorynum)) + boardnum;
+			List<String> mediavalues = boardMediaFileRepo.SelectBoardMediaData(iboardnum);
+			ViewBoardDTO data = boardService.SelectBoard(Integer.parseInt(categorynum), Integer.parseInt(boardnum));
+			
+			mv.addObject("mediaList", mediavalues);
+			mv.addObject("data", data);
+			mv.setViewName("content/main/board/modify_board");
+			return mv;
+		}
+		else {
+			alert(response, "수정할 수 없습니다.");
+			mv.setViewName("content/main/board");
+			return mv;
+		}
+		
+		
 	}
 	
+	@Transactional
 	@RequestMapping("/board/modify")
 	public ModelAndView Modify_Board_Submit(
 			Principal principal,
@@ -213,7 +239,21 @@ public class BoardController {
 		ModelAndView mv = new ModelAndView();
 		
 		String iboardnum = String.format("%05d", summernote_categorynum) + summernote_boardnum ;
+		ViewBoardDTO boarddata = boardService.SelectBoard(summernote_categorynum, summernote_boardnum);
+		if(!boarddata.getTitle().equals(summernote_title) || !boarddata.getContent().equals(summernote_content)) {
+
+			boardService.InsertBoardPreviousContent(iboardnum,  boardPreviousRepo.SelectSEQNumber(iboardnum) + 1, summernote_content);
+			
+			//update 문
+			boardService.UpdateBoardTitleContent(summernote_categorynum, summernote_boardnum, summernote_title, summernote_content);
+		}
+		else {
+			mv.setViewName("redirect:/board/c"+summernote_categorynum+"/b"+summernote_boardnum+"?previouscategorynum="+summernote_categorynum);
+			return mv;
+		}
 		
+		
+		// media 변경 된 이미지 추가 및 삭제된 이미지 삭제 Y 처리
 		List<String> mediavalues = boardMediaFileRepo.SelectBoardMediaData(String.format("%05d", summernote_categorynum) + summernote_boardnum);
 		Queue<String> mediadata = new LinkedList<>(mediavalues);
 		Queue<String> modifieddata = new LinkedList<>(summernote_images);
@@ -231,16 +271,28 @@ public class BoardController {
 		}
 		
 		if(modifieddata.size() > 0) {
-			List<BoardMediaFile> savedatas = new ArrayList<>();
+			List<BoardMediaFile> savedatas1 = new ArrayList<>();
 			int seq = boardMediaFileRepo.SelectSEQNumber(summernote_content);
 			for(int i=0; i > modifieddata.size(); i++) {
+				// SEQ/summernoteImage/년/월/일/파일명.확장자
 				String[] temp = modifieddata.poll().split("/");
-				savedatas.add(BoardMediaFile.builder().iboardnum(iboardnum).seq(seq+i).contenttype(CheckImageType(temp[5])).filename(temp[5]).filepath(temp[2]+temp[3]+temp[4]).build());
+				savedatas1.add(BoardMediaFile.builder().iboardnum(iboardnum).seq(seq+i).contenttype(CheckImageType(temp[5])).filename(temp[5]).filepath(temp[2]+temp[3]+temp[4]).build());
 			}
-			boardMediaFileRepo.saveAll(savedatas);
+			boardMediaFileRepo.saveAll(savedatas1);
 		}
 		
+		if(deletedata.size() > 0) {
+			List<BoardMediaFile> savedatas2 = new ArrayList<>();
+			for(int i=0; i > deletedata.size(); i++) {
+				String[] temp = deletedata.poll().split("/");
+				BoardMediaFile_PK pk = new BoardMediaFile_PK(iboardnum, Integer.parseInt(temp[0]));
+				savedatas2.add(boardMediaFileRepo.findById(pk).orElseThrow().changeDeletedtoY());
+			}
+			boardMediaFileRepo.saveAll(savedatas2);
+		}
+		////////////////////////////////////////////////////////////////////////////////////
 		
+		mv.setViewName("redirect:/board/c"+summernote_categorynum+"/b"+summernote_boardnum+"?previouscategorynum="+summernote_categorynum);
 		return mv;
 	}
 	/*
@@ -346,5 +398,16 @@ public class BoardController {
 		else {
 			return null;
 		}
+	}
+	public static void alert(HttpServletResponse response, String msg) {
+	    try {
+			response.setContentType("text/html; charset=utf-8");
+			PrintWriter w = response.getWriter();
+			w.write("<script>alert('"+msg+"');</script>");
+			w.flush();
+			w.close();
+	    } catch(Exception e) {
+			e.printStackTrace();
+	    }
 	}
 }

@@ -1,6 +1,8 @@
 var header = $("meta[name='_csrf_header']").attr('content');
 var token = $("meta[name='_csrf']").attr('content');
 
+const deleteFileList = new FormData();
+
 function summernote_config(){
 	$('#summernote').summernote({
 		height: 500,                 // set editor height
@@ -64,20 +66,9 @@ function uploadSummernoteImageFile(file, editor){
 }
 
 function deleteSummernoteImageFile(file, editor){
-	data = new FormData();
-	data.append("file", file.src);
+	deleteFileList.append("file", file.src);
 	
-	$.ajax({
-		data : data,
-		type : "POST",
-		url : "/deleteSummernoteImageFile",
-		contentType : false,
-		processData : false,
-		beforeSend: function(xhr){
-        	xhr.setRequestHeader(header, token);
-    	},
-		success : function(data) {
-			var images = $("input[name=uploaded_images]");
+	var images = $("input[name=uploaded_images]");
 			if(images.length === 1){
 				$("input[name=uploaded_images]").remove();
 			}
@@ -88,6 +79,24 @@ function deleteSummernoteImageFile(file, editor){
 					} 	
 				}
 			}
+	
+}
+
+function deleteSummernoteImageFile_Submit(){
+	if(deleteFileList.length > 0){
+		return;
+	}
+	$.ajax({
+		data : deleteFileList,
+		type : "POST",
+		url : "/deleteSummernoteImageFile",
+		contentType : false,
+		processData : false,
+		beforeSend: function(xhr){
+        	xhr.setRequestHeader(header, token);
+    	},
+		success : function(data) {
+			console.log(data);	
 		}
 	});
 }

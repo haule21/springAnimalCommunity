@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
@@ -60,20 +61,23 @@ public class FileUploadController {
 	
 	@RequestMapping(value="/deleteSummernoteImageFile", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody 
-	public JsonObject deleteSummernoteImageFile(@RequestParam("file") String file) {
-		JsonObject jsonObject = new JsonObject();
-		String[] files = file.split("/");
-		File deleteFile = new File("C:\\summernote_image\\"+files[4]+"\\"+files[5]+"\\"+files[6], files[7]);
-		String filePath = "/summernoteImage/"+ files[4]+"/"+files[5]+"/"+files[6]+"/"+files[7];
-		
-		if(deleteFile.delete()) {
-			jsonObject.addProperty("filePath", filePath.trim());
-			jsonObject.addProperty("responseCode", "success");
+	public JsonObject deleteSummernoteImageFile(@RequestParam("file") List<String> filedatas) {
+		for(String file : filedatas) {
+			JsonObject jsonObject = new JsonObject();
+			String[] files = file.split("/");
+			File deleteFile = new File("C:\\summernote_image\\"+files[4]+"\\"+files[5]+"\\"+files[6], files[7]);
+			String filePath = "/summernoteImage/"+ files[4]+"/"+files[5]+"/"+files[6]+"/"+files[7];
+			
+			if(deleteFile.delete()) {
+				jsonObject.addProperty("filePath", filePath.trim());
+				jsonObject.addProperty("responseCode", "success");
+			}
+			else {
+				jsonObject.addProperty("responseCode", "error");
+			}
+			return jsonObject;
 		}
-		else {
-			jsonObject.addProperty("responseCode", "error");
-		}
-		return jsonObject;
+		return null;
 	}
 	
 	private String getFolder() {

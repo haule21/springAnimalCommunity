@@ -95,5 +95,12 @@ public class BoardServiceImpl implements BoardService{
 		System.out.print("================InvokeBoard End=================");
 	}
 	
+	public int InsertBoardPreviousContent(String iboardnum, int seq, String content) {
+		return boardMapper.InsertBoardPreviousContent(iboardnum, seq, content);
+	}
+	
+	public int UpdateBoardTitleContent(int categorynum, int boardnum,String title, String content) {
+		return boardMapper.UpdateBoardTitleContent(categorynum, boardnum, title, content);
+	}
 	
 }

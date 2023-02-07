@@ -37,4 +37,8 @@ public interface BoardMapper {
 	int InsertBoardData(String iboardnum);
 	int InsertBoardMedia(BoardMediaFileInsertDTO media);
 	int InsertBoard(int categorynum, int boardnum, String title, String writer, String existimgfile, String content);
+	
+	int InsertBoardPreviousContent(String iboardnum, int seq, String content);
+	
+	int UpdateBoardTitleContent(int categorynum, int boardnum,String title, String content);
 }

@@ -1,8 +1,10 @@
 package haule.raelfarm.database;
 
+import java.lang.StackWalker.Option;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Queue;
 
 import org.junit.jupiter.api.Test;
@@ -60,11 +62,30 @@ public class VersionTest {
 		Queue<String> mediadata = new LinkedList<>(a);
 		Queue<String> modifieddata = new LinkedList<>(b);
 		
-		System.out.print(mediadata);
-		System.out.print(modifieddata.contains(mediadata.poll()));
-		System.out.print(modifieddata.contains(mediadata.poll()));
-		System.out.print(mediadata.size());
+
 			
+	}
+	
+	@Test
+	public void List_Test() {
+		List<String> a = new ArrayList<>();
+		
+		a.add("aaa");
+		a.add("bbb");
+		a.add("ccc");
+		
+		for(String b : a) {
+			b = "ggg";
+		}
+		
+
+	}
+	
+	@Test
+	public void optiontest() {
+		Optional<String> a = Optional.of("aaa");
+		Optional<Object> b = Optional.ofNullable(Optional.of(null).orElse("b"));
+		System.out.print(b.isPresent() ? "aaa" : "b");
 	}
 
 }

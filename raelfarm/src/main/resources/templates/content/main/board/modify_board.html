@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+    
+    <th:block layout:fragment="head">
+    	<title>글 쓰기</title>
+    	
+    	<meta charset="UTF-8">
+    	<meta name="_csrf" th:content="${_csrf.token}"/>
+		<meta name="_csrf_header" th:content="${_csrf.headerName}">
+		
+        <!--/* css */-->
+        <link th:href="@{/css/common.css}" rel="stylesheet" />
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet" />
+        <link href="/summernote/summernote.min.css" rel="stylesheet">
+        
+        <script src="/js/jquery-3.6.2.min.js"></script>
+        <script src="/js/summernote_config.js"></script>
+        <script src="/js/check-board.js"></script>
+    	<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    	<script src="/summernote/summernote.js"></script>
+    	<script src="/summernote/summernote.min.js"></script>
+    	<script src="/summernote/lang/summernote-ko-KR.js"></script>
+    </th:block>
+    <body>
+        <th:block layout:fragment="header" th:include="@{/fragments/header}"></th:block>
+		
+        <div layout:fragment="content" class="content">
+        	<form id="summernote_form" method="post" th:action="@{/board/modify}">
+        		<input type="hidden" th:value="${_csrf.token}" th:name="${_csrf.parameterName}">
+	        	<input id="summernote_categorynum" th:name="summernote_categorynum" th:value=${data.categorynum} type="hidden" readonly>
+	        	<input id="summernote_boardnum" th:name="summernote_boardnum" th:value=${data.boardnum} type="hidden" readonly>
+	        	<p>[[${data.categoryname}]]</p>
+        		<label for="summernote_title" >제목 : 
+        			<input id="summernote_title" th:name="summernote_title" th:value="${data.title}" type="text" maxlength='50' style="width:100%; margin: 5px; outline: none;">
+        		</label>
+        		<div id="summernote" th:name="summernote"></div>
+        		<div style="display:none">
+        			<textarea id="summernote_content" th:name="summernote_content">[[${data.content}]]</textarea>
+        		</div>
+        		
+        		<th:block th:if="${not #lists.isEmpty(mediaList)}">
+        			<input th:each="image : ${mediaList}" th:name="uploaded_images" type=hidden th:value="${image}" readonly>
+        		</th:block>
+
+        		<button type="button" onclick="javascript:check_board_before_modify_submit()">제출</button>
+        	</form>
+			<script>
+				$(document).ready(summernote_config());
+				$("#summernote").summernote('code', $("#summernote_content").val());
+
+			</script>
+        </div>
+        
+        <th:block layout:fragment="footer" th:include="@{/fragments/footer}"></th:block>	
+    </body>
+</html>
