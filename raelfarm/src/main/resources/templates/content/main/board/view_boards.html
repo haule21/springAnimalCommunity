@@ -9,13 +9,14 @@
 		
         <!--/* css */-->
         <link th:href="@{/css/common.css}" rel="stylesheet" />
+        <link th:href="@{/css/viewboards.css}" rel="stylesheet" />
     </th:block>
     <body>
         <th:block layout:fragment="header" th:include="@{/fragments/header}"></th:block>
 		
         <div layout:fragment="content" class="content">
-	        <div th:if="${not #lists.isEmpty(boardList)}">
-	        	<table>
+	        <div th:if="${not #lists.isEmpty(boardList)}" class="tableContainer">
+	        	<table class="boardTable">
         			<thead>
         				<tr>
 			            	<th th:text="카테고리"></th>

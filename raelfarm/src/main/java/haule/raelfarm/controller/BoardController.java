@@ -276,6 +276,8 @@ public class BoardController {
 			for(int i=0; i > modifieddata.size(); i++) {
 				// SEQ/summernoteImage/년/월/일/파일명.확장자
 				String[] temp = modifieddata.poll().split("/");
+				
+				// 수정된 파일들
 				savedatas1.add(BoardMediaFile.builder().iboardnum(iboardnum).seq(seq+i).contenttype(CheckImageType(temp[5])).filename(temp[5]).filepath(temp[2]+temp[3]+temp[4]).build());
 			}
 			boardMediaFileRepo.saveAll(savedatas1);
@@ -285,7 +287,9 @@ public class BoardController {
 			List<BoardMediaFile> savedatas2 = new ArrayList<>();
 			for(int i=0; i > deletedata.size(); i++) {
 				String[] temp = deletedata.poll().split("/");
-				BoardMediaFile_PK pk = new BoardMediaFile_PK(iboardnum, Integer.parseInt(temp[0]));
+				BoardMediaFile_PK pk = new BoardMediaFile_PK(iboardnum, Integer.parseInt(temp[0].split(":")[1]));
+				
+				// delete 만 'Y' 로 바꿔서 데이터를 넣는다.
 				savedatas2.add(boardMediaFileRepo.findById(pk).orElseThrow().changeDeletedtoY());
 			}
 			boardMediaFileRepo.saveAll(savedatas2);

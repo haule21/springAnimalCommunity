@@ -4,11 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,8 +20,15 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.JsonObject;
 
+import haule.raelfarm.jpa.BoardMediaFile;
+import haule.raelfarm.jpa.PK.BoardMediaFile_PK;
+import haule.raelfarm.repository.BoardMediaFileRepository;
+
 @Controller
 public class FileUploadController {
+	
+	@Autowired
+	BoardMediaFileRepository boardMediaFileRepo;
 	
 	@RequestMapping(value="/uploadSummernoteImageFile", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody 
@@ -62,9 +71,19 @@ public class FileUploadController {
 	@RequestMapping(value="/deleteSummernoteImageFile", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody 
 	public JsonObject deleteSummernoteImageFile(@RequestParam("file") List<String> filedatas) {
+		JsonObject jsonObject = new JsonObject();
+		List<BoardMediaFile> savedatas = new ArrayList<>();
 		for(String file : filedatas) {
-			JsonObject jsonObject = new JsonObject();
 			String[] files = file.split("/");
+			
+			// 수정 탭에서 이미지를 삭제 할 경우
+			if(files[0].equals("")) {}
+			else {
+				String[] pkdatas = files[0].split(":");
+				BoardMediaFile_PK pk = new BoardMediaFile_PK(pkdatas[0], Integer.parseInt(pkdatas[1]));
+				savedatas.add(boardMediaFileRepo.findById(pk).orElseThrow().changeDeletedtoY());
+			}
+			
 			File deleteFile = new File("C:\\summernote_image\\"+files[4]+"\\"+files[5]+"\\"+files[6], files[7]);
 			String filePath = "/summernoteImage/"+ files[4]+"/"+files[5]+"/"+files[6]+"/"+files[7];
 			
@@ -75,9 +94,11 @@ public class FileUploadController {
 			else {
 				jsonObject.addProperty("responseCode", "error");
 			}
-			return jsonObject;
 		}
-		return null;
+		if(savedatas.size() > 0) {
+			boardMediaFileRepo.saveAll(savedatas);
+		}
+		return jsonObject;
 	}
 	
 	private String getFolder() {

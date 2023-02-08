@@ -81,11 +81,21 @@ public class VersionTest {
 
 	}
 	
+	
 	@Test
-	public void optiontest() {
-		Optional<String> a = Optional.of("aaa");
-		Optional<Object> b = Optional.ofNullable(Optional.of(null).orElse("b"));
-		System.out.print(b.isPresent() ? "aaa" : "b");
+	public void stringtest() {
+		String a = "/a/b/c";
+		String[] b = a.split("/");
+		
+		for(String c : b) {
+			if(c.equals("")) {
+				System.out.println("c : ");
+			}
+			else if(c == null) {
+				System.out.println("c is null");
+			}
+		}
+				
 	}
 
 }

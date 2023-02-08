@@ -4,37 +4,73 @@
 =======================MainBody===========================
 */
 
-.mainBody{
-	max-width: 1300px;
-	min-width: 900px; /* 정렬하려는 요소의 넓이를 반드시 지정 */
+.mainbody{
+	width: 60%;
+	overflow: hidden;
   	margin: 0 auto;
+  	list-style-type: none;
+	overflow: hidden;
 }
+
+
+@media screen and (max-width:2100px){
+	.mainBody {
+		float: center;
+	}
+	.left {	
+		float: center;
+	}
+	 .right {
+	 	float: center;
+	 }	
+	 .left .container {
+	 	align-items: center;
+	 	text-align : center;
+		font-size: 20px;
+	}
+	.right {
+	 	align-items: center;
+	 	text-align : center;
+		font-size: 20px;
+		margin-top: 30px;
+	}
+	.imgContainer {
+	 	float: center;
+	 	justify-content: center;
+	}
+}
+
+@media screen and (min-width:2100px){
+	.mainBody{
+		float: center;
+		padding	: 5px 50px;
+	}
+
+	.left{	
+		float: left;
+		width: 600px;
+		padding	: 5px 0px;
+	}
+	 .right{
+	 	float: right;
+		width: 600px;
+		padding	: 5px 0px;
+	 }	
+	
+}
+
+
 
 /*
 =======================MainBody left, right===========================
 */
 
-.mainBody .left, .right{
-	width: 620px;
-	left: 15px;
-	right: 15px;
-	max-width: 650px;
-	min-width: 450px;
-}
-
-.mainBody .left {
-	float: left;	
-}
-.mainBody .right {
-	float: right;	
-}
-
-.mainBody .left a{
+.left a{
 	text-decoration-line: none;	
 	color: #333;
 }
 
-.mainBody .right a{
+.right a{
 	text-decoration-line: none;	
 	color: #333;
 }
@@ -43,16 +79,26 @@
 =======================MainBody left===========================
 */
 
-.mainBody .left .container:not(:first-of-type){
+.left .container:not(:first-of-type){
 	margin-top: 55px;
+	
 }
 
-.mainBody .left .container{
+.left .container{
 	font-size: 20px;
+	padding: 3px 0px;
+	padding-top: 35px;
+	line-height: 25px;
 }
 
-.mainBody .left .container li{
+.left .container ul{
+	margin-top: 30px;
+}
+
+
+.left .container li{
 	list-style-type: none;
+	padding: 5px 0px;
 }
 
 
@@ -60,28 +106,60 @@
 =======================MainBody right===========================
 */
 
+.right .imgContainer:not(:first-of-type){
+	margin-top: 55px;
+	
+}
 
 
-.mainBody .right .imgContainer{
+.right .imgContainer{
 	font-size: 20px;
 	display: grid;
 	grid-template-columns: 210px 210px 210px;
 	grid-template-rows: 230px 230px 230px;
+	line-height: 35px;
 }
 
-.mainBody .right h2{
+.right h2{
 	font-size: 30px;
 }
 
-.mainBody .right .imgTextContainer{
+.right .imgTextContainer{
 	text-align: center;
 }
 
-.mainBody .right .imgImg{
+.right .imgImg{
 	width: 200px;
 	height: 200px;
 }
 
-.mainBody .right .imgText{
+.right .imgText{
 	height: 20px;
 }
+
+
+/*
+=======================mainBoardLine===========================
+*/
+
+.mainBoardLine {
+	border: 0;
+	height: 4px;
+	background: #ccc;
+}
+
+/*
+=======================Titles===========================
+*/
+
+.categoryTitle {
+	font-weight: bold;
+	font-size: 40px;
+	text-shadow: 2px 2px 5px gray;
+	
+}
+
+.boardTitle a{
+	font-size: 25px;
+}
+
