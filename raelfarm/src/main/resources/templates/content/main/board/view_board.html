@@ -15,38 +15,37 @@
         <th:block layout:fragment="header" th:include="@{/fragments/header}"></th:block>
 		
         <div layout:fragment="content" class="content">
-	        <article>
-	        	<div class="content_header">
-		        	<hr class="firstline">
-		        		<div class="boardtitle_div">
-		        			<th:block th:if="${data.registerdate == data.modifieddate}">
-			        			<span class="boardregisterdate">등록일자 : [[${data.registerdate}]]</span>
-			        		</th:block>
-			        		<th:block th:if="${data.registerdate != data.modifieddate}">
-			        			<span class="boardmodifieddate">수정일자 : [[${data.modifieddate}]]</span>
-			        		</th:block>
-			        		<label for="boardtitle">
-		        				제목 : 
-		        				<span class="boardtitle">[[${data.title}]]</span>
-		        			</label>
-		        		</div>
-		        		
-		            <hr class="secondline">
-		            	<div class="boardwriter_div">
-	            			<span class="boardwriter"> 작성자 : [[${data.writer}]]</span>
-	            			<span class="viewcount">조회 수 : [[${data.viewcount}]]</span>
-	            			<span class="recommendcount">추천 수 : [[${data.recommendcount}]]</span>
-		            	</div>
-	        	</div>
-	            
-	           	<div class="boardcontent">
-	           	<hr class="thirdline">
-	           		<span class="card-body text-dark" th:utext="${data.content}"></span>
-	            </div>
-			</article>
+        	<div class="content_header">
+        		<input type="hidden" class="iboardnum" value="${iboardnum}" readonly>
+	        	<hr class="firstline">
+	        		<div class="boardtitle_div">
+	        			<th:block th:if="${data.registerdate == data.modifieddate}">
+		        			<span class="boardregisterdate">등록일자 : [[${data.registerdate}]]</span>
+		        		</th:block>
+		        		<th:block th:if="${data.registerdate != data.modifieddate}">
+		        			<span class="boardmodifieddate">수정일자 : [[${data.modifieddate}]]</span>
+		        		</th:block>
+		        		<label for="boardtitle">
+	        				제목 : 
+	        				<span class="boardtitle">[[${data.title}]]</span>
+	        			</label>
+	        		</div>
+	        		
+	            <hr class="secondline">
+	            	<div class="boardwriter_div">
+            			<span class="boardwriter"> 작성자 : [[${data.writer}]]</span>
+            			<span class="viewcount">조회 수 : [[${data.viewcount}]]</span>
+            			<span class="recommendcount">추천 수 : [[${data.recommendcount}]]</span>
+	            	</div>
+        	</div>
             
-            <button class="recommendbutton">추천</button>
-            <button class="norecommendbutton">비추천</button>
+           	<div class="boardcontent">
+           	<hr class="thirdline">
+           		<span class="card-body text-dark" th:utext="${data.content}"></span>
+            </div>
+           
+            <p><button class="recommendbutton">추천</button>
+            <button class="norecommendbutton">비추천</button></p>
             <hr class="commentfirstline">
 		</div>
 		

@@ -1,0 +1,26 @@
+@charset "UTF-8";
+
+
+.tableContainer {
+	text-align: center;
+	justify-content: center;
+}
+
+.boardTable {
+	width: 70%;
+	text-align: center;
+	margin-left:auto; 
+    margin-right:auto;
+    border-left: 0px solid #444444;
+    border-right: 0px solid #444444;
+    border-top: 1px solid #444444;
+    border-bottom: 1px solid #444444;
+}
+
+.content_header{
+	width: 70%;
+}
+
+.boardTable th{
+	border-bottom: 1px solid #444444;
+}

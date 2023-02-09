@@ -1,0 +1,62 @@
+@charset "UTF-8";
+
+
+.content, .content_boards, .content_comment{
+	text-align: center;
+	justify-content: center;
+}
+
+.content_boards table{
+	text-align: center;
+	margin-left:auto; 
+    margin-right:auto;
+}
+
+.content_header{
+	width: 70%;
+	display: inline-block; 
+	margin-left: auto; 
+	margin-right: auto;
+}
+
+.boardcontent{
+	display: inline-block;
+	width: 70%;
+	min-height: 500px;
+	max-height: 100%;
+	margin-left: auto; 
+	margin-right: auto;
+}
+
+.boardcontent img{
+	display:block !important; 
+	width:100% !important; 
+	height:auto !important; 
+}
+
+.boardtitle{
+	text-align: center;
+	font-size: 40px;
+}
+
+.boardregisterdate{
+	display: flex;
+	float: right;
+	
+}
+
+.boardmodifieddate{
+	float: right;
+}
+
+.boardwriter{
+	float: left;
+}
+
+.viewcount{
+	float: right;
+}
+
+.recommendcount{
+	float: right;
+}

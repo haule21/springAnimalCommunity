@@ -31,11 +31,21 @@ function check_board_before_submit(){
 		}
 	}
 	
-	deleteSummernoteImageFile_Submit();
+	
 	$("#summernote_form").submit();
 }
 
 function check_board_before_modify_submit(){
-	deleteSummernoteImageFile_Submit();
+	var [title, title_content] = [$('#summernote_title').val().trim() == "" ? true : false, $('#summernote_title').val()]; 
+	var content = $('#summernote_content').val().trim() == "" ? true : false;
+	
+	if(title || content){
+		if(title) alert("제목을 입력해주세요."); else alert("내용을 입력해주세요."); 
+		return false;
+	}
+	if(titlerep.test(title_content)){
+		alert("제목에 사용할 수 없는 문자가 포함 되어 있습니다.");
+		return false;
+	}
 	$("#summernote_form").submit();
 }

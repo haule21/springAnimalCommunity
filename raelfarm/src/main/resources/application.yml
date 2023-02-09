@@ -25,7 +25,11 @@ spring:
       
   jpa:
     database: mysql
+    show-sql: true
     open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
       
 server:
   port: 8443

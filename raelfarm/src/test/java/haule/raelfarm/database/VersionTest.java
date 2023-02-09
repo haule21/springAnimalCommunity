@@ -97,5 +97,12 @@ public class VersionTest {
 		}
 				
 	}
+	
+	@Test
+	public void stringtest2() {
+		String a = "20010524";
+		System.out.println(a.substring(0,4) + a.substring(4,6)+ a.substring(6,8));
+		
+	}
 
 }

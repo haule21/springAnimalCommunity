@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Queue;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -30,17 +30,22 @@ import haule.raelfarm.dto.CategorySelectDTO;
 import haule.raelfarm.dto.ViewBoardDTO;
 import haule.raelfarm.dto.ViewBoardsDTO;
 import haule.raelfarm.jpa.BoardMediaFile;
+import haule.raelfarm.jpa.BoardRecommendHistory;
 import haule.raelfarm.jpa.PK.BoardMediaFile_PK;
+import haule.raelfarm.jpa.PK.BoardRecommendHistory_PK;
+import haule.raelfarm.repository.BoardDataRepository;
 import haule.raelfarm.repository.BoardMediaFileRepository;
 import haule.raelfarm.repository.BoardPreviousRepository;
+import haule.raelfarm.repository.BoardRecommendHistoryRepository;
 import haule.raelfarm.repository.BoardRepository;
 import haule.raelfarm.service.BoardService;
 import haule.raelfarm.singleton.BoardInfo;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.PersistenceContext;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.transaction.Transactional;
-import okhttp3.Response;
 
 @RestController
 public class BoardController {
@@ -56,6 +61,12 @@ public class BoardController {
 	
 	@Autowired
 	BoardRepository boardRepository;
+	
+	@Autowired
+	BoardDataRepository boardDataRepository;
+	
+	@Autowired
+	BoardRecommendHistoryRepository boardRecommendHistoryRepository;
 	
 	private static final CategoryStrategy[] categoryStrategyList = new CategoryStrategy[] {
 			null, new Category100(), new Category200(), new Category300(), new Category400(), new Category500()
@@ -196,6 +207,7 @@ public class BoardController {
 		}
 		
 		mv.addObject("category_num", previous_cn);
+		mv.addObject("iboardnum", iboardnum);
 		mv.setViewName("content/main/board/view_board");
 		return mv;
 	}
@@ -227,7 +239,6 @@ public class BoardController {
 		
 	}
 	
-	@Transactional
 	@RequestMapping("/board/modify")
 	public ModelAndView Modify_Board_Submit(
 			Principal principal,
@@ -252,48 +263,35 @@ public class BoardController {
 			return mv;
 		}
 		
-		
-		// media 변경 된 이미지 추가 및 삭제된 이미지 삭제 Y 처리
-		List<String> mediavalues = boardMediaFileRepo.SelectBoardMediaData(String.format("%05d", summernote_categorynum) + summernote_boardnum);
-		Queue<String> mediadata = new LinkedList<>(mediavalues);
-		Queue<String> modifieddata = new LinkedList<>(summernote_images);
-		Queue<String> deletedata = new LinkedList<>();
-		
-		// 이미지 추가 되거나 삭제 된거 있으면 mediadata 테이블에 갱신 해주어야 함
-		for(int i=0; i < mediadata.size(); i++) {
-			if(summernote_images.contains(mediadata.peek())) {
-				mediadata.remove();
-				modifieddata.remove();
+		if(summernote_images != null) {
+			// media 변경 된 이미지 추가 및 삭제된 이미지 삭제 Y 처리
+			List<String> mediavalues = boardMediaFileRepo.SelectBoardMediaData(String.format("%05d", summernote_categorynum) + summernote_boardnum);
+			
+			// 이미지 추가 되거나 삭제 된거 있으면 mediadata 테이블에 갱신 해주어야 함
+
+			for(String mediadata : mediavalues) {
+				if(summernote_images.contains(mediadata)) {
+					summernote_images.remove(mediadata);
+				}
 			}
-			else {
-				deletedata.add(mediadata.poll());
+			
+			if(summernote_images.size() > 0) {
+				List<BoardMediaFile> savedatas1 = new ArrayList<>();
+				int seq = boardMediaFileRepo.SelectSEQNumber(summernote_content);
+				int count = 1;
+				for(String modefieddata : summernote_images) {
+					// SEQ/summernoteImage/년/월/일/파일명.확장자
+					String[] temp = modefieddata.split("/");
+					// 수정된 파일들
+					savedatas1.add(BoardMediaFile.builder().pk(new BoardMediaFile_PK(iboardnum,seq+count)).contenttype(CheckImageType(temp[5])).filename(temp[5]).filepath(temp[2]+temp[3]+temp[4]).build());
+					count ++;
+				}
+				boardMediaFileRepo.saveAll(savedatas1);
 			}
 		}
 		
-		if(modifieddata.size() > 0) {
-			List<BoardMediaFile> savedatas1 = new ArrayList<>();
-			int seq = boardMediaFileRepo.SelectSEQNumber(summernote_content);
-			for(int i=0; i > modifieddata.size(); i++) {
-				// SEQ/summernoteImage/년/월/일/파일명.확장자
-				String[] temp = modifieddata.poll().split("/");
-				
-				// 수정된 파일들
-				savedatas1.add(BoardMediaFile.builder().iboardnum(iboardnum).seq(seq+i).contenttype(CheckImageType(temp[5])).filename(temp[5]).filepath(temp[2]+temp[3]+temp[4]).build());
-			}
-			boardMediaFileRepo.saveAll(savedatas1);
-		}
 		
-		if(deletedata.size() > 0) {
-			List<BoardMediaFile> savedatas2 = new ArrayList<>();
-			for(int i=0; i > deletedata.size(); i++) {
-				String[] temp = deletedata.poll().split("/");
-				BoardMediaFile_PK pk = new BoardMediaFile_PK(iboardnum, Integer.parseInt(temp[0].split(":")[1]));
-				
-				// delete 만 'Y' 로 바꿔서 데이터를 넣는다.
-				savedatas2.add(boardMediaFileRepo.findById(pk).orElseThrow().changeDeletedtoY());
-			}
-			boardMediaFileRepo.saveAll(savedatas2);
-		}
+		
 		////////////////////////////////////////////////////////////////////////////////////
 		
 		mv.setViewName("redirect:/board/c"+summernote_categorynum+"/b"+summernote_boardnum+"?previouscategorynum="+summernote_categorynum);
@@ -302,13 +300,31 @@ public class BoardController {
 	/*
 	 * check exist board_recommended_history where board_num = and userid =  
 	 */
-	public Map<Object, Object> Recommend_Board(
-				String board_num,
-				String userid,
-				String yn
+	@RequestMapping(value="/board/recommend")
+	@ResponseBody 
+	public Boolean Recommend_Board(
+				Principal principal,
+				HttpServletResponse response,
+				@RequestParam(value="iboardnum") String iboardnum,
+				@RequestParam(value="recommend") String recommend
 	){
-		Map<Object, Object> mv = new HashMap<Object, Object>();
-		return mv;	
+		
+		BoardRecommendHistory_PK boardRecommendHistoryPK = new BoardRecommendHistory_PK(iboardnum, principal.getName()); 
+		BoardRecommendHistory data = boardRecommendHistoryRepository.findById(boardRecommendHistoryPK).orElse(null);
+		
+		if(data == null && (recommend == "Y" || recommend == "N")) {
+				data = BoardRecommendHistory.builder().I_BOARD_NUM(iboardnum).USERID(principal.getName()).RECOMMEND(recommend).build();
+				
+				if(recommend == "Y") boardDataRepository.updateRecommendCount(iboardnum);
+				else boardDataRepository.updateNoRecommendCount(iboardnum);
+		}
+		else {
+			alert(response, "이미 추천을 진행 하였습니다.");
+		}
+		
+		
+		
+		return true;	
 	}
 	
 	/*

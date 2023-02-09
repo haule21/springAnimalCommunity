@@ -1,8 +1,6 @@
 var header = $("meta[name='_csrf_header']").attr('content');
 var token = $("meta[name='_csrf']").attr('content');
 
-const deleteFileList = new FormData();
-
 function summernote_config(){
 	$('#summernote').summernote({
 		height: 500,                 // set editor height
@@ -35,6 +33,7 @@ function summernote_config(){
 			},
 			onMediaDelete : function(files) {
 				deleteSummernoteImageFile(files[0], this);
+				
 			},
             onChange : function (contents) {
                 $('#summernote_content').val(contents);
@@ -66,28 +65,35 @@ function uploadSummernoteImageFile(file, editor){
 }
 
 function deleteSummernoteImageFile(file, editor){
-	deleteFileList.append("file", file.src);
 	
+	
+	data = new FormData();
+	
+		
 	var images = $("input[name=uploaded_images]");
-			if(images.length === 1){
-				$("input[name=uploaded_images]").remove();
-			}
-			else{
-				for(let i=0; i < images.length; i++){
-					if(images[i].value.trim() == data.filePath){
-						images[i].remove();
-					} 	
-				}
-			}
 	
-}
-
-function deleteSummernoteImageFile_Submit(){
-	if(deleteFileList.length > 0){
-		return;
+	if(images.length === 1){
+		data.append("file", $("input[name=uploaded_images]").val());
+		$("input[name=uploaded_images]").remove();
 	}
+	else{
+		for(let i=0; i < images.length; i++){
+			console.log(images[i]);
+			var imagesdata = images[i].value.split("/");
+			var filesrc = file.src.split("/");
+			console.log(imagesdata, " : ", filesrc);
+			console.log(imagesdata[4], " : ", filesrc[8]);
+			
+			if(imagesdata[3] == filesrc[7]){
+				console.log(images[i].value);
+				data.append("file",images[i].value);
+				images[i].remove();
+			} 	
+		}
+	}
+			
 	$.ajax({
-		data : deleteFileList,
+		data : data,
 		type : "POST",
 		url : "/deleteSummernoteImageFile",
 		contentType : false,
@@ -99,4 +105,6 @@ function deleteSummernoteImageFile_Submit(){
 			console.log(data);	
 		}
 	});
+
+	
 }

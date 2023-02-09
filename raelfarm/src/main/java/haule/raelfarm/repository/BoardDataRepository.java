@@ -16,4 +16,14 @@ public interface BoardDataRepository extends JpaRepository<BoardData, String> {
 	@Modifying(clearAutomatically = true)
 	@Query(value = "UPDATE BOARD_DATA_TEST SET VIEW_COUNT = VIEW_COUNT + 1 WHERE I_BOARD_NUM = :id", nativeQuery = true)
 	void updateViewCount(@Param(value="id") String id);
+	
+	@Transactional
+	@Modifying(clearAutomatically = true)
+	@Query(value = "UPDATE BOARD_DATA_TEST SET RECOMMEND_COUNT = RECOMMEND_COUNT + 1 WHERE I_BOARD_NUM = :id", nativeQuery = true)
+	void updateRecommendCount(@Param(value="id") String id);
+	
+	@Transactional
+	@Modifying(clearAutomatically = true)
+	@Query(value = "UPDATE BOARD_DATA_TEST SET NO_RECOMMEND_COUNT = NO_RECOMMEND_COUNT + 1 WHERE I_BOARD_NUM = :id", nativeQuery = true)
+	void updateNoRecommendCount(@Param(value="id") String id);
 }

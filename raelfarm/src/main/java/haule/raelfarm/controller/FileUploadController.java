@@ -72,21 +72,24 @@ public class FileUploadController {
 	@ResponseBody 
 	public JsonObject deleteSummernoteImageFile(@RequestParam("file") List<String> filedatas) {
 		JsonObject jsonObject = new JsonObject();
-		List<BoardMediaFile> savedatas = new ArrayList<>();
 		for(String file : filedatas) {
 			String[] files = file.split("/");
 			
+			
+			File deleteFile;
+			String filePath;
 			// 수정 탭에서 이미지를 삭제 할 경우
-			if(files[0].equals("")) {}
-			else {
-				String[] pkdatas = files[0].split(":");
-				BoardMediaFile_PK pk = new BoardMediaFile_PK(pkdatas[0], Integer.parseInt(pkdatas[1]));
-				savedatas.add(boardMediaFileRepo.findById(pk).orElseThrow().changeDeletedtoY());
+			if(files[0].equals("")) {
+				deleteFile = new File("C:\\summernote_image\\"+ files[2] + "\\" + files[3] + "\\" + files[4] + "\\" + files[5]);
+				filePath = "/summernoteImage/"+ files[2] + "/" + files[3] + "/" + files[4] + "/" + files[5];
 			}
-			
-			File deleteFile = new File("C:\\summernote_image\\"+files[4]+"\\"+files[5]+"\\"+files[6], files[7]);
-			String filePath = "/summernoteImage/"+ files[4]+"/"+files[5]+"/"+files[6]+"/"+files[7];
-			
+			else{
+				String[] pkdatas = files[0].split(":");
+				boardMediaFileRepo.UpdateDeleted(pkdatas[0], Integer.parseInt(pkdatas[1]));
+				deleteFile = new File("C:\\summernote_image\\"+ files[2].substring(0,4) + "\\"+ files[2].substring(4,6) + "\\"+ files[2].substring(6,8) +"\\"+files[3]);
+				filePath = "/summernoteImage/"+ files[2].substring(0,4) + "/"+ files[2].substring(4,6) + "/"+ files[2].substring(6,8)+ "/"+files[3];
+			}
+
 			if(deleteFile.delete()) {
 				jsonObject.addProperty("filePath", filePath.trim());
 				jsonObject.addProperty("responseCode", "success");
@@ -94,9 +97,6 @@ public class FileUploadController {
 			else {
 				jsonObject.addProperty("responseCode", "error");
 			}
-		}
-		if(savedatas.size() > 0) {
-			boardMediaFileRepo.saveAll(savedatas);
 		}
 		return jsonObject;
 	}
