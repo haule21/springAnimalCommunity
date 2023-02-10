@@ -40,6 +40,11 @@ public class FileUploadController {
 		String folder_date = getFolder();
 		File uploadPath = new File(fileRoot, folder_date);
 		
+		System.out.println("=====================================");
+		System.out.println("folder_data : " + folder_date);
+		System.out.println("uploadPath : " + uploadPath);
+		System.out.println("=====================================");
+		
 		if(uploadPath.exists() == false) {
 			if(uploadPath.mkdirs()) System.out.print("Succecss Create Folder");
 			else System.out.print("Fail Create Folder");

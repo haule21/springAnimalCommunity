@@ -253,7 +253,7 @@ public class BoardController {
 		ViewBoardDTO boarddata = boardService.SelectBoard(summernote_categorynum, summernote_boardnum);
 		if(!boarddata.getTitle().equals(summernote_title) || !boarddata.getContent().equals(summernote_content)) {
 
-			boardService.InsertBoardPreviousContent(iboardnum,  boardPreviousRepo.SelectSEQNumber(iboardnum) + 1, summernote_content);
+			boardService.InsertBoardPreviousContent(iboardnum,  boardPreviousRepo.SelectSEQNumber(iboardnum) + 1, boarddata.getTitle(), boarddata.getContent());
 			
 			//update 문
 			boardService.UpdateBoardTitleContent(summernote_categorynum, summernote_boardnum, summernote_title, summernote_content);
@@ -264,7 +264,7 @@ public class BoardController {
 		}
 		
 		if(summernote_images != null) {
-			// media 변경 된 이미지 추가 및 삭제된 이미지 삭제 Y 처리
+			// media 변경 된 이미지 추가 
 			List<String> mediavalues = boardMediaFileRepo.SelectBoardMediaData(String.format("%05d", summernote_categorynum) + summernote_boardnum);
 			
 			// 이미지 추가 되거나 삭제 된거 있으면 mediadata 테이블에 갱신 해주어야 함
@@ -277,13 +277,13 @@ public class BoardController {
 			
 			if(summernote_images.size() > 0) {
 				List<BoardMediaFile> savedatas1 = new ArrayList<>();
-				int seq = boardMediaFileRepo.SelectSEQNumber(summernote_content);
+				int seq = boardMediaFileRepo.SelectSEQNumber(iboardnum);
 				int count = 1;
 				for(String modefieddata : summernote_images) {
 					// SEQ/summernoteImage/년/월/일/파일명.확장자
 					String[] temp = modefieddata.split("/");
 					// 수정된 파일들
-					savedatas1.add(BoardMediaFile.builder().pk(new BoardMediaFile_PK(iboardnum,seq+count)).contenttype(CheckImageType(temp[5])).filename(temp[5]).filepath(temp[2]+temp[3]+temp[4]).build());
+					savedatas1.add(BoardMediaFile.builder().pk(new BoardMediaFile_PK(iboardnum,seq+count)).contenttype(CheckImageType(temp[5])).filename(temp[5]).filepath(temp[2]+"/"+temp[3]+"/"+temp[4]).build());
 					count ++;
 				}
 				boardMediaFileRepo.saveAll(savedatas1);
