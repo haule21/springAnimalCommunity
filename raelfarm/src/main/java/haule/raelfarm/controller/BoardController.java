@@ -4,10 +4,8 @@ import java.io.PrintWriter;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -25,6 +23,7 @@ import haule.raelfarm.controller.StrategyCategory.Category300;
 import haule.raelfarm.controller.StrategyCategory.Category400;
 import haule.raelfarm.controller.StrategyCategory.Category500;
 import haule.raelfarm.controller.StrategyCategory.CategoryStrategy;
+import haule.raelfarm.dto.BoardCommentDTO;
 import haule.raelfarm.dto.BoardMediaFileInsertDTO;
 import haule.raelfarm.dto.CategorySelectDTO;
 import haule.raelfarm.dto.ViewBoardDTO;
@@ -40,9 +39,6 @@ import haule.raelfarm.repository.BoardRecommendHistoryRepository;
 import haule.raelfarm.repository.BoardRepository;
 import haule.raelfarm.service.BoardService;
 import haule.raelfarm.singleton.BoardInfo;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.PersistenceContext;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -159,11 +155,11 @@ public class BoardController {
 				
 				media.add(
 					BoardMediaFileInsertDTO.builder()
-						.I_BOARD_NUM(iboardnum)
-						.SEQ(count)
-						.CONTENT_TYPE(contenttype)
-						.FILE_PATH(filepath)
-						.FILE_NAME(filename)
+						.iboardnum(iboardnum)
+						.seq(count)
+						.contenttype(contenttype)
+						.filepath(filepath)
+						.filename(filename)
 						.build()
 					);
 				count ++;
@@ -206,6 +202,9 @@ public class BoardController {
 			}
 		}
 		
+		List<BoardCommentDTO> comment = boardService.SelectBoardComments(iboardnum);
+		
+		mv.addObject("commentList", comment == null ? null : comment);
 		mv.addObject("category_num", previous_cn);
 		mv.addObject("iboardnum", iboardnum);
 		mv.setViewName("content/main/board/view_board");
@@ -300,31 +299,35 @@ public class BoardController {
 	/*
 	 * check exist board_recommended_history where board_num = and userid =  
 	 */
-	@RequestMapping(value="/board/recommend")
+	@RequestMapping(value="/board/recommend", method=RequestMethod.POST)
 	@ResponseBody 
-	public Boolean Recommend_Board(
+	public Map<String, String> Recommend_Board(
 				Principal principal,
-				HttpServletResponse response,
 				@RequestParam(value="iboardnum") String iboardnum,
 				@RequestParam(value="recommend") String recommend
 	){
 		
-		BoardRecommendHistory_PK boardRecommendHistoryPK = new BoardRecommendHistory_PK(iboardnum, principal.getName()); 
+		Map<String, String> map = new HashMap<String, String>();
+		
+		BoardRecommendHistory_PK boardRecommendHistoryPK = new BoardRecommendHistory_PK(iboardnum, principal.getName());
 		BoardRecommendHistory data = boardRecommendHistoryRepository.findById(boardRecommendHistoryPK).orElse(null);
 		
-		if(data == null && (recommend == "Y" || recommend == "N")) {
-				data = BoardRecommendHistory.builder().I_BOARD_NUM(iboardnum).USERID(principal.getName()).RECOMMEND(recommend).build();
-				
-				if(recommend == "Y") boardDataRepository.updateRecommendCount(iboardnum);
+		System.out.println("boardRecommendHistoryPK : "+ boardRecommendHistoryPK);
+		System.out.println("data : "+ data);
+		
+		if(data == null && (recommend.equals("Y") || recommend.equals("N"))) {
+				BoardRecommendHistory boardRecommendHistory_data = BoardRecommendHistory.builder().pk(boardRecommendHistoryPK).RECOMMEND(recommend).build();
+				System.out.println("boardRecommendHistory_data : "+ boardRecommendHistory_data);
+				if(recommend.equals("Y")) boardDataRepository.updateRecommendCount(iboardnum);
 				else boardDataRepository.updateNoRecommendCount(iboardnum);
+				boardRecommendHistoryRepository.save(boardRecommendHistory_data);
+				map.put("responseCode", "success");
 		}
 		else {
-			alert(response, "이미 추천을 진행 하였습니다.");
+			map.put("responseCode", "error");
 		}
 		
-		
-		
-		return true;	
+		return map;	
 	}
 	
 	/*
@@ -332,16 +335,32 @@ public class BoardController {
 	 * comment_no -> ifnull(select comment_no from board_comment where board_num =, 1)
 	 * seq - 0  
 	 */
-	public ModelAndView Write_Comment_Board(
-				String board_num 
+	@RequestMapping(value="/comment/write", method=RequestMethod.POST)
+	@ResponseBody
+	public Map<String, String> Write_Comment_Board(
+				Principal principal,
+				@RequestParam(value="iboardnum") String iboardnum ,
+				@RequestParam(value="content") String content
 	) {
-		ModelAndView mv = new ModelAndView();
-		return mv;
+		Map<String, String> map = new HashMap<String, String>();
+		
+		try {
+			boardService.InsertBoardComment(iboardnum, boardService.SelectBoardCommentMAXCommentNo(iboardnum) + 1, 0, principal.getName(), content);
+			map.put("responseCode", "success");
+		}
+		catch(Exception e) {
+			map.put("responseCode", "error");
+		}
+			
+		
+		return map;
 	}
 	
 	/*
 	 * seq -> select max(seq) + 1 from board_comment where board_num = and comment_num = 
 	 */
+	@RequestMapping(value="/comment/recomment/write", method=RequestMethod.POST)
+	@ResponseBody
 	public ModelAndView Write_Recomment_Comment(
 				String board_num,
 				int comment_no
@@ -353,6 +372,8 @@ public class BoardController {
 	/*
 	 * check exist board_comment_recommended_history where board_num = and comment_no = and userid = ( seq = )
 	 */
+	@RequestMapping(value="/comment/recommend", method=RequestMethod.POST)
+	@ResponseBody
 	public Map<Object, Object> Recommend_Comment(
 			String reply_num,
 			String userid,

@@ -7,18 +7,18 @@ import lombok.Getter;
 @Data
 @Getter
 public class BoardMediaFileInsertDTO {
-	String I_BOARD_NUM;
-	int SEQ;
-	String CONTENT_TYPE;
-	String FILE_NAME;
-	String FILE_PATH;
+	String iboardnum;
+	int seq;
+	String contenttype;
+	String filename;
+	String filepath;
 	
 	@Builder
-	public BoardMediaFileInsertDTO(String I_BOARD_NUM, int SEQ,String CONTENT_TYPE, String FILE_NAME, String FILE_PATH) {
-		this.I_BOARD_NUM = I_BOARD_NUM;
-		this.SEQ = SEQ;
-		this.CONTENT_TYPE = CONTENT_TYPE;
-		this.FILE_NAME = FILE_NAME;
-		this.FILE_PATH = FILE_PATH;
+	public BoardMediaFileInsertDTO(String iboardnum, int seq,String contenttype, String filename, String filepath) {
+		this.iboardnum = iboardnum;
+		this.seq = seq;
+		this.contenttype = contenttype;
+		this.filename = filename;
+		this.filepath = filepath;
 	}
 }

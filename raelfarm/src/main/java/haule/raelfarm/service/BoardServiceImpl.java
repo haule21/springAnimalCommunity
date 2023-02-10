@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import haule.raelfarm.dto.BoardCommentDTO;
 import haule.raelfarm.dto.BoardMediaFileInsertDTO;
 import haule.raelfarm.dto.BoardNumSelectDTO;
 import haule.raelfarm.dto.MainSelectDTO;
@@ -67,6 +68,18 @@ public class BoardServiceImpl implements BoardService{
 		return boardMapper.SelectBoard(categorynum, boardnum);
 	}
 	@Override
+	public List<BoardCommentDTO> SelectBoardComments(String iboardnum){
+		return boardMapper.SelectBoardComments(iboardnum);
+	}
+	@Override
+	public int SelectBoardCommentMAXCommentNo(String iboardnum) {
+		return boardMapper.SelectBoardCommentMAXCommentNo(iboardnum);
+	}
+	@Override
+	public int SelectBoardCommentMAXSeq(String iboardnum, int commentno) {
+		return boardMapper.SelectBoardCommentMAXSeq(iboardnum, commentno);
+	}
+	@Override
 	public int InsertBoardData(String iboardnum) {
 		return boardMapper.InsertBoardData(iboardnum);
 	}
@@ -95,10 +108,17 @@ public class BoardServiceImpl implements BoardService{
 		System.out.print("================InvokeBoard End=================");
 	}
 	
+	@Override
 	public int InsertBoardPreviousContent(String iboardnum, int seq, String title, String content) {
 		return boardMapper.InsertBoardPreviousContent(iboardnum, seq, title, content);
 	}
 	
+	@Override
+	public int InsertBoardComment(String i_board_num,int comment_no,int seq,String writer,String content) {
+		return boardMapper.InsertBoardComment(i_board_num, comment_no, seq, writer, content);
+	}
+	
+	@Override
 	public int UpdateBoardTitleContent(int categorynum, int boardnum,String title, String content) {
 		return boardMapper.UpdateBoardTitleContent(categorynum, boardnum, title, content);
 	}

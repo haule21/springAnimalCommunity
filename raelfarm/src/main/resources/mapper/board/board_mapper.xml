@@ -9,23 +9,11 @@
 				(SELECT CATEGORY_NAME FROM CATEGORY_BOARD_TEST WHERE A.CATEGORY_NUM = CATEGORY_NUM) as categoryname,
 				A.TITLE as title,
 				A.EXIST_IMGFILE as existimgfile,
-				CONCAT(
-				"(",
-				SUBSTRING(A.WRITER,1,3),"***",
-				")",
-					(
-					SELECT 
-						NICKNAME 
-					FROM 
-						USERS_TEST 
-					WHERE 
-						USERID = A.WRITER
-					)
-				) as writer,
+				(SELECT NICKNAME FROM USERS_TEST WHERE USERID = A.WRITER) as writer,
 				DATE_FORMAT(A.REGISTERED_DATE, '%Y-%m-%d %H:%i:%S') as registerdate,
 				null as content,
 				B.VIEW_COUNT as viewcount,
-				B.RECOMMEND_COUNT as recommendcount,
+				(B.RECOMMEND_COUNT - B.NO_RECOMMEND_COUNT) as recommendcount,
 				null as sqltext
 			FROM 
 				BOARD_TEST A, BOARD_DATA_TEST B
@@ -55,19 +43,12 @@
 				(SELECT CATEGORY_NAME FROM CATEGORY_BOARD_TEST WHERE CATEGORY_NUM = X.CATEGORYNUM) as categoryname,
 				X.TITLE as title,
 				X.EXISTIMGFILE as existimgfile,
-				CONCAT("(",SUBSTRING(X.WRITER,1,3),"***",")",(
-					SELECT 
-						NICKNAME 
-					FROM 
-						USERS_TEST 
-					WHERE 
-						USERID = X.WRITER
-					)) as writer,
+				(SELECT NICKNAME FROM USERS_TEST WHERE USERID = X.WRITER) as writer,
 				X.REGISTERDATE as registerdate,
 				X.MODIFIEDDATE as modifieddate,
 				X.CONTENT as content,
 				B.VIEW_COUNT as viewcount,
-				B.RECOMMEND_COUNT as recommendcount,
+				(B.RECOMMEND_COUNT - B.NO_RECOMMEND_COUNT) as recommendcount,
 				X.SEQTEXT as seqtext
 			FROM
 			(
@@ -183,11 +164,11 @@
 	<insert id="InsertBoardMedia" parameterType="haule.raelfarm.dto.BoardMediaFileInsertDTO">
 		<![CDATA[
 			INSERT INTO BOARD_MEDIAFILE_TEST VALUES(
-				#{I_BOARD_NUM},
-				#{SEQ},
-				#{CONTENT_TYPE},
-				#{FILE_NAME},
-				#{FILE_PATH} 
+				#{iboardnum},
+				#{seq},
+				#{contenttype},
+				#{filename},
+				#{filepath} 
 			)
 		]]>
 		
@@ -221,6 +202,68 @@
 			)
 		]]>
 	</insert>
+	
+	<!--   i_board_num comment_no seq registereddate writer content modifieddate recommendcount norecommendcount deleted-->
+	<insert id="InsertBoardComment">
+		<![CDATA[
+			INSERT INTO BOARD_COMMENT_TEST VALUES(
+				#{arg0},
+				#{arg1},
+				#{arg2},
+				default,
+				#{arg3},
+				#{arg4},
+				default,
+				default,
+				default,
+				default
+			)
+		]]>
+	</insert>
+	
+	<select id="SelectBoardComments" resultType="haule.raelfarm.dto.BoardCommentDTO">
+		<![CDATA[
+			SELECT
+				 I_BOARD_NUM as iboardnum,
+				 COMMENT_NO as commentno,
+				 SEQ as seq,
+				 REGISTERED_DATE as registered_date,
+				 (SELECT NICKNAME FROM USERS_TEST WHERE USERID = A.WRITER) as writer,
+				 CONTENT as content,
+				 MODIFIED_DATE as modified_date,
+				 RECOMMEND_COUNT as recommendcount,
+				 NO_RECOMMEND_COUNT as norecommendcount,
+				 DELETED as deleted
+			FROM
+				BOARD_COMMENT_TEST A
+			WHERE
+				I_BOARD_NUM = #{arg0} 
+		]]>
+	</select>
+	
+	<select id="SelectBoardCommentMAXCommentNo" resultType="int">
+		<![CDATA[
+			SELECT
+				IFNULL(MAX(COMMENT_NO), 0) AS COMMENT_NO
+			FROM
+				BOARD_COMMENT_TEST
+			WHERE
+				I_BOARD_NUM = #{arg0}
+		]]>
+	</select>
+	
+	<select id="SelectBoardCommentMAXSeq" resultType="int">
+		<![CDATA[
+			SELECT
+				IFNULL(MAX(SEQ), 0) AS COMMENT_NO
+			FROM
+				BOARD_COMMENT_TEST
+			WHERE
+				I_BOARD_NUM = #{arg0}
+			AND
+				COMMENT_NO = #{arg1}
+		]]>
+	</select>
 	
 	<update id="UpdateBoardTitleContent">
 		<![CDATA[

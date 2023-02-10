@@ -67,6 +67,7 @@ create table BOARD_PREVIOUS_CONTENT_TEST(
 	I_BOARD_NUM VARCHAR(20) not null,
 	SEQ INT not null,
 	MODIFIED_DATE DATETIME not null default CURRENT_TIMESTAMP,
+	TITLE VARCHAR(300) not null,
 	CONTENT BLOB not null,
 	constraint BOARD_PREVIOUS_CONTENT_TEST_PK primary key(I_BOARD_NUM, SEQ)
 ) engine=INNODB default CHARSET=UTF8MB4
@@ -93,7 +94,7 @@ create table BOARD_COMMENT(
 )engine=INNODB default CHARSET=UTF8MB4
 
 create table BOARD_COMMENT_RECOMMEND_HISTORY(
-	I_REPLY_NUM VARCHAR(20) not null,
+	I_REPLY_NUM VARCHAR(25) not null,
 	USERID VARCHAR(16) not null,
 	RECOMMEND CHAR(1) not null default 'Y',
 	constraint BOARD_COMMENT_RECOMMEND_HISTORY_PK primary key(I_REPLY_NUM, USERID)

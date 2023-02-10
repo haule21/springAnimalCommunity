@@ -13,9 +13,7 @@ import lombok.NoArgsConstructor;
 @Embeddable
 public class BoardMediaFile_PK implements Serializable{
 	
-	@Column(name="I_BOARD_NUM")
 	private String I_BOARD_NUM;
-	@Column(name="SEQ")
 	private int SEQ;
 	
 	public BoardMediaFile_PK(String iboardnum, int i) {

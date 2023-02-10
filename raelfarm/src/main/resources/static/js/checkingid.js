@@ -2,8 +2,8 @@
  * 
  */
 
-// 닉네임 정규식
-let nire = /^[가-힣a-zA-Z0-9]{3,11}/; 
+// 닉네임 정규식 (20230211 닉넥임에 특수문자나 ID에 특수문자 검사 정규식도 만들어서 진행 해야 됨.)
+let nire = /^[ㄱ-ㅎ가-힣a-zA-Z0-9]{3,11}/; 
 let idre = /^[a-zA-Z0-9]{6,16}$/; // 아이디와 패스워드가 적합한지 검사할 정규식
 let adre = /^[가-힣a-zA-Z0-9]|[-_.,\(\)\[\]@\#$~`!]$/
 let phre = /^[0-9]{10,11}$/;
@@ -47,7 +47,6 @@ function clickidcheck(){
 	}
     
     $.ajax({
-        async: true,
         type : 'POST',
         data : userid,
         url : "register_page/idcheck",

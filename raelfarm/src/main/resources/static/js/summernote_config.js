@@ -11,12 +11,12 @@ const DeleteList = { data : new FormData(),
 
 function summernote_config(){
 	$('#summernote').summernote({
-		height: 500,                 // set editor height
-		minHeight: 500,             // set minimum height of editor
-		maxHeight: 500,             // set maximum height of editor
+		height: 1000,
+		minHeight: null,
+		maxHeight: null,
 		focus: true,                  // set focus to editable area after initializing summernote
 		lang: 'ko-KR',
-		disableResizeEditor : true,
+		// disableResizeEditor : true,
 		toolbar: [
           ['style', ['style']],
           ['font', ['bold', 'underline', 'clear']],

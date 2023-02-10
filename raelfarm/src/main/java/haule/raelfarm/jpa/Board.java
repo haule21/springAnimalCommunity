@@ -2,24 +2,27 @@ package haule.raelfarm.jpa;
 
 import haule.raelfarm.jpa.PK.Board_PK;
 import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.IdClass;
 import jakarta.persistence.Table;
-import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
-@IdClass(Board_PK.class)
-@Getter
+@NoArgsConstructor
 @Table(name = "board_test")
 public class Board {
-	@Id
-	@Column(name="CATEGORY_NUM")
-	private int CATEGORY_NUM;
 	
-	@Id
-	@Column(name="BOARD_NUM")
-	private int BOARD_NUM;
+//	@Id
+//	@Column(name="CATEGORY_NUM")
+//	private int CATEGORY_NUM;
+//	
+//	@Id
+//	@Column(name="BOARD_NUM")
+//	private int BOARD_NUM;
+	
+	@EmbeddedId
+	private Board_PK board_PK;
 	
 	@Column(name="REGISTERED_DATE")
 	private String REGISTERED_DATE;

@@ -6,7 +6,13 @@
     
     <th:block layout:fragment="head">
     	<title>[[${data.title}]] / 라엘동물원</title>
+    	
+    	<meta name="_csrf" th:content="${_csrf.token}"/>
+		<meta name="_csrf_header" th:content="${_csrf.headerName}">
 		
+		<script src="/js/jquery-3.6.2.min.js"></script>
+		<script src="/js/comment.js"></script>
+		<script src="/js/recommend.js"></script>
         <!--/* css */-->
         <link th:href="@{/css/common.css}" rel="stylesheet" />
         <link th:href="@{/css/viewboard.css}" rel="stylesheet" />
@@ -35,7 +41,7 @@
 	            	<div class="boardwriter_div">
             			<span class="boardwriter"> 작성자 : [[${data.writer}]]</span>
             			<span class="viewcount">조회 수 : [[${data.viewcount}]]</span>
-            			<span class="recommendcount">추천 수 : [[${data.recommendcount}]]</span>
+            			<span class="recommendcount">추천 수 : [[${data.recommendcount}]]&nbsp;</span>
 	            	</div>
         	</div>
             
@@ -44,8 +50,12 @@
            		<span class="card-body text-dark" th:utext="${data.content}"></span>
             </div>
            
-            <p><button class="recommendbutton">추천</button>
-            <button class="norecommendbutton">비추천</button></p>
+            <p><button class="recommendbutton"
+            	th:iboardnum="${iboardnum}" 
+            	th:onclick="javascript:recommend_board(this.getAttribute('iboardnum'), 'Y')">추천</button>
+            	&nbsp;[[${data.recommendcount}]]&nbsp;
+            <button class="norecommendbutton" th:iboardnum="${iboardnum}" 
+            	th:onclick="javascript:recommend_board(this.getAttribute('iboardnum'), 'N')">비추천</button></p>
             <hr class="commentfirstline">
 		</div>
 		
@@ -56,25 +66,25 @@
 					<ul th:each="comment : ${commentList}">
 	            		<th:block th:if="${comment.seq eq 0}">
 		            		<li>
-		            			<p> ${comment.writer} </p>
-		            			<p> ${comment.registerdate} </p>
+		            			<p> [[${comment.writer}]] </p>
+		            			<p> [[${comment.registereddate}]] </p>
 		            			
-		            			<p>	<button>추천</button> ${comment.recommendcount} </p>
-		            			<p>	<button>비추천</button> ${comment.norecommendcount} </p>
+		            			<p>	<button>추천</button> [[${comment.recommendcount}]] </p>
+		            			<p>	<button>비추천</button> [[${comment.norecommendcount}]] </p>
 		            			<div>
-		            				<p>${comment.content}</p>
+		            				<p>[[${comment.content}]]</p>
 		            			</div>
 		            		</li>
 	            		</th:block>
 	            		<th:block th:unless="${comment.seq eq 0}">
 	            			<li class="comment_seq">
 	            				<div class="${comment.seq}">
-	            					<p> ${comment.writer} </p>
-			            			<p> ${comment.registerdate} </p>
-			            			<p>	<button>추천</button> ${comment.recommendcount} </p>
-			            			<p>	<button>비추천</button> ${comment.norecommendcount} </p>
+	            					<p> [[${comment.writer}]] </p>
+			            			<p> [[${comment.registereddate}]] </p>
+			            			<p>	<button>추천</button> [[${comment.recommendcount}]] </p>
+			            			<p>	<button>비추천</button> [[${comment.norecommendcount}]] </p>
 			            			<div>
-			            				<p>${comment.content}</p>
+			            				<p>[[${comment.content}]]</p>
 			            			</div>
 	            				</div>
 		            		</li>
@@ -92,8 +102,14 @@
             	</th:block>
             </div-->
             <div class="comment_write_div">
-            	<span>댓글 쓰기</span>
-            	<span><input class="comment_write_input"> <button type="submit" class="comment_submit_button"></button></span>
+            	<span>
+            		<input class="comment_write_input" id="comment_write_input" style="width: 900px; height: 100px;" placeholder="댓글 작성 구간"> 
+            		<button 
+            			type="button" 
+            			class="comment_submit_button"
+            			th:iboardnum="${iboardnum}" 
+            			th:onclick="javascript:writeComment(this.getAttribute('iboardnum'))">쓰기</button>
+            	</span>
             	<hr>
             	
             </div>
