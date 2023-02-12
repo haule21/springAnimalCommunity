@@ -91,11 +91,13 @@
 		            				type="button"
 		            				th:onclick="javascript:viewWriteRecomment(this)">답글</button>
 	            				<button 
-	            				class="comment_replybtn" 
-	            				th:iboardnum="${comment.iboardnum}"
-	            				th:commentno=${comment.commentno}
-	            				type="button" th:onclick="javascript:replybutton(this.getAttribute('iboardnum'), this.getAttribute('commentno'), this)">답글 보기</button>
-	            					            			
+	            					class="comment_replybtn" 
+	            					th:iboardnum="${comment.iboardnum}"
+	            					th:commentno=${comment.commentno}
+	            					type="button" th:onclick="javascript:replybutton(this.getAttribute('iboardnum'), this.getAttribute('commentno'), this)">답글 보기</button>
+	            				<div class="recommentList_block">
+	            				
+	            				</div>
 	            			</th:block>
 	            			<span class="reply" style="display:none;">
 			            		<input class="recomment_write_input" id="recomment_write_input" placeholder="답글을 남겨주세요"> 

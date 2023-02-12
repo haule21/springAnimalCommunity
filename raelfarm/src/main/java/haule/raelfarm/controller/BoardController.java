@@ -355,14 +355,14 @@ public class BoardController {
 		
 		return map;
 	}
-	@RequestMapping(value="/comment/viewRecomments", method=RequestMethod.POST)
-	@ResponseBody
-	public Map<String, Object> View_Recomment_Comment(
+	
+	@RequestMapping(value="/recomments")
+	public ModelAndView View_Recomment_Comment(
 				ModelAndView mv,
 				@RequestParam(value="iboardnum") String iboardnum,
 				@RequestParam(value="commentno") int commentno
 	) {
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, String> map = new HashMap<String, String>();
 		
 		try {
 			List<BoardCommentDTO> recomments = boardService.SelectBoardComments(iboardnum, commentno);
@@ -372,7 +372,9 @@ public class BoardController {
 		catch (Exception e ) {
 			map.put("responseCode","error");
 		}
-		return map;
+		
+		mv.setViewName("fragments/recomment");
+		return mv;
 	}
 	
 	/*
