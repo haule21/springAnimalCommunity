@@ -68,8 +68,8 @@ public class BoardServiceImpl implements BoardService{
 		return boardMapper.SelectBoard(categorynum, boardnum);
 	}
 	@Override
-	public List<BoardCommentDTO> SelectBoardComments(String iboardnum){
-		return boardMapper.SelectBoardComments(iboardnum);
+	public List<BoardCommentDTO> SelectBoardComments(String iboardnum, int commentno){
+		return boardMapper.SelectBoardComments(iboardnum, commentno);
 	}
 	@Override
 	public int SelectBoardCommentMAXCommentNo(String iboardnum) {
@@ -78,6 +78,14 @@ public class BoardServiceImpl implements BoardService{
 	@Override
 	public int SelectBoardCommentMAXSeq(String iboardnum, int commentno) {
 		return boardMapper.SelectBoardCommentMAXSeq(iboardnum, commentno);
+	}
+	@Override
+	public int SelectCheckBoardCommentRecommendHistory(String ireplynum, String userid) {
+		return boardMapper.SelectCheckBoardCommentRecommendHistory(ireplynum, userid);
+	}
+	@Override
+	public List<BoardCommentDTO> SelectBoardRecomments(String iboardnum, int commentno){
+		return boardMapper.SelectBoardRecomments(iboardnum, commentno);
 	}
 	@Override
 	public int InsertBoardData(String iboardnum) {
@@ -119,8 +127,17 @@ public class BoardServiceImpl implements BoardService{
 	}
 	
 	@Override
+	public int InsertBoardCommentRecommendHistory(String ireplynum, String userid, String recommend) {
+		return boardMapper.InsertBoardCommentRecommendHistory(ireplynum, userid, recommend);
+	}
+	
+	@Override
 	public int UpdateBoardTitleContent(int categorynum, int boardnum,String title, String content) {
 		return boardMapper.UpdateBoardTitleContent(categorynum, boardnum, title, content);
+	}
+	@Override
+	public int UpdateIncreaseBoardCommentRecommend(String iboardnum, int commentno, int seq, String recommend) {
+		return boardMapper.UpdateIncreaseBoardCommentRecommend(iboardnum, commentno, seq, recommend);
 	}
 	
 }

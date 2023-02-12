@@ -64,31 +64,51 @@
             <div class="comment_div">
             	<th:block th:if="${not #lists.isEmpty(commentList)}">
 					<ul th:each="comment : ${commentList}">
-	            		<th:block th:if="${comment.seq eq 0}">
-		            		<li>
-		            			<p> [[${comment.writer}]] </p>
-		            			<p> [[${comment.registereddate}]] </p>
-		            			
-		            			<p>	<button>추천</button> [[${comment.recommendcount}]] </p>
-		            			<p>	<button>비추천</button> [[${comment.norecommendcount}]] </p>
-		            			<div>
-		            				<p>[[${comment.content}]]</p>
-		            			</div>
-		            		</li>
-	            		</th:block>
-	            		<th:block th:unless="${comment.seq eq 0}">
-	            			<li class="comment_seq">
-	            				<div class="${comment.seq}">
-	            					<p> [[${comment.writer}]] </p>
-			            			<p> [[${comment.registereddate}]] </p>
-			            			<p>	<button>추천</button> [[${comment.recommendcount}]] </p>
-			            			<p>	<button>비추천</button> [[${comment.norecommendcount}]] </p>
-			            			<div>
-			            				<p>[[${comment.content}]]</p>
-			            			</div>
-	            				</div>
-		            		</li>
-	            		</th:block>
+	            		<li class="comment_seq">
+	            			<span class="comment_writer">[[${comment.writer}]] </span>
+	            			
+	            			<span class="comment_recommend"> <button>추천</button>&nbsp; [[${comment.recommendcount}]] </span>
+	            			<span class="comment_norecommend"> <button>비추천</button>&nbsp; [[${comment.norecommendcount}]] </span>
+	            			<th:block th:if="${comment.registereddate == comment.modifieddate}">
+	            				<span class="comment_date"> [[${comment.registereddate}]] </span>
+	            			</th:block>
+	            			<th:block th:unless="${comment.registereddate == comment.modifieddate}">
+	            				<span class="comment_date"> (수정됨)[[${comment.modifieddate}]] </span>
+	            			</th:block>
+	            			
+	            			<div class="comment_content_div">
+	            				<p class="comment_content">[[${comment.content}]]</p>
+	            			</div>
+	            			<th:block th:if="${comment.exist eq 0}">
+	            				<button 
+	            					class="recomment_reply"
+		            				type="button"
+		            				th:onclick="javascript:viewWriteRecomment(this)">답글</button>
+	            			</th:block>
+	            			<th:block th:if="${comment.exist eq 1}">
+	            				<button 
+	            					class="recomment_reply"
+		            				type="button"
+		            				th:onclick="javascript:viewWriteRecomment(this)">답글</button>
+	            				<button 
+	            				class="comment_replybtn" 
+	            				th:iboardnum="${comment.iboardnum}"
+	            				th:commentno=${comment.commentno}
+	            				type="button" th:onclick="javascript:replybutton(this.getAttribute('iboardnum'), this.getAttribute('commentno'), this)">답글 보기</button>
+	            					            			
+	            			</th:block>
+	            			<span class="reply" style="display:none;">
+			            		<input class="recomment_write_input" id="recomment_write_input" placeholder="답글을 남겨주세요"> 
+			            		<button 
+			            			type="button" 
+			            			class="comment_submit_button"
+			            			th:iboardnum="${comment.iboardnum}"
+			            			th:commentno=${comment.commentno}
+			            			th:content="${comment.content}"  
+			            			th:onclick="javascript:writeRecomment(this.getAttribute('iboardnum'), this.getAttribute('commentno'), this.getAttribute('content'))">쓰기</button>
+			            	</span>	            	
+			            	<hr>
+	            		</li>
 	            	</ul>
             	</th:block>
             	<th:block th:unless="${not #lists.isEmpty(commentList)}">
@@ -111,7 +131,6 @@
             			th:onclick="javascript:writeComment(this.getAttribute('iboardnum'))">쓰기</button>
             	</span>
             	<hr>
-            	
             </div>
         </div>
         <div layout:fragment="content_boards" class="content_boards">

@@ -202,7 +202,7 @@ public class BoardController {
 			}
 		}
 		
-		List<BoardCommentDTO> comment = boardService.SelectBoardComments(iboardnum);
+		List<BoardCommentDTO> comment = boardService.SelectBoardComments(iboardnum, -1);
 		
 		mv.addObject("commentList", comment == null ? null : comment);
 		mv.addObject("category_num", previous_cn);
@@ -355,18 +355,47 @@ public class BoardController {
 		
 		return map;
 	}
+	@RequestMapping(value="/comment/viewRecomments", method=RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> View_Recomment_Comment(
+				ModelAndView mv,
+				@RequestParam(value="iboardnum") String iboardnum,
+				@RequestParam(value="commentno") int commentno
+	) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		
+		try {
+			List<BoardCommentDTO> recomments = boardService.SelectBoardComments(iboardnum, commentno);
+			mv.addObject("recommentList", recomments);
+			map.put("responseCode", "success");
+		}
+		catch (Exception e ) {
+			map.put("responseCode","error");
+		}
+		return map;
+	}
 	
 	/*
 	 * seq -> select max(seq) + 1 from board_comment where board_num = and comment_num = 
 	 */
 	@RequestMapping(value="/comment/recomment/write", method=RequestMethod.POST)
 	@ResponseBody
-	public ModelAndView Write_Recomment_Comment(
-				String board_num,
-				int comment_no
+	public Map<String,String> Write_Recomment_Comment(
+			Principal principal,
+			@RequestParam(value="iboardnum") String iboardnum,
+			@RequestParam(value="commentno") int comment_no,
+			@RequestParam(value="content") String content
 	) {
-		ModelAndView mv = new ModelAndView();
-		return mv;
+		Map<String,String> map = new HashMap<String,String>();
+		try {
+			int result = boardService.InsertBoardComment(iboardnum, comment_no, boardService.SelectBoardCommentMAXSeq(iboardnum, comment_no) + 1, principal.getName(), content);
+			map.put("reponseCode","success");
+		}
+		catch (Exception e) {
+			map.put("reponseCode","error");
+		}
+		
+		return map;
 	}
 	
 	/*
@@ -374,13 +403,35 @@ public class BoardController {
 	 */
 	@RequestMapping(value="/comment/recommend", method=RequestMethod.POST)
 	@ResponseBody
-	public Map<Object, Object> Recommend_Comment(
-			String reply_num,
-			String userid,
-			String yn
+	public Map<String, String> Recommend_Comment(
+			@RequestParam(value="ireplynum") String ireplynum,
+			@RequestParam(value="recommend") String recommend,
+			Principal principal
+			
 	) {
-		Map<Object, Object> mv = new HashMap<Object, Object>();
-		return mv;	
+		// reply_num : categorynum(00101)boardnum(..):commentno:seq
+		Map<String, String> map = new HashMap<String, String>();
+		
+		// iboardnum, commentno, seq
+		String[] ireplynum_data = ireplynum.split(":");
+		
+		// 1: exist , 0: not-exist
+		int result = boardService.SelectCheckBoardCommentRecommendHistory(ireplynum, principal.getName());
+		
+		if(result == 0) {
+			boardService.InsertBoardCommentRecommendHistory(ireplynum, principal.getName(), recommend);
+			boardService.UpdateIncreaseBoardCommentRecommend(ireplynum_data[0], Integer.parseInt(ireplynum_data[1]), Integer.parseInt(ireplynum_data[2]), recommend);
+			map.put("reponseCoode", "success");
+		}
+		else if(result == 1) {
+			map.put("reponseCoode", "already");
+		}
+		else {
+			map.put("reponseCoode", "error");
+		}
+		
+		
+		return map;	
 	}
 	
 	public List<String> CategoryStrategyViewCategorysData(CategoryStrategy categoryStrategy) {

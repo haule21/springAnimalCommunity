@@ -31,7 +31,8 @@ function recommend_board(iboardnum, recommend){
 	});
 }
 
-function recommend_comment(ireplynum, recommend){
+function recommend_comment(iboardnum, commentno, seq, recommend){
+	var ireplynum = iboardnum + ":" + commentno + ":" + seq
 	var data = {
 		"ireplynum" : ireplynum,
 		"recommend" : recommend
@@ -48,6 +49,10 @@ function recommend_comment(ireplynum, recommend){
         success : function(data) {
 			window.location.reload()
 			console.log(data);
+		},
+		already : function(){
+			window.location.reload()
+			console.log("이미 추천한 댓글 입니다.");
 		},
 		error : function(request,status,error){
 			console.log(request,status,error);

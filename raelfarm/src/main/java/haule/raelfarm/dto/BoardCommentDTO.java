@@ -17,6 +17,7 @@ public class BoardCommentDTO {
 	int recommendcount;
 	int norecommendcount;
 	String deleted;
+	int exist;
 	
 	@Builder
 	BoardCommentDTO(

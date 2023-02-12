@@ -221,6 +221,16 @@
 		]]>
 	</insert>
 	
+	<insert id="InsertBoardCommentRecommendHistory">
+		<![CDATA[
+			INSERT INTO BOARD_COMMENT_RECOMMEND_HISTORY_TEST VALUES(
+				#{arg0},
+				#{arg1},
+				#{arg2}
+			)
+		]]>
+	</insert>
+	
 	<select id="SelectBoardComments" resultType="haule.raelfarm.dto.BoardCommentDTO">
 		<![CDATA[
 			SELECT
@@ -233,12 +243,31 @@
 				 MODIFIED_DATE as modified_date,
 				 RECOMMEND_COUNT as recommendcount,
 				 NO_RECOMMEND_COUNT as norecommendcount,
-				 DELETED as deleted
+				 DELETED as deleted,
+				 (SELECT 
+				 		IFNULL(MIN(1), 0)
+				 	FROM
+				 		DUAL
+				 	WHERE
+						EXISTS (SELECT 1 FROM BOARD_COMMENT_TEST WHERE A.I_BOARD_NUM = I_BOARD_NUM AND A.COMMENT_NO = COMMENT_NO AND SEQ > 0)) AS exist
 			FROM
 				BOARD_COMMENT_TEST A
 			WHERE
-				I_BOARD_NUM = #{arg0} 
+				I_BOARD_NUM = #{arg0}
+			AND			
 		]]>
+		<choose>
+			<when test = "arg1 == '-1'" >
+				<![CDATA[
+					SEQ = 0
+				]]>	
+			</when>
+			<otherwise>
+				<![CDATA[
+					COMMENT_NO = #{arg1} AND SEQ > 0
+				]]>	
+			</otherwise>
+		</choose>
 	</select>
 	
 	<select id="SelectBoardCommentMAXCommentNo" resultType="int">
@@ -264,6 +293,26 @@
 				COMMENT_NO = #{arg1}
 		]]>
 	</select>
+	<select id="SelectCheckBoardCommentRecommendHistory" resultType="int">
+		<![CDATA[
+			SELECT
+				IFNULL(MIN(1), 0)
+			FROM
+				DUAL
+			WHERE
+				EXISTS (
+						SELECT
+							1
+						FROM
+							BOARD_COMMENT_RECOMMEND_HISTORY
+						WHERE
+							I_REPLY_NUM = #{arg0}
+						AND
+							USERID = #{arg1}
+					)
+		]]>
+			
+	</select>
 	
 	<update id="UpdateBoardTitleContent">
 		<![CDATA[
@@ -277,6 +326,23 @@
 				A.CATEGORY_NUM = #{arg0}
 			AND
 				A.BOARD_NUM = #{arg1}
+		]]>
+	</update>
+	<!--   String ireplynum, int commentno, int seq) -->
+	
+	<update id="UpdateIncreaseBoardCommentRecommend">
+		<![CDATA[
+			UPDATE 
+				BOARD_COMMENT_TEST 
+			SET 
+				RECOMMEND_COUNT = (CASE WHEN 'Y' = #{arg3} THEN (RECOMMEND_COUNT + 1) WHEN 'Y' = #{arg3} THEN RECOMMEND_COUNT END), 
+				NO_RECOMMEND_COUNT = (CASE WHEN 'N' = #{arg3} THEN NO_RECOMMEND_COUNT WHEN 'N' = #{arg3} THEN (NO_RECOMMEND_COUNT + 1) END);
+			WHERE
+				I_BOARD_NUM = = #{arg0} 
+			AND
+				COMMENT_NO = #{arg1} 
+			AND
+				SEQ = #{arg2}
 		]]>
 	</update>
 	
