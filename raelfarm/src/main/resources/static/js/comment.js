@@ -26,7 +26,7 @@ function writeComment(iboardnum){
         	xhr.setRequestHeader(header, token);
     	},
 		success : function(data){
-			window.location.reload();
+			$(".comment_div").load("/comment/view?iboardnum="+iboardnum);
 			console.log(data);
 		},
 		error : function(request,status,error){
@@ -39,7 +39,7 @@ function replybutton(iboardnum, commentno, button){
 
 	$(button).parent().children('div.recommentList_block').load("/recomments?"+"iboardnum="+iboardnum+"&commentno="+commentno);
 }
-function writeRecomment(iboardnum, commentno, content){
+function writeRecomment(iboardnum, commentno, content, button){
 	
 	$.ajax({
 		type : 'POST',
@@ -54,7 +54,10 @@ function writeRecomment(iboardnum, commentno, content){
         	xhr.setRequestHeader(header, token);
     	},
 		success : function(data) { 
-			console.log(success);
+			
+			$(button).parent().children('div.recommentList_block').load("/recomments?iboardnum="+iboardnum+"&commentno="+commentno);
+			$(button).parent().children('div.recommentList_block').focus();
+			console.log(data);
 			
 		}
 		
@@ -74,8 +77,10 @@ function hideWriteRecomment(button){
 }
 
 function viewWriteRecommentReply(button, writer){
-	$(button).parent('li.comment_seq').children('span.reply').css('display','block');
-	$(button).parent('li.comment_seq').children('span.reply').text = writer;
+	var temp = $(button).parent('li.comment_seq').children('span.reply'); 
+	temp.css('display','block');
+	temp.text(temp.val() + writer);
+	viewWriteRecomment(button);
 }
 
 function hideRecomments(button){

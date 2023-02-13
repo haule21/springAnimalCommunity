@@ -151,6 +151,16 @@
 				BOARD_NUM = #{arg1}
 		]]>
 	</select>
+	<select id="SelectBoardRecommendCount" resultType="int">
+		<![CDATA[
+			SELECT 
+				(RECOMMEND_COUNT - NO_RECOMMEND_COUNT) as recommend_count 
+			FROM 
+				BOARD_DATA_TEST
+			WHERE
+				I_BOARD_NUM = #{arg0}
+		]]>
+	</select>
 	<insert id="InsertBoardData" parameterType="string">
 		<![CDATA[
 			INSERT INTO BOARD_DATA_TEST VALUES(
@@ -168,7 +178,8 @@
 				#{seq},
 				#{contenttype},
 				#{filename},
-				#{filepath} 
+				#{filepath},
+				default
 			)
 		]]>
 		
@@ -304,7 +315,7 @@
 						SELECT
 							1
 						FROM
-							BOARD_COMMENT_RECOMMEND_HISTORY
+							BOARD_COMMENT_RECOMMEND_HISTORY_TEST
 						WHERE
 							I_REPLY_NUM = #{arg0}
 						AND
@@ -335,10 +346,10 @@
 			UPDATE 
 				BOARD_COMMENT_TEST 
 			SET 
-				RECOMMEND_COUNT = (CASE WHEN 'Y' = #{arg3} THEN (RECOMMEND_COUNT + 1) WHEN 'Y' = #{arg3} THEN RECOMMEND_COUNT END), 
-				NO_RECOMMEND_COUNT = (CASE WHEN 'N' = #{arg3} THEN NO_RECOMMEND_COUNT WHEN 'N' = #{arg3} THEN (NO_RECOMMEND_COUNT + 1) END);
+				RECOMMEND_COUNT = (CASE WHEN 'Y' = #{arg3} THEN (RECOMMEND_COUNT + 1) ELSE RECOMMEND_COUNT END), 
+				NO_RECOMMEND_COUNT = (CASE WHEN 'Y' = #{arg3} THEN NO_RECOMMEND_COUNT ELSE (NO_RECOMMEND_COUNT + 1) END)
 			WHERE
-				I_BOARD_NUM = = #{arg0} 
+				I_BOARD_NUM = #{arg0} 
 			AND
 				COMMENT_NO = #{arg1} 
 			AND

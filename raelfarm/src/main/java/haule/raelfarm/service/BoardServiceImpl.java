@@ -68,6 +68,10 @@ public class BoardServiceImpl implements BoardService{
 		return boardMapper.SelectBoard(categorynum, boardnum);
 	}
 	@Override
+	public int SelectBoardRecommendCount(String iboardnum) {
+		return boardMapper.SelectBoardRecommendCount(iboardnum);
+	}
+	@Override
 	public List<BoardCommentDTO> SelectBoardComments(String iboardnum, int commentno){
 		return boardMapper.SelectBoardComments(iboardnum, commentno);
 	}

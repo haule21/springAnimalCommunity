@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+	<div class="recomment_write_div" th:unless="${#lists.isEmpty(recommentList)}">
+		<ul th:each="recomment : ${recommentList}">
+			<li class="recomment"><span class="recomment_writer">[[${recomment.writer}]]
+			</span> <span class="recomment_recommend">
+					<button type="button" 
+						th:iboardnum="${recomment.iboardnum}"
+						th:commentno="${recomment.commentno}"
+						th:seq="${recomment.seq}"
+						th:recommend="Y" th:recommendcountvalue=${recomment.recommendcount}
+						th:onclick="javascript:recommend_comment(this.getAttribute('iboardnum'), this.getAttribute('commentno'), this.getAttribute('seq'), this.getAttribute('recommend'),this,this.getAttribute('recommendcountvalue'))">추천</button>&nbsp;
+					<span class="comment_recomment_count">[[${recomment.recommendcount}]]</span>
+			</span> <span class="recomment_norecommend">
+					<button type="button" 
+						th:iboardnum="${recomment.iboardnum}"
+						th:commentno="${recomment.commentno}"
+						th:seq="${recomment.seq}"
+						th:recommend="N" th:recommendcountvalue=${recomment.recommendcount}
+						th:onclick="javascript:recommend_comment(this.getAttribute('iboardnum'), this.getAttribute('commentno'), this.getAttribute('seq'), this.getAttribute('recommend'),this,this.getAttribute('recommendcountvalue'))">비추천</button>&nbsp; 
+					<span class="comment_recomment_count">[[${recomment.norecommendcount}]]</span>
+			</span> <th:block
+					th:if="${recomment.registereddate == recomment.modifieddate}">
+					<span class="recomment_date">
+						[[${recomment.registereddate}]] </span>
+				</th:block> <th:block
+					th:unless="${recomment.registereddate == recomment.modifieddate}">
+					<span class="recomment_date">
+						(수정됨)[[${recomment.modifieddate}]] </span>
+				</th:block>
+				<div class="recomment_content_div">
+					<p class="recomment_content">[[${recomment.content}]]</p>
+				</div>
+				<button type="button" th:recommentwriter="${recomment.writer}"
+					th:onclick="javascript:viewWriteRecommentReply(this, this.getAttribute('recommentwriter'))">답글</button>
+				<span class="reply" style="display: none;"> <input
+							class="recomment_write_input" id="recomment_write_input"
+							placeholder="답글을 남겨주세요">
+						<button type="button" class="comment_submit_button"
+							th:iboardnum="${recomment.iboardnum}"
+							th:commentno=${recomment.commentno}
+							th:content="${recomment.content}"
+							th:onclick="javascript:writeRecomment(this.getAttribute('iboardnum'), this.getAttribute('commentno'), this.getAttribute('content'), this)">쓰기</button>
+				</span>
+			</li>
+		</ul>
+		<button type="button" th:onclick="javascript:hideRecomments(this)">답글숨기기</button>
+	</div>
+</body>
+</html>

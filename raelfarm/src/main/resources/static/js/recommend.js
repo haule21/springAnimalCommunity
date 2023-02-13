@@ -21,7 +21,7 @@ function recommend_board(iboardnum, recommend){
         	xhr.setRequestHeader(header, token);
     	},
         success : function(data) {
-			window.location.reload()
+			$('.recommend_block').load("/board/view/recommend?iboardnum="+iboardnum);
 			console.log(data);
 		},
 		error : function(request,status,error){
@@ -31,12 +31,13 @@ function recommend_board(iboardnum, recommend){
 	});
 }
 
-function recommend_comment(iboardnum, commentno, seq, recommend){
+function recommend_comment(iboardnum, commentno, seq, recommend, button, count){
 	var ireplynum = iboardnum + ":" + commentno + ":" + seq
 	var data = {
 		"ireplynum" : ireplynum,
 		"recommend" : recommend
 	}
+	console.log(ireplynum, data);
 	 
     $.ajax({
         type : 'POST',
@@ -47,12 +48,13 @@ function recommend_comment(iboardnum, commentno, seq, recommend){
         	xhr.setRequestHeader(header, token);
     	},
         success : function(data) {
-			window.location.reload()
-			console.log(data);
-		},
-		already : function(){
-			window.location.reload()
-			console.log("이미 추천한 댓글 입니다.");
+			if(data.result == "0"){
+				$(button).parent().children('span.comment_recomment_count').text(parseInt(count) + 1);	
+			}
+			else{
+				alert("이미 추천한 댓글 입니다.");
+			}
+			 
 		},
 		error : function(request,status,error){
 			console.log(request,status,error);

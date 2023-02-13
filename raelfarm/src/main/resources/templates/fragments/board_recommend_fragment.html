@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+	<p>
+		<button class="recommendbutton" th:iboardnum="${iboardnum}"
+			th:onclick="javascript:recommend_board(this.getAttribute('iboardnum'), 'Y')">추천</button>
+		&nbsp;[[${recommendcount}]]&nbsp;
+		<button class="norecommendbutton" th:iboardnum="${iboardnum}"
+			th:onclick="javascript:recommend_board(this.getAttribute('iboardnum'), 'N')">비추천</button>
+	</p>
+</body>
+</html>

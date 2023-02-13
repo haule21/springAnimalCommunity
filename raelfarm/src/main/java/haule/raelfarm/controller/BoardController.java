@@ -151,6 +151,8 @@ public class BoardController {
 				String filepath = mediadatas[2] + "/" + mediadatas[3] + "/" + mediadatas[4];
 				String filename = mediadatas[5];
 				String contenttype = CheckImageType(mediadatas[5]);
+				
+				System.out.println(mediadatas + contenttype);
 
 				
 				media.add(
@@ -184,7 +186,7 @@ public class BoardController {
 		
 		List<ViewBoardsDTO> pndatas = CategoryStrategyViewPreviousNextBoards(
 				categoryStrategyList[(int)(Integer.valueOf(previous_cn) / 100)], 
-				Integer.valueOf(categorynum), 
+				Integer.valueOf(categorynum),
 				Integer.valueOf(boardnum), 
 				iboardnum);
 		
@@ -204,6 +206,7 @@ public class BoardController {
 		
 		List<BoardCommentDTO> comment = boardService.SelectBoardComments(iboardnum, -1);
 		
+		mv.addObject("recommendcount", boardService.SelectBoardRecommendCount(iboardnum));
 		mv.addObject("commentList", comment == null ? null : comment);
 		mv.addObject("category_num", previous_cn);
 		mv.addObject("iboardnum", iboardnum);
@@ -330,6 +333,18 @@ public class BoardController {
 		return map;	
 	}
 	
+	@RequestMapping(value="/board/view/recommend")
+	public ModelAndView View_Board_Recommend(
+					ModelAndView mv,
+					@RequestParam(value="iboardnum") String iboardnum) {
+		
+		int recommendcount = boardService.SelectBoardRecommendCount(iboardnum);
+		mv.addObject("recommendcount", recommendcount);
+		mv.setViewName("fragments/board_recommend_fragment");
+		return mv;
+	}
+	
+	
 	/*
 	 * board_num -> category_num + board_num
 	 * comment_no -> ifnull(select comment_no from board_comment where board_num =, 1)
@@ -356,6 +371,17 @@ public class BoardController {
 		return map;
 	}
 	
+	@RequestMapping(value="/comment/view")
+	public ModelAndView View_Comment(
+			ModelAndView mv,
+			@RequestParam(value="iboardnum") String iboardnum) {
+		
+		List<BoardCommentDTO> comment = boardService.SelectBoardComments(iboardnum, -1);
+		mv.addObject("commentList", comment == null ? null : comment);		
+		mv.setViewName("fragments/comment_fragment");
+		return mv;
+	}
+	
 	@RequestMapping(value="/recomments")
 	public ModelAndView View_Recomment_Comment(
 				ModelAndView mv,
@@ -373,7 +399,7 @@ public class BoardController {
 			map.put("responseCode","error");
 		}
 		
-		mv.setViewName("fragments/recomment");
+		mv.setViewName("fragments/recomment_fragment");
 		return mv;
 	}
 	
@@ -419,18 +445,25 @@ public class BoardController {
 		
 		// 1: exist , 0: not-exist
 		int result = boardService.SelectCheckBoardCommentRecommendHistory(ireplynum, principal.getName());
+		System.out.println("================================");
+		System.out.println(result);
 		
-		if(result == 0) {
-			boardService.InsertBoardCommentRecommendHistory(ireplynum, principal.getName(), recommend);
-			boardService.UpdateIncreaseBoardCommentRecommend(ireplynum_data[0], Integer.parseInt(ireplynum_data[1]), Integer.parseInt(ireplynum_data[2]), recommend);
-			map.put("reponseCoode", "success");
+		
+		try {
+			if(result == 0) {
+				boardService.InsertBoardCommentRecommendHistory(ireplynum, principal.getName(), recommend);
+				boardService.UpdateIncreaseBoardCommentRecommend(ireplynum_data[0], Integer.parseInt(ireplynum_data[1]), Integer.parseInt(ireplynum_data[2]), recommend);
+				map.put("result", "0");
+			}
+			else {
+				map.put("result", "1");
+			}
+			map.put("responseCode", "success");
 		}
-		else if(result == 1) {
-			map.put("reponseCoode", "already");
+		catch(Exception e) {
+			map.put("responseCode", "error");
 		}
-		else {
-			map.put("reponseCoode", "error");
-		}
+		
 		
 		
 		return map;	
@@ -477,16 +510,16 @@ public class BoardController {
 	    }
 	
 	private String CheckImageType(String temp) {
-		if(temp.indexOf("PNG") > 0) {
+		if(temp.indexOf("PNG") > 0 || temp.indexOf("png") > 0) {
 			return "PNG";
 		}
-		else if(temp.indexOf("JPEG") > 0 || temp.indexOf("JPG") > 0) {
+		else if(temp.indexOf("JPEG") > 0 || temp.indexOf("JPG") > 0 || temp.indexOf("jpeg") > 0 || temp.indexOf("jpg") > 0){
 			return "JPEG";
 		}
-		else if(temp.indexOf("GIF") > 0) {
+		else if(temp.indexOf("GIF") > 0 || temp.indexOf("gif") > 0) {
 			return "GIF";
 		}
-		else if(temp.indexOf("SVG") > 0) {
+		else if(temp.indexOf("SVG") > 0 || temp.indexOf("svg") > 0) {
 			return "SVG";
 		}
 		else {

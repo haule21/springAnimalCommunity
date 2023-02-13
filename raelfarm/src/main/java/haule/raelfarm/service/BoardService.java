@@ -21,6 +21,7 @@ public interface BoardService {
 	public List<String> ViewCategorysName(int category_num_st, int category_num_ed);
 	public List<BoardNumSelectDTO> SelectBoardNumMAX();
 	public ViewBoardDTO SelectBoard(int categorynum, int boardnum);
+	public int SelectBoardRecommendCount(String iboardnum);
 	List<BoardCommentDTO> SelectBoardComments(String iboardnum, int commentno);
 	int SelectBoardCommentMAXCommentNo(String iboardnum);
 	int SelectBoardCommentMAXSeq(String iboardnum, int commentno);

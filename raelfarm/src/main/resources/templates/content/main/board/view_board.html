@@ -1,179 +1,186 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout/default_layout}">
-    
-    <th:block layout:fragment="head">
-    	<title>[[${data.title}]] / 라엘동물원</title>
-    	
-    	<meta name="_csrf" th:content="${_csrf.token}"/>
-		<meta name="_csrf_header" th:content="${_csrf.headerName}">
-		
-		<script src="/js/jquery-3.6.2.min.js"></script>
-		<script src="/js/comment.js"></script>
-		<script src="/js/recommend.js"></script>
-        <!--/* css */-->
-        <link th:href="@{/css/common.css}" rel="stylesheet" />
-        <link th:href="@{/css/viewboard.css}" rel="stylesheet" />
-    </th:block>
-    <body>
-        <th:block layout:fragment="header" th:include="@{/fragments/header}"></th:block>
-		
-        <div layout:fragment="content" class="content">
-        	<div class="content_header">
-        		<input type="hidden" class="iboardnum" value="${iboardnum}" readonly>
-	        	<hr class="firstline">
-	        		<div class="boardtitle_div">
-	        			<th:block th:if="${data.registerdate == data.modifieddate}">
-		        			<span class="boardregisterdate">등록일자 : [[${data.registerdate}]]</span>
-		        		</th:block>
-		        		<th:block th:if="${data.registerdate != data.modifieddate}">
-		        			<span class="boardmodifieddate">수정일자 : [[${data.modifieddate}]]</span>
-		        		</th:block>
-		        		<label for="boardtitle">
-	        				제목 : 
-	        				<span class="boardtitle">[[${data.title}]]</span>
-	        			</label>
-	        		</div>
-	        		
-	            <hr class="secondline">
-	            	<div class="boardwriter_div">
-            			<span class="boardwriter"> 작성자 : [[${data.writer}]]</span>
-            			<span class="viewcount">조회 수 : [[${data.viewcount}]]</span>
-            			<span class="recommendcount">추천 수 : [[${data.recommendcount}]]&nbsp;</span>
-	            	</div>
-        	</div>
-            
-           	<div class="boardcontent">
-           	<hr class="thirdline">
-           		<span class="card-body text-dark" th:utext="${data.content}"></span>
-            </div>
-           
-            <p><button class="recommendbutton"
-            	th:iboardnum="${iboardnum}" 
-            	th:onclick="javascript:recommend_board(this.getAttribute('iboardnum'), 'Y')">추천</button>
-            	&nbsp;[[${data.recommendcount}]]&nbsp;
-            <button class="norecommendbutton" th:iboardnum="${iboardnum}" 
-            	th:onclick="javascript:recommend_board(this.getAttribute('iboardnum'), 'N')">비추천</button></p>
-            <hr class="commentfirstline">
-		</div>
-		
-		
-		<div layout:fragment="content_comment" class="content_comment">
-            <div class="comment_div">
-            	<th:block th:if="${not #lists.isEmpty(commentList)}">
-					<ul th:each="comment : ${commentList}">
-	            		<li class="comment_seq">
-	            			<span class="comment_writer">[[${comment.writer}]] </span>
-	            			
-	            			<span class="comment_recommend"> <button>추천</button>&nbsp; [[${comment.recommendcount}]] </span>
-	            			<span class="comment_norecommend"> <button>비추천</button>&nbsp; [[${comment.norecommendcount}]] </span>
-	            			<th:block th:if="${comment.registereddate == comment.modifieddate}">
-	            				<span class="comment_date"> [[${comment.registereddate}]] </span>
-	            			</th:block>
-	            			<th:block th:unless="${comment.registereddate == comment.modifieddate}">
-	            				<span class="comment_date"> (수정됨)[[${comment.modifieddate}]] </span>
-	            			</th:block>
-	            			
-	            			<div class="comment_content_div">
-	            				<p class="comment_content">[[${comment.content}]]</p>
-	            			</div>
-	            			<th:block th:if="${comment.exist eq 0}">
-	            				<button 
-	            					class="recomment_reply"
-		            				type="button"
-		            				th:onclick="javascript:viewWriteRecomment(this)">답글</button>
-	            			</th:block>
-	            			<th:block th:if="${comment.exist eq 1}">
-	            				<button 
-	            					class="recomment_reply"
-		            				type="button"
-		            				th:onclick="javascript:viewWriteRecomment(this)">답글</button>
-	            				<button 
-	            					class="comment_replybtn" 
-	            					th:iboardnum="${comment.iboardnum}"
-	            					th:commentno=${comment.commentno}
-	            					type="button" th:onclick="javascript:replybutton(this.getAttribute('iboardnum'), this.getAttribute('commentno'), this)">답글 보기</button>
-	            				<div class="recommentList_block">
-	            				
-	            				</div>
-	            			</th:block>
-	            			<span class="reply" style="display:none;">
-			            		<input class="recomment_write_input" id="recomment_write_input" placeholder="답글을 남겨주세요"> 
-			            		<button 
-			            			type="button" 
-			            			class="comment_submit_button"
-			            			th:iboardnum="${comment.iboardnum}"
-			            			th:commentno=${comment.commentno}
-			            			th:content="${comment.content}"  
-			            			th:onclick="javascript:writeRecomment(this.getAttribute('iboardnum'), this.getAttribute('commentno'), this.getAttribute('content'))">쓰기</button>
-			            	</span>	            	
-			            	<hr>
-	            		</li>
-	            	</ul>
-            	</th:block>
-            	<th:block th:unless="${not #lists.isEmpty(commentList)}">
-            		댓글이 존재하지 않습니다.
-            	</th:block>
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/default_layout}">
 
-            </div>
-            <!--  div class="comment_page_div">
+<th:block layout:fragment="head">
+	<title>[[${data.title}]] / 라엘동물원</title>
+
+	<meta name="_csrf" th:content="${_csrf.token}" />
+	<meta name="_csrf_header" th:content="${_csrf.headerName}">
+
+	<script src="/js/jquery-3.6.2.min.js"></script>
+	<script src="/js/comment.js"></script>
+	<script src="/js/recommend.js"></script>
+	<!--/* css */-->
+	<link th:href="@{/css/common.css}" rel="stylesheet" />
+	<link th:href="@{/css/viewboard.css}" rel="stylesheet" />
+</th:block>
+<body>
+	<th:block layout:fragment="header" th:include="@{/fragments/header}"></th:block>
+
+	<div layout:fragment="content" class="content">
+		<div class="content_header">
+			<input type="hidden" class="iboardnum" value="${iboardnum}" readonly>
+			<hr class="firstline">
+			<div class="boardtitle_div">
+				<th:block th:if="${data.registerdate == data.modifieddate}">
+					<span class="boardregisterdate">등록일자 :
+						[[${data.registerdate}]]</span>
+				</th:block>
+				<th:block th:if="${data.registerdate != data.modifieddate}">
+					<span class="boardmodifieddate">수정일자 :
+						[[${data.modifieddate}]]</span>
+				</th:block>
+				<label for="boardtitle"> 제목 : <span class="boardtitle">[[${data.title}]]</span>
+				</label>
+			</div>
+
+			<hr class="secondline">
+			<div class="boardwriter_div">
+				<span class="boardwriter"> 작성자 : [[${data.writer}]]</span> <span
+					class="viewcount">조회 수 : [[${data.viewcount}]]</span> <span
+					class="recommendcount">추천 수 :
+					[[${data.recommendcount}]]&nbsp;</span>
+			</div>
+		</div>
+
+		<div class="boardcontent">
+			<hr class="thirdline">
+			<span class="card-body text-dark" th:utext="${data.content}"></span>
+		</div>
+		<div class="recommend_block">
+			<p>
+				<button class="recommendbutton" th:iboardnum="${iboardnum}"
+					th:onclick="javascript:recommend_board(this.getAttribute('iboardnum'), 'Y')">추천</button>
+				&nbsp;[[${recommendcount}]]&nbsp;
+				<button class="norecommendbutton" th:iboardnum="${iboardnum}"
+					th:onclick="javascript:recommend_board(this.getAttribute('iboardnum'), 'N')">비추천</button>
+			</p>
+		</div>		
+		<hr class="commentfirstline">
+	</div>
+
+
+	<div layout:fragment="content_comment" class="content_comment">
+		<div class="comment_div">
+			<th:block th:if="${not #lists.isEmpty(commentList)}">
+				<ul th:each="comment : ${commentList}">
+					<li class="comment_seq" style="list-style: none;"><span class="comment_writer">[[${comment.writer}]]
+					</span> 
+						<span class="comment_recommend">
+								<button type="button" th:iboardnum="${comment.iboardnum}"
+									th:commentno="${comment.commentno}" th:seq="${comment.seq}" th:recommend="Y" th:recommendcountvalue=${comment.recommendcount}
+									th:onclick="javascript:recommend_comment(this.getAttribute('iboardnum'), this.getAttribute('commentno'), this.getAttribute('seq'), this.getAttribute('recommend'), this, this.getAttribute('recommendcountvalue'))">추천</button>&nbsp;
+								<span class="comment_recomment_count">[[${comment.recommendcount}]]</span>
+						</span> 
+						<span class="comment_norecommend">
+								<button type="button" th:iboardnum="${comment.iboardnum}"
+									th:commentno="${comment.commentno}" th:seq="${comment.seq}" th:recommend="N" th:recommendcountvalue=${comment.norecommendcount}
+									th:onclick="javascript:recommend_comment(this.getAttribute('iboardnum'), this.getAttribute('commentno'), this.getAttribute('seq'), this.getAttribute('recommend'), this, this.getAttribute('recommendcountvalue'))">비추천</button>&nbsp;
+								<span class="comment_recomment_count">[[${comment.norecommendcount}]]</span>
+						</span>
+					<th:block
+							th:if="${comment.registereddate == comment.modifieddate}">
+							<span class="comment_date"> [[${comment.registereddate}]]
+							</span>
+						</th:block> <th:block
+							th:unless="${comment.registereddate == comment.modifieddate}">
+							<span class="comment_date">
+								(수정됨)[[${comment.modifieddate}]] </span>
+						</th:block>
+
+						<div class="comment_content_div">
+							<p class="comment_content">[[${comment.content}]]</p>
+						</div> <th:block th:if="${comment.exist eq 0}">
+							<button class="recomment_reply" type="button"
+								th:onclick="javascript:viewWriteRecomment(this)">답글</button>
+						</th:block> <th:block th:if="${comment.exist eq 1}">
+							<button class="recomment_reply" type="button"
+								th:onclick="javascript:viewWriteRecomment(this)">답글</button>
+							<button class="comment_replybtn"
+								th:iboardnum="${comment.iboardnum}"
+								th:commentno=${comment.commentno} type="button"
+								th:onclick="javascript:replybutton(this.getAttribute('iboardnum'), this.getAttribute('commentno'), this)">답글
+								보기</button>
+							<div class="recommentList_block"></div>
+						</th:block> <span class="reply" style="display: none;"> <input
+							class="recomment_write_input" id="recomment_write_input"
+							placeholder="답글을 남겨주세요">
+							<button type="button" class="comment_submit_button"
+								th:iboardnum="${comment.iboardnum}"
+								th:commentno=${comment.commentno}
+								th:content="${comment.content}"
+								th:onclick="javascript:writeRecomment(this.getAttribute('iboardnum'), this.getAttribute('commentno'), this.getAttribute('content'), this)">쓰기</button>
+					</span>
+						<hr></li>
+				</ul>
+			</th:block>
+			<th:block th:unless="${not #lists.isEmpty(commentList)}">
+            	댓글이 존재하지 않습니다.
+            </th:block>
+
+		</div>
+		<!--  div class="comment_page_div">
             	<th:block th:each="num : ${#numbers.sequence(1,${comment_total_count})}">
             		<button>[[${num}]]</button>
             	</th:block>
             </div-->
-            <div class="comment_write_div">
-            	<span>
-            		<input class="comment_write_input" id="comment_write_input" style="width: 900px; height: 100px;" placeholder="댓글 작성 구간"> 
-            		<button 
-            			type="button" 
-            			class="comment_submit_button"
-            			th:iboardnum="${iboardnum}" 
-            			th:onclick="javascript:writeComment(this.getAttribute('iboardnum'))">쓰기</button>
-            	</span>
-            	<hr>
-            </div>
-        </div>
-        <div layout:fragment="content_boards" class="content_boards">
-       		<span>이전 게시판 </span>
-	        <th:block th:if="${pboard != null}">
-	        	<table>
-	        		<tr>
-	        			<td><a th:href="'/board' + '/c' + ${pboard.categorynum}" th:text="${pboard.categoryname}"></a> </td>
-		            	<td><a 	th:href="'/board' + '/c' + ${pboard.categorynum} + '/b' + ${pboard.boardnum} + '?previouscategorynum=' + ${category_num}" 
-		            			th:text="${pboard.title} + ' ' +${pboard.existimgfile}"></a></td>
-		            	<td th:text="${pboard.writer}"></td>
-		            	<td th:text="${pboard.registerdate}"></td>
-		            	<td th:text="${pboard.viewcount}"></td>
-		            	<td th:text="${pboard.recommendcount}"></td>
-	        		</tr>
-	        	</table>
-	        </th:block>
-	        <th:block th:unless="${pboard != null}">
-	        	<p>게시물이 존재하지 않습니다.</p>
-	        </th:block>
-			<span>다음 게시판 </span>
-	        <th:block th:if="${nboard != null}">
-	        	<table>
-	        		<tr>
-	        			<td><a th:href="'/board' + '/c' + ${nboard.categorynum}" th:text="${nboard.categoryname}"></a> </td>
-		            	<td><a 	th:href="'/board' + '/c' + ${nboard.categorynum} + '/b' + ${nboard.boardnum} + '?previouscategorynum=' + ${category_num}" 
-		            			th:text="${nboard.title} + ' ' +${nboard.existimgfile}"></a></td>
-		            	<td th:text="${nboard.writer}"></td>
-		            	<td th:text="${nboard.registerdate}"></td>
-		            	<td th:text="${nboard.viewcount}"></td>
-		            	<td th:text="${nboard.recommendcount}"></td>
-	        		</tr>
-	        	</table>
-	        </th:block>
-	        <th:block th:unless="${nboard != null}">
-	        	<p>게시물이 존재하지 않습니다.</p>
-	        </th:block>
+		<div class="comment_write_div">
+			<span> <input class="comment_write_input"
+				id="comment_write_input" style="width: 900px; height: 100px;"
+				placeholder="댓글 작성 구간">
+				<button type="button" class="comment_submit_button"
+					th:iboardnum="${iboardnum}"
+					th:onclick="javascript:writeComment(this.getAttribute('iboardnum'))">쓰기</button>
+			</span>
+			<hr>
+		</div>
+	</div>
+	<div layout:fragment="content_boards" class="content_boards">
+		<span>이전 게시판 </span>
+		<th:block th:if="${pboard != null}">
+			<table>
+				<tr>
+					<td><a th:href="'/board' + '/c' + ${pboard.categorynum}"
+						th:text="${pboard.categoryname}"></a></td>
+					<td><a
+						th:href="'/board' + '/c' + ${pboard.categorynum} + '/b' + ${pboard.boardnum} + '?previouscategorynum=' + ${category_num}"
+						th:text="${pboard.title} + ' ' +${pboard.existimgfile}"></a></td>
+					<td th:text="${pboard.writer}"></td>
+					<td th:text="${pboard.registerdate}"></td>
+					<td th:text="${pboard.viewcount}"></td>
+					<td th:text="${pboard.recommendcount}"></td>
+				</tr>
+			</table>
+		</th:block>
+		<th:block th:unless="${pboard != null}">
+			<p>게시물이 존재하지 않습니다.</p>
+		</th:block>
+		<span>다음 게시판 </span>
+		<th:block th:if="${nboard != null}">
+			<table>
+				<tr>
+					<td><a th:href="'/board' + '/c' + ${nboard.categorynum}"
+						th:text="${nboard.categoryname}"></a></td>
+					<td><a
+						th:href="'/board' + '/c' + ${nboard.categorynum} + '/b' + ${nboard.boardnum} + '?previouscategorynum=' + ${category_num}"
+						th:text="${nboard.title} + ' ' +${nboard.existimgfile}"></a></td>
+					<td th:text="${nboard.writer}"></td>
+					<td th:text="${nboard.registerdate}"></td>
+					<td th:text="${nboard.viewcount}"></td>
+					<td th:text="${nboard.recommendcount}"></td>
+				</tr>
+			</table>
+		</th:block>
+		<th:block th:unless="${nboard != null}">
+			<p>게시물이 존재하지 않습니다.</p>
+		</th:block>
 
-        </div>
-        
-        
-        <th:block layout:fragment="footer" th:include="@{/fragments/footer}"></th:block>	
-    </body>
+	</div>
+
+
+	<th:block layout:fragment="footer" th:include="@{/fragments/footer}"></th:block>
+</body>
 </html>

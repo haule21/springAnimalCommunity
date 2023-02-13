@@ -32,12 +32,14 @@ public interface BoardMapper {
 	
 	List<BoardNumSelectDTO> SelectBoardNum();
 	ViewBoardDTO SelectBoard(int categorynum, int boardnum);
+	int SelectBoardRecommendCount(String iboardnum);
 	List<String> SelectBoardMediaData(String iboardnum);	
 	List<BoardCommentDTO> SelectBoardComments(String iboardnum, int commentno);
 	int SelectCheckBoardCommentRecommendHistory(String ireplynum, String userid);
 	int SelectBoardCommentMAXCommentNo(String iboardnum);
 	int SelectBoardCommentMAXSeq(String iboardnum, int commentno);
 	List<BoardCommentDTO> SelectBoardRecomments(String iboardnum, int commentno);
+	
 	
 	int InsertBoardData(String iboardnum);
 	int InsertBoardMedia(BoardMediaFileInsertDTO media);
