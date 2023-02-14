@@ -27,6 +27,7 @@ function writeComment(iboardnum){
     	},
 		success : function(data){
 			$(".comment_div").load("/comment/view?iboardnum="+iboardnum);
+			$("#cn"+data.commentno).focus();
 			console.log(data);
 		},
 		error : function(request,status,error){
@@ -35,17 +36,15 @@ function writeComment(iboardnum){
 	});
 }
 
-function replybutton(iboardnum, commentno, button){
-
-	$(button).parent().children('div.recommentList_block').load("/recomments?"+"iboardnum="+iboardnum+"&commentno="+commentno);
-}
-function writeRecomment(iboardnum, commentno, content, button){
+function writeRecomment(iboardnum, parentcommentno, button){
+	
+	var content = $(button).parent().children('input.recomment_write_input').val();
 	
 	$.ajax({
 		type : 'POST',
 		data : {
 			"iboardnum" : iboardnum,
-			"commentno" : commentno,
+			"parentcommentno" : parentcommentno,
 			"content" : content
 		},
 		url : "/comment/recomment/write",
@@ -55,8 +54,8 @@ function writeRecomment(iboardnum, commentno, content, button){
     	},
 		success : function(data) { 
 			
-			$(button).parent().children('div.recommentList_block').load("/recomments?iboardnum="+iboardnum+"&commentno="+commentno);
-			$(button).parent().children('div.recommentList_block').focus();
+			$(".comment_div").load("/comment/view?iboardnum="+iboardnum);
+			$("#cn"+data.commentno).focus();
 			console.log(data);
 			
 		}
@@ -66,27 +65,12 @@ function writeRecomment(iboardnum, commentno, content, button){
 }
 
 function viewWriteRecomment(button){
-	$(button).parent().children('span.reply').css('display','block');
+	$(button).parent().parent('li.comment').children('div.reply_div').css('display','block');
 	$(button).removeAttr("onclick");
 	$(button).attr("onclick", "javascript:hideWriteRecomment(this)");
 }
 function hideWriteRecomment(button){
-	$(button).parent().children('span.reply').css('display','none');
+	$(button).parent().parent('li.comment').children('div.reply_div').css('display','none');
 	$(button).removeAttr("onclick");
 	$(button).attr("onclick", "javascript:viewWriteRecomment(this)");
-}
-
-function viewWriteRecommentReply(button, writer){
-	var temp = $(button).parent('li.comment_seq').children('span.reply'); 
-	temp.css('display','block');
-	temp.text(temp.val() + writer);
-	viewWriteRecomment(button);
-}
-
-function hideRecomments(button){
-	$(button).parent('div.recomment_write_div').css('display','none');
-}
-
-function viewRecomments(button){
-	$(button).parent('li.comment_seq').children('div.recomment_write_div').css('display','block');
 }

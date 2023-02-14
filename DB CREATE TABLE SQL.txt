@@ -82,7 +82,7 @@ create table BOARD_RECOMMEND_HISTORY(
 create table BOARD_COMMENT(
 	I_BOARD_NUM VARCHAR(20) not null, 
 	COMMENT_NO INT not null,
-	SEQ INT not null,
+	PARENT_COMMENT_NO INT not null default 0,
 	REGISTERED_DATE DATETIME not null default CURRENT_TIMESTAMP,
 	WRITER VARCHAR(33) not null,
 	CONTENT VARCHAR(1500) not null,
@@ -94,10 +94,10 @@ create table BOARD_COMMENT(
 )engine=INNODB default CHARSET=UTF8MB4
 
 create table BOARD_COMMENT_RECOMMEND_HISTORY(
-	I_REPLY_NUM VARCHAR(25) not null,
+	COMMENT_NO INT not null,
 	USERID VARCHAR(16) not null,
 	RECOMMEND CHAR(1) not null default 'Y',
-	constraint BOARD_COMMENT_RECOMMEND_HISTORY_PK primary key(I_REPLY_NUM, USERID)
+	constraint BOARD_COMMENT_RECOMMEND_HISTORY_PK primary key(COMMENT_NO, USERID)
 ) engine=INNODB default CHARSET=UTF8MB4
 
 create table USERS(

@@ -66,56 +66,49 @@
 	<div layout:fragment="content_comment" class="content_comment">
 		<div class="comment_div">
 			<th:block th:if="${not #lists.isEmpty(commentList)}">
-				<ul th:each="comment : ${commentList}">
-					<li class="comment_seq" style="list-style: none;"><span class="comment_writer">[[${comment.writer}]]
+				<ul class="comment_ui">
+					<li th:each="comment : ${commentList}" th:class="comment" th:classappend="lv + ${comment.level}" th:id="cn + ${comment.commentno}" style="list-style: none;"><span class="comment_writer">[[${comment.writer}]]
 					</span> 
-						<span class="comment_recommend">
-								<button type="button" th:iboardnum="${comment.iboardnum}"
-									th:commentno="${comment.commentno}" th:seq="${comment.seq}" th:recommend="Y" th:recommendcountvalue=${comment.recommendcount}
-									th:onclick="javascript:recommend_comment(this.getAttribute('iboardnum'), this.getAttribute('commentno'), this.getAttribute('seq'), this.getAttribute('recommend'), this, this.getAttribute('recommendcountvalue'))">추천</button>&nbsp;
-								<span class="comment_recomment_count">[[${comment.recommendcount}]]</span>
-						</span> 
+					<div class="comment_header_div">
+						<button class="reply_btn" th:onclick="javascript:viewWriteRecomment(this)">답글</button>
 						<span class="comment_norecommend">
 								<button type="button" th:iboardnum="${comment.iboardnum}"
-									th:commentno="${comment.commentno}" th:seq="${comment.seq}" th:recommend="N" th:recommendcountvalue=${comment.norecommendcount}
-									th:onclick="javascript:recommend_comment(this.getAttribute('iboardnum'), this.getAttribute('commentno'), this.getAttribute('seq'), this.getAttribute('recommend'), this, this.getAttribute('recommendcountvalue'))">비추천</button>&nbsp;
-								<span class="comment_recomment_count">[[${comment.norecommendcount}]]</span>
+									th:commentno="${comment.commentno}" th:recommend="N" th:recommendcountvalue=${comment.norecommendcount}
+									th:onclick="javascript:recommend_comment(this.getAttribute('iboardnum'), this.getAttribute('commentno'), this.getAttribute('recommend'), this, this.getAttribute('recommendcountvalue'))">비추천</button>&nbsp;
+								<span class="comment_recomment_count">[[${comment.norecommendcount}]]&nbsp;&nbsp;</span>
 						</span>
-					<th:block
+						<span class="comment_recommend">
+								<button type="button" th:iboardnum="${comment.iboardnum}"
+									th:commentno="${comment.commentno}" th:recommend="Y" th:recommendcountvalue=${comment.recommendcount}
+									th:onclick="javascript:recommend_comment(this.getAttribute('iboardnum'), this.getAttribute('commentno'), this.getAttribute('recommend'), this, this.getAttribute('recommendcountvalue'))">추천</button>&nbsp;
+								<span class="comment_recomment_count">[[${comment.recommendcount}]]&nbsp;&nbsp;</span>
+						</span> 
+						
+						
+						<th:block
 							th:if="${comment.registereddate == comment.modifieddate}">
-							<span class="comment_date"> [[${comment.registereddate}]]
+							<span class="comment_date">&nbsp;[[${comment.registereddate}]]
 							</span>
 						</th:block> <th:block
 							th:unless="${comment.registereddate == comment.modifieddate}">
 							<span class="comment_date">
-								(수정됨)[[${comment.modifieddate}]] </span>
+								&nbsp;(수정됨)[[${comment.modifieddate}]] </span>
 						</th:block>
-
+					</div>
 						<div class="comment_content_div">
-							<p class="comment_content">[[${comment.content}]]</p>
-						</div> <th:block th:if="${comment.exist eq 0}">
-							<button class="recomment_reply" type="button"
-								th:onclick="javascript:viewWriteRecomment(this)">답글</button>
-						</th:block> <th:block th:if="${comment.exist eq 1}">
-							<button class="recomment_reply" type="button"
-								th:onclick="javascript:viewWriteRecomment(this)">답글</button>
-							<button class="comment_replybtn"
-								th:iboardnum="${comment.iboardnum}"
-								th:commentno=${comment.commentno} type="button"
-								th:onclick="javascript:replybutton(this.getAttribute('iboardnum'), this.getAttribute('commentno'), this)">답글
-								보기</button>
-							<div class="recommentList_block"></div>
-						</th:block> <span class="reply" style="display: none;"> <input
-							class="recomment_write_input" id="recomment_write_input"
-							placeholder="답글을 남겨주세요">
+							<p class="comment_content"><span class="parent_nickname">[[${comment.parentwriter}]]</span>&nbsp;[[${comment.content}]]</p>
+						</div> 
+						<div class="reply_div" style="display: none;">
+							<input class="recomment_write_input" id="recomment_write_input" placeholder="답글을 남겨주세요">
 							<button type="button" class="comment_submit_button"
 								th:iboardnum="${comment.iboardnum}"
-								th:commentno=${comment.commentno}
-								th:content="${comment.content}"
-								th:onclick="javascript:writeRecomment(this.getAttribute('iboardnum'), this.getAttribute('commentno'), this.getAttribute('content'), this)">쓰기</button>
-					</span>
-						<hr></li>
+								th:parentcommentno=${comment.commentno}
+								th:onclick="javascript:writeRecomment(this.getAttribute('iboardnum'), this.getAttribute('parentcommentno'), this)">쓰기</button>
+						</div>
+					</li>
+					
 				</ul>
+
 			</th:block>
 			<th:block th:unless="${not #lists.isEmpty(commentList)}">
             	댓글이 존재하지 않습니다.

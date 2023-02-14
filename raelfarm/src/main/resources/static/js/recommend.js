@@ -31,17 +31,18 @@ function recommend_board(iboardnum, recommend){
 	});
 }
 
-function recommend_comment(iboardnum, commentno, seq, recommend, button, count){
-	var ireplynum = iboardnum + ":" + commentno + ":" + seq
-	var data = {
-		"ireplynum" : ireplynum,
-		"recommend" : recommend
-	}
-	console.log(ireplynum, data);
+function recommend_comment(iboardnum, commentno, recommend, button, count){
+
+	
+	console.log($(button).parent());
 	 
     $.ajax({
         type : 'POST',
-        data : data,
+        data : {
+			"iboardnum" : iboardnum,
+			"commentno" : commentno,
+			"recommend" : recommend
+		},
         url : "/comment/recommend",
 		contentType : "application/x-www-form-urlencoded",
         beforeSend: function(xhr){

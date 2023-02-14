@@ -72,24 +72,16 @@ public class BoardServiceImpl implements BoardService{
 		return boardMapper.SelectBoardRecommendCount(iboardnum);
 	}
 	@Override
-	public List<BoardCommentDTO> SelectBoardComments(String iboardnum, int commentno){
-		return boardMapper.SelectBoardComments(iboardnum, commentno);
+	public List<BoardCommentDTO> SelectBoardComments(String iboardnum){
+		return boardMapper.SelectBoardComments(iboardnum);
 	}
 	@Override
-	public int SelectBoardCommentMAXCommentNo(String iboardnum) {
-		return boardMapper.SelectBoardCommentMAXCommentNo(iboardnum);
+	public int SelectBoardCommentMAXCommentNo() {
+		return boardMapper.SelectBoardCommentMAXCommentNo();
 	}
 	@Override
-	public int SelectBoardCommentMAXSeq(String iboardnum, int commentno) {
-		return boardMapper.SelectBoardCommentMAXSeq(iboardnum, commentno);
-	}
-	@Override
-	public int SelectCheckBoardCommentRecommendHistory(String ireplynum, String userid) {
-		return boardMapper.SelectCheckBoardCommentRecommendHistory(ireplynum, userid);
-	}
-	@Override
-	public List<BoardCommentDTO> SelectBoardRecomments(String iboardnum, int commentno){
-		return boardMapper.SelectBoardRecomments(iboardnum, commentno);
+	public int SelectCheckBoardCommentRecommendHistory(int commentno, String userid) {
+		return boardMapper.SelectCheckBoardCommentRecommendHistory(commentno, userid);
 	}
 	@Override
 	public int InsertBoardData(String iboardnum) {
@@ -126,13 +118,13 @@ public class BoardServiceImpl implements BoardService{
 	}
 	
 	@Override
-	public int InsertBoardComment(String i_board_num,int comment_no,int seq,String writer,String content) {
-		return boardMapper.InsertBoardComment(i_board_num, comment_no, seq, writer, content);
+	public int InsertBoardComment(String iboardnum,int commentno, int parentcommentno, String writer,String content) {
+		return boardMapper.InsertBoardComment(iboardnum, commentno, parentcommentno, writer, content);
 	}
 	
 	@Override
-	public int InsertBoardCommentRecommendHistory(String ireplynum, String userid, String recommend) {
-		return boardMapper.InsertBoardCommentRecommendHistory(ireplynum, userid, recommend);
+	public int InsertBoardCommentRecommendHistory(int commentno, String userid, String recommend) {
+		return boardMapper.InsertBoardCommentRecommendHistory(commentno, userid, recommend);
 	}
 	
 	@Override
@@ -140,8 +132,8 @@ public class BoardServiceImpl implements BoardService{
 		return boardMapper.UpdateBoardTitleContent(categorynum, boardnum, title, content);
 	}
 	@Override
-	public int UpdateIncreaseBoardCommentRecommend(String iboardnum, int commentno, int seq, String recommend) {
-		return boardMapper.UpdateIncreaseBoardCommentRecommend(iboardnum, commentno, seq, recommend);
+	public int UpdateIncreaseBoardCommentRecommend(String iboardnum, int commentno, String recommend) {
+		return boardMapper.UpdateIncreaseBoardCommentRecommend(iboardnum, commentno, recommend);
 	}
 	
 }

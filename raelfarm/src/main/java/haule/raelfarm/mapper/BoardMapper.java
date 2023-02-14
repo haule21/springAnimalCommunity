@@ -34,22 +34,19 @@ public interface BoardMapper {
 	ViewBoardDTO SelectBoard(int categorynum, int boardnum);
 	int SelectBoardRecommendCount(String iboardnum);
 	List<String> SelectBoardMediaData(String iboardnum);	
-	List<BoardCommentDTO> SelectBoardComments(String iboardnum, int commentno);
-	int SelectCheckBoardCommentRecommendHistory(String ireplynum, String userid);
-	int SelectBoardCommentMAXCommentNo(String iboardnum);
-	int SelectBoardCommentMAXSeq(String iboardnum, int commentno);
-	List<BoardCommentDTO> SelectBoardRecomments(String iboardnum, int commentno);
-	
+	List<BoardCommentDTO> SelectBoardComments(String iboardnum);
+	int SelectCheckBoardCommentRecommendHistory(int commentno, String userid);
+	int SelectBoardCommentMAXCommentNo();
 	
 	int InsertBoardData(String iboardnum);
 	int InsertBoardMedia(BoardMediaFileInsertDTO media);
 	int InsertBoard(int categorynum, int boardnum, String title, String writer, String existimgfile, String content);
-	int InsertBoardCommentRecommendHistory(String ireplynum, String userid, String recommend);
+	int InsertBoardCommentRecommendHistory(int commentno, String userid, String recommend);
 	
 	int InsertBoardPreviousContent(String iboardnum, int seq, String title,String content);
 	
-	int InsertBoardComment(String iboardnum,int comment_no,int seq,String writer,String content);
+	int InsertBoardComment(String iboardnum,int commentno, int parentcommentno, String writer,String content);
 	
 	int UpdateBoardTitleContent(int categorynum, int boardnum,String title, String content);
-	int UpdateIncreaseBoardCommentRecommend(String iboardnum, int commentno, int seq, String recommend);
+	int UpdateIncreaseBoardCommentRecommend(String iboardnum, int commentno, String recommend);
 }

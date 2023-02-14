@@ -22,20 +22,18 @@ public interface BoardService {
 	public List<BoardNumSelectDTO> SelectBoardNumMAX();
 	public ViewBoardDTO SelectBoard(int categorynum, int boardnum);
 	public int SelectBoardRecommendCount(String iboardnum);
-	List<BoardCommentDTO> SelectBoardComments(String iboardnum, int commentno);
-	int SelectBoardCommentMAXCommentNo(String iboardnum);
-	int SelectBoardCommentMAXSeq(String iboardnum, int commentno);
-	List<BoardCommentDTO> SelectBoardRecomments(String iboardnum, int commentno);
-	int SelectCheckBoardCommentRecommendHistory(String ireplynum, String userid);
+	List<BoardCommentDTO> SelectBoardComments(String iboardnum);
+	int SelectBoardCommentMAXCommentNo();
+	int SelectCheckBoardCommentRecommendHistory(int commentno, String userid);
 	public int InsertBoardData(String iboardnum);
 	public int InsertBoardMedia(BoardMediaFileInsertDTO media);
 	public int InsertBoard(int categorynum, int boardnum, String title, String writer, String existimgfile, String content);
 	public void InvokeBoard(List<BoardMediaFileInsertDTO> media, String iboardnum, int categorynum, int boardnum, String title, String writer, String existimgfile, String content);
 	
 	int InsertBoardPreviousContent(String iboardnum, int seq, String title,String content);
-	int InsertBoardComment(String i_board_num,int comment_no,int seq,String writer,String content);
-	int InsertBoardCommentRecommendHistory(String ireplynum, String userid, String recommend);
+	int InsertBoardComment(String iboardnum,int commentno, int parentcommentno, String writer,String content);
+	int InsertBoardCommentRecommendHistory(int commentno, String userid, String recommend);
 	
 	int UpdateBoardTitleContent(int categorynum, int boardnum,String title, String content);
-	int UpdateIncreaseBoardCommentRecommend(String iboardnum, int commentno, int seq, String recommend);
+	int UpdateIncreaseBoardCommentRecommend(String iboardnum, int commentno, String recommend);
 }

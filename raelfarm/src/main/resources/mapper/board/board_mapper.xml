@@ -214,7 +214,7 @@
 		]]>
 	</insert>
 	
-	<!--   i_board_num comment_no seq registereddate writer content modifieddate recommendcount norecommendcount deleted-->
+	<!--   iboardnum commentno parentcommentno registereddate writer content modifieddate recommendcount norecommendcount deleted -->
 	<insert id="InsertBoardComment">
 		<![CDATA[
 			INSERT INTO BOARD_COMMENT_TEST VALUES(
@@ -244,41 +244,65 @@
 	
 	<select id="SelectBoardComments" resultType="haule.raelfarm.dto.BoardCommentDTO">
 		<![CDATA[
-			SELECT
-				 I_BOARD_NUM as iboardnum,
-				 COMMENT_NO as commentno,
-				 SEQ as seq,
-				 REGISTERED_DATE as registered_date,
-				 (SELECT NICKNAME FROM USERS_TEST WHERE USERID = A.WRITER) as writer,
-				 CONTENT as content,
-				 MODIFIED_DATE as modified_date,
-				 RECOMMEND_COUNT as recommendcount,
-				 NO_RECOMMEND_COUNT as norecommendcount,
-				 DELETED as deleted,
-				 (SELECT 
-				 		IFNULL(MIN(1), 0)
-				 	FROM
-				 		DUAL
-				 	WHERE
-						EXISTS (SELECT 1 FROM BOARD_COMMENT_TEST WHERE A.I_BOARD_NUM = I_BOARD_NUM AND A.COMMENT_NO = COMMENT_NO AND SEQ > 0)) AS exist
-			FROM
-				BOARD_COMMENT_TEST A
-			WHERE
-				I_BOARD_NUM = #{arg0}
-			AND			
+			WITH RECURSIVE CTE AS (
+				SELECT
+					I_BOARD_NUM as iboardnum,
+					COMMENT_NO as commentno,
+					PARENT_COMMENT_NO as parentcommentno,
+					CAST("" as NCHAR(16)) as parentcommentwriter,
+					1 as level,
+					REGISTERED_DATE as registereddate,
+					WRITER as writer,
+					CONTENT as content,
+					MODIFIED_DATE as modifieddate,
+					RECOMMEND_COUNT as recommendcount,
+					NO_RECOMMEND_COUNT as norecommendcount,
+					DELETED as deleted,
+					CONVERT(COMMENT_NO, CHAR) as path
+				FROM
+					BOARD_COMMENT_TEST
+				WHERE
+					PARENT_COMMENT_NO = 0
+				AND
+					I_BOARD_NUM = #{arg0}
+				UNION all
+				SELECT
+					A.I_BOARD_NUM as iboardnum,
+					A.COMMENT_NO as commentno,
+					A.PARENT_COMMENT_NO as parentcommentno,
+					B.WRITER as parentcommentwriter,
+					B.LEVEL + 1 as level,
+					A.REGISTERED_DATE as registereddate,
+					A.WRITER as writer,
+					A.CONTENT as content,
+					A.MODIFIED_DATE as modifieddate,
+					A.RECOMMEND_COUNT as recommendcount,
+					A.NO_RECOMMEND_COUNT as norecommendcount,
+					A.DELETED as deleted,
+					CONCAT(B.PATH,'-',A.COMMENT_NO) as path
+				FROM
+					BOARD_COMMENT_TEST A, CTE B
+				WHERE
+					A.PARENT_COMMENT_NO = B.commentno
+				AND
+					B.iboardnum = #{arg0}
+			)
+			SELECT 
+				iboardnum, 
+				commentno, 
+				parentcommentno, 
+				(select nickname from users_test where userid = CTE.parentcommentwriter) as parentwriter,
+				level, 
+				registereddate, 
+				(select nickname from users_test where userid = CTE.writer) as writer, 
+				content, 
+				modifieddate, 
+				recommendcount,
+				norecommendcount,
+				deleted
+			FROM CTE
+				ORDER BY path
 		]]>
-		<choose>
-			<when test = "arg1 == '-1'" >
-				<![CDATA[
-					SEQ = 0
-				]]>	
-			</when>
-			<otherwise>
-				<![CDATA[
-					COMMENT_NO = #{arg1} AND SEQ > 0
-				]]>	
-			</otherwise>
-		</choose>
 	</select>
 	
 	<select id="SelectBoardCommentMAXCommentNo" resultType="int">
@@ -287,8 +311,6 @@
 				IFNULL(MAX(COMMENT_NO), 0) AS COMMENT_NO
 			FROM
 				BOARD_COMMENT_TEST
-			WHERE
-				I_BOARD_NUM = #{arg0}
 		]]>
 	</select>
 	
@@ -317,7 +339,7 @@
 						FROM
 							BOARD_COMMENT_RECOMMEND_HISTORY_TEST
 						WHERE
-							I_REPLY_NUM = #{arg0}
+							COMMENT_NO = #{arg0}
 						AND
 							USERID = #{arg1}
 					)
@@ -346,14 +368,12 @@
 			UPDATE 
 				BOARD_COMMENT_TEST 
 			SET 
-				RECOMMEND_COUNT = (CASE WHEN 'Y' = #{arg3} THEN (RECOMMEND_COUNT + 1) ELSE RECOMMEND_COUNT END), 
-				NO_RECOMMEND_COUNT = (CASE WHEN 'Y' = #{arg3} THEN NO_RECOMMEND_COUNT ELSE (NO_RECOMMEND_COUNT + 1) END)
+				RECOMMEND_COUNT = (CASE WHEN 'Y' = #{arg2} THEN (RECOMMEND_COUNT + 1) ELSE RECOMMEND_COUNT END), 
+				NO_RECOMMEND_COUNT = (CASE WHEN 'Y' = #{arg2} THEN NO_RECOMMEND_COUNT ELSE (NO_RECOMMEND_COUNT + 1) END)
 			WHERE
 				I_BOARD_NUM = #{arg0} 
 			AND
 				COMMENT_NO = #{arg1} 
-			AND
-				SEQ = #{arg2}
 		]]>
 	</update>
 	
