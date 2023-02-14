@@ -13,7 +13,7 @@
 }
 
 
-@media screen and (max-width:2100px){
+@media screen and (max-width:1500px){
 	.mainBody {
 		float: center;
 	}
@@ -40,7 +40,7 @@
 	}
 }
 
-@media screen and (min-width:2100px){
+@media screen and (min-width:1500px){
 	.mainBody{
 		float: center;
 		padding	: 5px 50px;
@@ -48,12 +48,12 @@
 
 	.left{	
 		float: left;
-		width: 600px;
+		width: 450px;
 		padding	: 5px 0px;
 	}
 	 .right{
 	 	float: right;
-		width: 600px;
+		width: 450px;
 		padding	: 5px 0px;
 	 }	
 	

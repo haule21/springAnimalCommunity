@@ -22,6 +22,7 @@ import haule.raelfarm.controller.StrategyCategory.Category200;
 import haule.raelfarm.controller.StrategyCategory.Category300;
 import haule.raelfarm.controller.StrategyCategory.Category400;
 import haule.raelfarm.controller.StrategyCategory.Category500;
+import haule.raelfarm.controller.StrategyCategory.Category600;
 import haule.raelfarm.controller.StrategyCategory.CategoryStrategy;
 import haule.raelfarm.dto.BoardCommentDTO;
 import haule.raelfarm.dto.BoardMediaFileInsertDTO;
@@ -66,7 +67,7 @@ public class BoardController {
 	BoardRecommendHistoryRepository boardRecommendHistoryRepository;
 	
 	private static final CategoryStrategy[] categoryStrategyList = new CategoryStrategy[] {
-			null, new Category100(), new Category200(), new Category300(), new Category400(), new Category500()
+			null, new Category100(), new Category200(), new Category300(), new Category400(), new Category500(), new Category600()
 	};
 	
 	/* 

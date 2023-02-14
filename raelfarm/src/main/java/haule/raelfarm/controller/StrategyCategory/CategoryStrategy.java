@@ -2,7 +2,6 @@ package haule.raelfarm.controller.StrategyCategory;
 
 import java.util.List;
 
-import haule.raelfarm.dto.CategorySelectDTO;
 import haule.raelfarm.dto.ViewBoardsDTO;
 import haule.raelfarm.service.BoardService;
 

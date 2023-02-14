@@ -22,6 +22,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import haule.raelfarm.dto.MainSelectDTO;
 import haule.raelfarm.dto.UserInsertDTO;
+import haule.raelfarm.repository.CategoryRepository;
 import haule.raelfarm.service.BoardService;
 import haule.raelfarm.service.UsersService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,6 +39,7 @@ public class MainController {
 	
 	@Autowired
 	BoardService boardService;
+
 	
 	@Autowired
 	PasswordEncoder passwordEncoder;
@@ -85,6 +87,7 @@ public class MainController {
 		mv.setViewName("content/main/main");
 		return mv;
 	}
+
 	
 	@RequestMapping("/login")
 	public ModelAndView login(ModelAndView mv) {

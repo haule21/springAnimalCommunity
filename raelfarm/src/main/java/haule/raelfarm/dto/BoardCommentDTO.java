@@ -68,13 +68,6 @@ public class BoardCommentDTO {
 			long diffHours = diffSec / (60*60); //일자수 차이
 			long diffMinutes = diffSec / (60); //일자수 차이
 			
-			System.out.println("=====================================");
-			System.out.println(diffSec);
-			System.out.println(diffDays);
-			System.out.println(diffHours);
-			System.out.println(diffMinutes);
-			System.out.println("=====================================");
-			
 			if(diffHours < 24) {
 					
 				if(diffMinutes < 60) {
