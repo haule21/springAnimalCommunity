@@ -1,21 +1,17 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
     <div class="header">
+    	<div class="aboutLogin">
+    		
+    	</div>
         <div class="top">
-			<ul>
-				<li class="logoLi">
-					<img class="bannerImg" src="/img/LOGO.PNG" width="450" height="75" >
-				</li>
-				<li>
-					<div class="bestAnimal">
-						<a>오늘의 최고의 반려!</a> 
-						<p class="animalPicture_Ptag" style="margin:0; display: inline-block;"><img class="animalPicture" src="/img/bow.PNG" style="width:90px;height:80px">
-							<span class="animalName" style="margin:0; bottom:50%;">바우!</span>
-						</p>
-					</div>
-				</li>
-				<li class="tagLi" style="float:right;"><a class="active">태그 별 보기</a></li>
-			</ul>
+        	<a href="/"><img class="bannerImg" src="/img/LOGO.PNG" width="360" height="60" ></a>
+			<div class="bestAnimal">
+				<span><img class="animalPicture" src="/img/bow.PNG"></span>
+				<span class="bestAnimal_title">축하합니다! 이 달의 최고의 반려!</span>
+				<span class="animalName">바우!</span>
+			</div>
+			<a class="active">태그 별 보기</a>
 		</div>
 		<ul class="mainNav">
 			<li class="category_names">
@@ -105,4 +101,35 @@
 			</li>	
 		</ul>
     </div>
+    <script>
+    	$('.category_names')
+    		.mouseenter(
+   				function(){
+   					var categorylist = $(this).children('.category_list');
+   					
+   					if(categorylist.length == 0){
+   						$(this).children('.category_name').css('border','1px solid');
+   	   					$(this).children('.category_name').css('border-image','linear-gradient(to right, #5858AC -50%, #7DC0CE 100%');
+   	   					$(this).children('.category_name').css('border-image-slice','1');
+   					}
+   					else{
+   						categorylist.css('display', 'block');
+   						
+   						$(this).children('.category_name').css('border','1px solid');
+   	   					$(this).children('.category_name').css('border-bottom','0');
+   	   					$(this).children('.category_name').css('border-image','linear-gradient(to right, #5858AC -50%, #7DC0CE 100%');
+   	   					$(this).children('.category_name').css('border-image-slice','1');
+   					}
+   					
+   					
+   					
+   				})
+	    	.mouseleave(
+    			function(){
+    				$(this).children('.category_list').css('display', 'none');	
+    				$(this).children('.category_name').css('border','0');
+    			});
+    	
+    	;
+    </script>
 </html>

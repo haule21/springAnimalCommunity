@@ -7,6 +7,7 @@
 <th:block layout:fragment="head">
 	<title>TEST PAGE</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="/js/jquery-3.6.2.min.js"></script>
 	<!--/* css */-->
 	<link th:href="@{/css/common.css}" rel="stylesheet" />
 	<link th:href="@{/css/main.css}" rel="stylesheet" />
@@ -34,7 +35,7 @@
 				</div>
 				<hr class="mainBoardLine">
 				<div class="container">
-					<a class="categoryTitle" th:href="|/board/c200|">유머</a>
+					<a class="categoryTitle" th:href="|/board/c400|">유머</a>
 					<th:block th:if="${!#lists.isEmpty(dataList2)}">
 						<ul>
 							<li class="boardTitle" th:each="content : ${dataList2}"><a
@@ -50,7 +51,7 @@
 				</div>
 				<hr class="mainBoardLine">
 				<div class="container">
-					<a class="categoryTitle" th:href="|/board/c300|">좋은 집사 되기</a>
+					<a class="categoryTitle" th:href="|/board/c300|">동물가 뉴스</a>
 					<th:block th:if="${!#lists.isEmpty(dataList3)}">
 						<ul>
 							<li class="boardTitle" th:each="content : ${dataList3}"><a
@@ -66,7 +67,7 @@
 				</div>
 			<hr class="mainBoardLine">
 			</li>
-			<li class="right"><a class="categoryTitle" th:href="|/board/c400|">나의 반려</a>
+			<li class="right"><a class="categoryTitle" th:href="|/board/c200|">나의 반려</a>
 				<div class="imgContainer">
 					<th:block th:if="${!#lists.isEmpty(dataList4)}">
 						<div th:each="content : ${datalist4}" class="imgTextContainer">
@@ -84,7 +85,7 @@
 					</th:block>
 				</div>
 				<hr class="mainBoardLine"> 
-				<a class="categoryTitle" th:href="|/board/c500|">동물가 뉴스</a>
+				<a class="categoryTitle" th:href="|/board/c500|">소식</a>
 				<div class="imgContainer_news">
 					<th:block th:if="${!#lists.isEmpty(dataList5)}">
 						<div th:each="content : ${datalist4}"
