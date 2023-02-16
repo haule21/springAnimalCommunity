@@ -62,3 +62,7 @@ function recommend_comment(iboardnum, commentno, recommend, button, count){
 		},
 	});
 }
+
+function modifyboard(ctn, bn){
+	location.href="/board/c"+ctn+"/b"+bn+"/modify";
+}

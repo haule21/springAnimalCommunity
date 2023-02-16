@@ -58,7 +58,12 @@
 				<button class="norecommendbutton" th:iboardnum="${iboardnum}"
 					th:onclick="javascript:recommend_board(this.getAttribute('iboardnum'), 'N')">비추천</button>
 			</p>
-		</div>		
+		</div>
+		<th:block th:if="${checkwriter} == 1">
+			<button type="button" th:categorynum="${ctn}" th:boardnum="${bn}" 
+			th:onclick="javascript:modifyboard(this.getAttribute('categorynum'),this.getAttribute('boardnum'))">게시물 수정하기</button>
+		</th:block>
+		
 		<hr class="commentfirstline">
 	</div>
 
@@ -132,48 +137,47 @@
 		</div>
 	</div>
 	<div layout:fragment="content_boards" class="content_boards">
-		<span>이전 게시판 </span>
-		<th:block th:if="${pboard != null}">
-			<table>
-				<tr>
-					<td><a th:href="'/board' + '/c' + ${pboard.categorynum}"
-						th:text="${pboard.categoryname}"></a></td>
-					<td><a
-						th:href="'/board' + '/c' + ${pboard.categorynum} + '/b' + ${pboard.boardnum} + '?previouscategorynum=' + ${category_num}"
-						th:text="${pboard.title} + ' ' +${pboard.existimgfile}"></a></td>
-					<td th:text="${pboard.writer}"></td>
-					<td th:text="${pboard.registerdate}"></td>
-					<td th:text="${pboard.viewcount}"></td>
-					<td th:text="${pboard.recommendcount}"></td>
-				</tr>
-			</table>
-		</th:block>
-		<th:block th:unless="${pboard != null}">
-			<p>게시물이 존재하지 않습니다.</p>
-		</th:block>
-		<span>다음 게시판 </span>
-		<th:block th:if="${nboard != null}">
-			<table>
-				<tr>
-					<td><a th:href="'/board' + '/c' + ${nboard.categorynum}"
-						th:text="${nboard.categoryname}"></a></td>
-					<td><a
-						th:href="'/board' + '/c' + ${nboard.categorynum} + '/b' + ${nboard.boardnum} + '?previouscategorynum=' + ${category_num}"
-						th:text="${nboard.title} + ' ' +${nboard.existimgfile}"></a></td>
-					<td th:text="${nboard.writer}"></td>
-					<td th:text="${nboard.registerdate}"></td>
-					<td th:text="${nboard.viewcount}"></td>
-					<td th:text="${nboard.recommendcount}"></td>
-				</tr>
-			</table>
-		</th:block>
-		<th:block th:unless="${nboard != null}">
-			<p>게시물이 존재하지 않습니다.</p>
-		</th:block>
-
+		<div class="content_boards_div">
+			<span>이전 게시판 </span>
+			<th:block th:if="${pboard != null}">
+				<table>
+					<tr>
+						<td><a th:href="'/board' + '/c' + ${pboard.categorynum}"
+							th:text="${pboard.categoryname}"></a></td>
+						<td><a
+							th:href="'/board' + '/c' + ${pboard.categorynum} + '/b' + ${pboard.boardnum} + '?previouscategorynum=' + ${category_num}"
+							th:text="${pboard.title} + ' ' +${pboard.existimgfile}"></a></td>
+						<td th:text="${pboard.writer}"></td>
+						<td th:text="${pboard.registerdate}"></td>
+						<td th:text="${pboard.viewcount}"></td>
+						<td th:text="${pboard.recommendcount}"></td>
+					</tr>
+				</table>
+			</th:block>
+			<th:block th:unless="${pboard != null}">
+				<p>게시물이 존재하지 않습니다.</p>
+			</th:block>
+			<span>다음 게시판 </span>
+			<th:block th:if="${nboard != null}">
+				<table>
+					<tr>
+						<td><a th:href="'/board' + '/c' + ${nboard.categorynum}"
+							th:text="${nboard.categoryname}"></a></td>
+						<td><a
+							th:href="'/board' + '/c' + ${nboard.categorynum} + '/b' + ${nboard.boardnum} + '?previouscategorynum=' + ${category_num}"
+							th:text="${nboard.title} + ' ' +${nboard.existimgfile}"></a></td>
+						<td th:text="${nboard.writer}"></td>
+						<td th:text="${nboard.registerdate}"></td>
+						<td th:text="${nboard.viewcount}"></td>
+						<td th:text="${nboard.recommendcount}"></td>
+					</tr>
+				</table>
+			</th:block>
+			<th:block th:unless="${nboard != null}">
+				<p>게시물이 존재하지 않습니다.</p>
+			</th:block>
+		</div>
 	</div>
-
-
 	<th:block layout:fragment="footer" th:include="@{/fragments/footer}"></th:block>
 </body>
 </html>

@@ -45,15 +45,20 @@
 			<div th:unless="${not #lists.isEmpty(boardList)}">
 				<p>게시물이 존재하지 않습니다.</p>
 			</div>
-			<button type="button" th:onclick="location.href=getWriteUrl()">글쓰기</button>
+			<th:block th:if="${category_num} == 100 or ${category_num} >= 500">
+			</th:block>
+			<th:block th:unless="${category_num} == 100 or ${category_num} >= 500">
+				<button th:categorynum="${category_num}" type="button" th:onclick="javascript:getWriteUrl(this.getAttribute('categorynum'))">글쓰기</button>
+			</th:block>
+			
         
         </div>
         
         <th:block layout:fragment="footer" th:include="@{/fragments/footer}"></th:block>	
     </body>
     <script>
-       	function getWriteUrl(){
-       		return  window.location.protocol + "//" + window.location.host + window.location.pathname + "/write";
+       	function getWriteUrl(categorynum){
+       		location.href = "/board/c"+categorynum+"/write";
        	}
     </script>
 </html>

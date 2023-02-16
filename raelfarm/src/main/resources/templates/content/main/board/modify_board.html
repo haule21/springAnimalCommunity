@@ -28,7 +28,8 @@
         <th:block layout:fragment="header" th:include="@{/fragments/header}"></th:block>
 		
         <div layout:fragment="content" class="content">
-        	<form id="summernote_form" method="post" th:action="@{/board/modify}">
+        	<div>
+				        	<form id="summernote_form" method="post" th:action="@{/board/modify}">
         		<input type="hidden" th:value="${_csrf.token}" th:name="${_csrf.parameterName}">
 	        	<input id="summernote_categorynum" th:name="summernote_categorynum" th:value=${data.categorynum} type="hidden" readonly>
 	        	<input id="summernote_boardnum" th:name="summernote_boardnum" th:value=${data.boardnum} type="hidden" readonly>
@@ -52,8 +53,8 @@
 				$("#summernote").summernote('code', $("#summernote_content").val());
 
 			</script>
+        	</div>        	
         </div>
-        
         <th:block layout:fragment="footer" th:include="@{/fragments/footer}"></th:block>	
     </body>
 </html>

@@ -46,18 +46,21 @@ public class SecurityConfig{
 		http
 			.csrf().and()
 			
-			.authorizeHttpRequests()
-				.requestMatchers("/templates/content/login/**").permitAll()
-				.requestMatchers("/register_agree","/register_page").permitAll()
-				.requestMatchers("/register_page/idcheck","/register_page/nicknamecheck"
-						,"/register_page/send-one","/register_page/register").permitAll()
-				.requestMatchers("/static/**").permitAll()
-				.requestMatchers("/js/*.js","/css/*.css","/img/*.PNG").permitAll()
-				.requestMatchers("/img/*/*/*/*").permitAll()
-				.anyRequest()
-				//.access(customAuthorizationManager)
-				.authenticated()
-				.and()
+			.authorizeHttpRequests(
+						auth ->
+						auth.requestMatchers(
+								"/",
+								"/register_agree",
+								"/register_page",
+								"/register_page/idcheck",
+								"/register_page/nicknamecheck",
+								"/board/c*/b*",
+								"/board/c*",
+								"/js/*",".js","/css/*.css","/img/*.PNG").permitAll()
+						.anyRequest().authenticated()
+					)
+//				.requestMatchers("/static/**").permitAll()
+//				.requestMatchers("").permitAll()
 				
 			.formLogin()
 				.usernameParameter("username")

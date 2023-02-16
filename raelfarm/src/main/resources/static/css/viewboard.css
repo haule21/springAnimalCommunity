@@ -2,7 +2,6 @@
 
 
 .content, .content_boards, .content_comment{
-	text-align: center;
 	justify-content: center;
 }
 
@@ -13,25 +12,31 @@
 }
 
 .content_header{
-	width: 70%;
+	width: 1050px;
 	display: inline-block; 
 	margin-left: auto; 
 	margin-right: auto;
 }
 
 .boardcontent{
+	position: relative;
 	display: inline-block;
-	width: 70%;
+	width: 1050px;
 	min-height: 500px;
 	max-height: 100%;
-	margin-left: auto; 
-	margin-right: auto;
 }
 
 .boardcontent img{
-	display:block !important; 
-	width:auto !important; 
-	height:auto !important; 
+	display:block !important;  
+	object-fit: scale-down;
+	object-position: 50% 50%;
+}
+.boardcontent span{
+	position: relative;
+}
+
+.boardcontent span p{
+	position: relative;
 }
 
 .boardtitle{
@@ -66,7 +71,7 @@
 				COMMENT
 =======================================*/ 
 .comment_div{
-	width: 70%;
+	width: 1050px;
 	margin-left: auto; 
 	margin-right: auto;
 }
@@ -81,10 +86,11 @@
 .comment_date{
 	float: left;
 }
-.comment_content_div{
-	width: 100%;
-	display: inline-block;
 
+.content_boards_div, .comment_content_div, .comment_write_div{
+	width: 1050px;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .comment_content{

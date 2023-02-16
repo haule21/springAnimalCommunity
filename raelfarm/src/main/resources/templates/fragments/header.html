@@ -2,10 +2,18 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
     <div class="header">
     	<div class="headerNav">
-    		<p>
-    			<a href="/login">로그인</a>
-    			<a href="/register_agree">회원 가입&nbsp;</a>
-    		</p>
+    		<th:block th:if="${#authentication.getPrincipal()} == 'anonymousUser'">
+	    		<p>
+	    			<a href="/login">로그인</a>
+	    			<a href="/register_agree">회원 가입&nbsp;</a>
+	    		</p>
+    		</th:block>
+    		<th:block th:unless="${#authentication.getPrincipal()} == 'anonymousUser'">
+	    		<p>
+	    			<a href="/logout">로그아웃</a>
+    				<a>마이 페이지</a>
+	    		</p>
+    		</th:block>
     	</div>
         <div class="top">
         	<a href="/"><img class="bannerImg" src="/img/LOGO.PNG" width="360" height="60" ></a>

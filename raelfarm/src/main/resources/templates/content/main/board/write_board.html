@@ -29,18 +29,21 @@
 		
         <div layout:fragment="content" class="content">
         	<form id="summernote_form" method="post" th:action="@{/board/write}">
-        		<input type="hidden" th:value="${_csrf.token}" th:name="${_csrf.parameterName}">
-	        	<p th:text="${summernote_categorynames}"></p>
-	        	<select class="summernote_categorynum" id="summernote_categorynum" th:name="summernote_categorynum">
-	        	
-	        		<option value="" selected="selected">== 카테고리를 선택해주세요 ==</option>
-					<option th:each="ctdata : ${ctdatas}" 
-						th:value=${ctdata.categorynum} th:text="${ctdata.categoryname}"></option>
-			        
-			    </select>
-        		<label for="summernote_title" >제목 : 
-        			<input id="summernote_title" th:name="summernote_title" type="text" maxlength='50' style="width:100%; margin: 5px; outline: none;">
-        		</label>
+        		<div style="margin-bottom: 50px; margin-left: auto; margin-right: auto;">
+        			<input type="hidden" th:value="${_csrf.token}" th:name="${_csrf.parameterName}">
+		        	<p th:text="${summernote_categorynames}"></p>
+		        	<select class="summernote_categorynum" id="summernote_categorynum" th:name="summernote_categorynum">
+		        	
+		        		<option value="" selected="selected">== 카테고리를 선택해주세요 ==</option>
+						<option th:each="ctdata : ${ctdatas}" 
+							th:value=${ctdata.categorynum} th:text="${ctdata.categoryname}"></option>
+				        
+				    </select>
+	        		<label for="summernote_title" >제목 : 
+	        			<input id="summernote_title" th:name="summernote_title" type="text" maxlength='50' style="width:100%; margin: 5px; outline: none;">
+	        		</label>
+        		</div>
+        		
         		<div id="summernote" th:name="summernote"></div>
         		<div style="display:none">
         			<textarea id="summernote_content" th:name="summernote_content"></textarea>

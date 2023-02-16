@@ -99,8 +99,16 @@ public class BoardController {
 	}
 	
 	@RequestMapping("/board/c{categorynum}/write")
-	public ModelAndView Write_Board( @PathVariable("categorynum") String categorynum ) {
+	public ModelAndView Write_Board( @PathVariable("categorynum") String categorynum, HttpServletRequest request) {
 		ModelAndView mv = new ModelAndView();
+		int result_categorynum = (int)(Integer.parseInt(categorynum) / 100);
+		// 이미지 필수 기입 ( check-board 에도 설정 해 놓았음 )
+		if( result_categorynum <= 1 || result_categorynum > 4) {
+			mv.setViewName("redirect:" + request.getHeader("Referer"));
+			return mv;
+		}
+		
+		
 		List<String> datas = CategoryStrategyViewCategorysData(categoryStrategyList[(int)(Integer.valueOf(categorynum) / 100)]);
 		List<CategorySelectDTO> ctn_datas = new ArrayList<CategorySelectDTO>();
 		for(String a : datas) {
@@ -118,6 +126,7 @@ public class BoardController {
 	@RequestMapping(value="/board/write", method=RequestMethod.POST)
 	public ModelAndView Write_Board_Submit( 
 			Principal principal,
+			HttpServletRequest request,
 			@RequestParam(value="summernote_categorynum") int summernote_categorynum, 
 			@RequestParam(value="summernote_title") String summernote_title, 
 			@RequestParam(value="summernote_content") String summernote_content,
@@ -125,12 +134,15 @@ public class BoardController {
 		
 		ModelAndView mv = new ModelAndView();
 		
+		int result_categorynum = (int)(summernote_categorynum / 100);
 		// 이미지 필수 기입 ( check-board 에도 설정 해 놓았음 )
-		if((int)(summernote_categorynum/100) == 4) {
-			if(summernote_images == null) {
-				mv.setViewName("redirect:/");
-				return mv;
-			}
+		if( result_categorynum <= 1 || result_categorynum > 4) {
+			mv.setViewName("redirect:" + request.getHeader("Referer"));
+			return mv;
+		}
+		if( result_categorynum == 2 && summernote_images == null) {
+			mv.setViewName("redirect:" + request.getHeader("Referer"));
+			return mv;
 		}
 		
 		String existImage = "N";
@@ -180,11 +192,19 @@ public class BoardController {
 	
 	@RequestMapping("/board/c{categorynum}/b{boardnum}")
 	public ModelAndView View_Board( @PathVariable(value ="categorynum") String categorynum, @PathVariable(value ="boardnum") String boardnum,  
-									@ModelAttribute("previouscategorynum") String previous_cn,
+									@ModelAttribute("previouscategorynum") String previous_cn, Principal principal,
 									HttpServletRequest req, HttpServletResponse res) {
 		ModelAndView mv = new ModelAndView();
 		String iboardnum = String.format("%05d",Integer.valueOf(categorynum)) + boardnum; 
 		ViewCountUp(iboardnum, req, res);
+		
+		String userid = principal.getName();
+		String writer = boardRepository.SelectWriter(Integer.parseInt(categorynum), Integer.parseInt(boardnum));
+		if(userid.equals(writer)) {
+			mv.addObject("checkwriter", 1);
+			mv.addObject("ctn", categorynum);
+			mv.addObject("bn", boardnum);
+		}
 		
 		List<ViewBoardsDTO> pndatas = CategoryStrategyViewPreviousNextBoards(
 				categoryStrategyList[(int)(Integer.valueOf(previous_cn) / 100)], 
