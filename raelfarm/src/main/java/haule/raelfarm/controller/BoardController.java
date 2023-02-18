@@ -27,12 +27,14 @@ import haule.raelfarm.controller.StrategyCategory.CategoryStrategy;
 import haule.raelfarm.dto.BoardCommentDTO;
 import haule.raelfarm.dto.BoardMediaFileInsertDTO;
 import haule.raelfarm.dto.CategorySelectDTO;
+import haule.raelfarm.dto.SearchDTO;
 import haule.raelfarm.dto.ViewBoardDTO;
 import haule.raelfarm.dto.ViewBoardsDTO;
 import haule.raelfarm.jpa.BoardMediaFile;
 import haule.raelfarm.jpa.BoardRecommendHistory;
 import haule.raelfarm.jpa.PK.BoardMediaFile_PK;
 import haule.raelfarm.jpa.PK.BoardRecommendHistory_PK;
+import haule.raelfarm.pagination.PagingResponse;
 import haule.raelfarm.repository.BoardDataRepository;
 import haule.raelfarm.repository.BoardMediaFileRepository;
 import haule.raelfarm.repository.BoardPreviousRepository;
@@ -82,31 +84,47 @@ public class BoardController {
 	 	content
 	 */
 	@RequestMapping("/board/c{categorynum}")
-	public ModelAndView View_Boards( @PathVariable("categorynum") String categorynum ) {
+	public ModelAndView View_Boards( 
+			@PathVariable("categorynum") String categorynum, 
+			@ModelAttribute(value="params") SearchDTO param) {
 		ModelAndView mv = new ModelAndView();
 		
-		List<ViewBoardsDTO> data = CategoryStrategyViewBoard(categoryStrategyList[(int)(Integer.valueOf(categorynum) / 100)], Integer.valueOf(categorynum));
-		for(ViewBoardsDTO data_ : data) {
-			data_.SetRegisterDate();
+		PagingResponse<ViewBoardsDTO> data;
+		System.out.println("categorynum : " + categorynum.equals(""));
+		
+		if(categorynum.equals("")) {
+			data = boardService.SelectBoardsAll(param);
+			mv.addObject("category_num", null);
+		}
+		else {
+			data = CategoryStrategyViewBoard(categoryStrategyList[(int)(Integer.valueOf(categorynum) / 100)], Integer.valueOf(categorynum), param);
+			mv.addObject("category_num", categorynum);
 		}
 		
-		mv.addObject("boardList", data);
-		mv.addObject("category_name", boardService.ViewCategoryName(Integer.parseInt(categorynum)));
-		mv.addObject("category_num", categorynum);
+		
+		mv.addObject("response", data);
 		mv.setViewName("content/main/board/view_boards");
 		
 		return mv;
 	}
 	
+	
 	@RequestMapping("/board/c{categorynum}/write")
 	public ModelAndView Write_Board( @PathVariable("categorynum") String categorynum, HttpServletRequest request) {
 		ModelAndView mv = new ModelAndView();
-		int result_categorynum = (int)(Integer.parseInt(categorynum) / 100);
-		// 이미지 필수 기입 ( check-board 에도 설정 해 놓았음 )
-		if( result_categorynum <= 1 || result_categorynum > 4) {
+		if(categorynum.equals("")){
 			mv.setViewName("redirect:" + request.getHeader("Referer"));
 			return mv;
 		}
+		else {
+			int result_categorynum = (int)(Integer.parseInt(categorynum) / 100);
+			// 이미지 필수 기입 ( check-board 에도 설정 해 놓았음 )
+			if( result_categorynum <= 1 || result_categorynum > 4) {
+				mv.setViewName("redirect:" + request.getHeader("Referer"));
+				return mv;
+			}
+		}
+		
 		
 		
 		List<String> datas = CategoryStrategyViewCategorysData(categoryStrategyList[(int)(Integer.valueOf(categorynum) / 100)]);
@@ -192,7 +210,8 @@ public class BoardController {
 	
 	@RequestMapping("/board/c{categorynum}/b{boardnum}")
 	public ModelAndView View_Board( @PathVariable(value ="categorynum") String categorynum, @PathVariable(value ="boardnum") String boardnum,  
-									@ModelAttribute("previouscategorynum") String previous_cn, Principal principal,
+									@ModelAttribute("previouscategorynum") String previous_cn,
+									Principal principal,
 									HttpServletRequest req, HttpServletResponse res) {
 		ModelAndView mv = new ModelAndView();
 		String iboardnum = String.format("%05d",Integer.valueOf(categorynum)) + boardnum; 
@@ -205,12 +224,14 @@ public class BoardController {
 			mv.addObject("ctn", categorynum);
 			mv.addObject("bn", boardnum);
 		}
+		SearchDTO pnParam = new SearchDTO();
 		
 		List<ViewBoardsDTO> pndatas = CategoryStrategyViewPreviousNextBoards(
 				categoryStrategyList[(int)(Integer.valueOf(previous_cn) / 100)], 
 				Integer.valueOf(categorynum),
 				Integer.valueOf(boardnum), 
-				iboardnum);
+				iboardnum,
+				pnParam);
 		
 		for(ViewBoardsDTO tempdata : pndatas) {
 			switch(tempdata.getSeqtext()) {
@@ -226,13 +247,14 @@ public class BoardController {
 			}
 		}
 		
-		List<BoardCommentDTO> comment = boardService.SelectBoardComments(iboardnum);
-		if(comment != null) {
-			comment.forEach(a -> a.ChangeDate());
-		}
+		SearchDTO commentParam = new SearchDTO();
+		commentParam.setRecordSize(50);
+		
+		PagingResponse<BoardCommentDTO> comment = boardService.SelectBoardComments(iboardnum,commentParam);
 		
 		mv.addObject("recommendcount", boardService.SelectBoardRecommendCount(iboardnum));
 		mv.addObject("commentList", comment);
+		mv.addObject("params",commentParam);
 		mv.addObject("category_num", previous_cn);
 		mv.addObject("iboardnum", iboardnum);
 		mv.setViewName("content/main/board/view_board");
@@ -406,13 +428,14 @@ public class BoardController {
 	@RequestMapping(value="/comment/view")
 	public ModelAndView View_Comment(
 			ModelAndView mv,
-			@RequestParam(value="iboardnum") String iboardnum) {
-		
-		List<BoardCommentDTO> comment = boardService.SelectBoardComments(iboardnum);
-		if(comment != null) {
-			comment.forEach(a -> a.ChangeDate());
-		}
-		mv.addObject("commentList", comment);		
+			@RequestParam(value="iboardnum") String iboardnum,
+			@ModelAttribute("params") SearchDTO param) {
+
+		param.setRecordSize(50);
+		PagingResponse<BoardCommentDTO> comment = boardService.SelectBoardComments(iboardnum, param);
+
+		mv.addObject("commentList", comment);
+		mv.addObject("commentParams", param);		
 		mv.setViewName("fragments/comment_fragment");
 		return mv;
 	}
@@ -487,11 +510,11 @@ public class BoardController {
 	public List<String> CategoryStrategyViewCategorysData(CategoryStrategy categoryStrategy) {
 		return categoryStrategy.ViewCategorysData(boardService);
 	}
-	public List<ViewBoardsDTO> CategoryStrategyViewBoard(CategoryStrategy categoryStrategy, int category_num) {
-		return categoryStrategy.ViewBoard(category_num, boardService);
+	public PagingResponse<ViewBoardsDTO> CategoryStrategyViewBoard(CategoryStrategy categoryStrategy, int category_num, SearchDTO param) {
+		return categoryStrategy.ViewBoard(category_num, param, boardService);
 	}
-	public List<ViewBoardsDTO> CategoryStrategyViewPreviousNextBoards(CategoryStrategy categoryStrategy, int category_num, int board_num, String iboardnum) {
-		return categoryStrategy.ViewPreviousNextBoards(category_num, board_num, iboardnum, boardService);
+	public List<ViewBoardsDTO> CategoryStrategyViewPreviousNextBoards(CategoryStrategy categoryStrategy, int category_num, int board_num, String iboardnum, SearchDTO param) {
+		return categoryStrategy.ViewPreviousNextBoards(category_num, board_num, iboardnum, param,boardService);
 	}
 	
 	private void ViewCountUp(String id, HttpServletRequest req, HttpServletResponse res) {

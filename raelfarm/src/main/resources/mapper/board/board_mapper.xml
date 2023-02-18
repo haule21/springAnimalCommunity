@@ -1,7 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mtbatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="haule.raelfarm.mapper.BoardMapper">
-	<select id="SelectBoards" resultType="haule.raelfarm.dto.ViewBoardsDTO">
+		
+	<sql id="search">
+        <!-- 검색 키워드가 있을 때 -->
+        <if test='params.keyword != null and params.keyword != ""'>
+            <choose>
+                <!-- 검색 유형이 있을 때 -->
+                <when test="params.searchType != null and params.searchType != ''">
+                    <choose>
+                        <when test="'title'.equals( params.searchType )">
+							AND
+								(INSTR(A.TITLE, #{params.keyword}) > 0)
+                        </when>
+                        <when test="'content'.equals( params.searchType )">
+                            AND
+								(INSTR(A.CONTENT, #{params.keyword}) > 0)
+                        </when>
+                        <when test="'writer'.equals( params.searchType )">
+                            AND
+								(INSTR((
+									SELECT
+										NICKNAME
+									FROM
+										USERS
+									WHERE
+										USERID = A.WRITER), #{params.keyword}) > 0)
+                        </when>
+                    </choose>
+                </when>
+                <!-- 전체 검색일 때 때 제목 내용만-->
+                <otherwise>
+                AND
+					(INSTR(TITLE, #{params.keyword}) > 0 OR INSTR(CONTENT, #{params.keyword}) > 0) 
+                </otherwise>
+            </choose>
+        </if>
+    </sql>
+
+
+
+	<select id="SelectBoardsAll" parameterType="haule.raelfarm.dto.SearchDTO" resultType="haule.raelfarm.dto.ViewBoardsDTO">
 		<![CDATA[
 			SELECT 
 				A.CATEGORY_NUM as categorynum,
@@ -19,6 +58,48 @@
 				BOARD_TEST A, BOARD_DATA_TEST B
 			WHERE
 				B.I_BOARD_NUM = CONCAT(LPAD(A.CATEGORY_NUM, 5, '0'), A.BOARD_NUM)
+			AND
+				A.DELETED = 'N'
+		]]>
+			<include refid="search"/>
+		<![CDATA[
+			ORDER BY registerdate desc
+			LIMIT #{params.pagination.limitStart}, #{params.recordSize}
+		]]>
+	</select>
+	
+	<select id="SelectBoardsAll_CNT" parameterType="haule.raelfarm.dto.SearchDTO" resultType="int">
+		<![CDATA[
+			SELECT 
+				COUNT(1)
+			FROM 
+				BOARD_TEST A
+			WHERE
+				A.DELETED = 'N'
+		]]>
+			<include refid="search"/>
+	</select>
+	
+	<select id="SelectBoards" parameterType="haule.raelfarm.dto.SearchDTO" resultType="haule.raelfarm.dto.ViewBoardsDTO">
+		<![CDATA[
+			SELECT 
+				A.CATEGORY_NUM as categorynum,
+				A.BOARD_NUM as boardnum,
+				(SELECT CATEGORY_NAME FROM CATEGORY_BOARD_TEST WHERE A.CATEGORY_NUM = CATEGORY_NUM) as categoryname,
+				A.TITLE as title,
+				A.EXIST_IMGFILE as existimgfile,
+				(SELECT NICKNAME FROM USERS_TEST WHERE USERID = A.WRITER) as writer,
+				DATE_FORMAT(A.REGISTERED_DATE, '%Y-%m-%d %H:%i:%S') as registerdate,
+				null as content,
+				B.VIEW_COUNT as viewcount,
+				(B.RECOMMEND_COUNT - B.NO_RECOMMEND_COUNT) as recommendcount,
+				null as sqltext
+			FROM 
+				BOARD_TEST A, BOARD_DATA_TEST B
+			WHERE
+				B.I_BOARD_NUM = CONCAT(LPAD(A.CATEGORY_NUM, 5, '0'), A.BOARD_NUM)
+			AND
+				A.DELETED = 'N'
 		]]>
 			
 		<choose>
@@ -33,7 +114,35 @@
 				]]>	
 			</otherwise>
 		</choose>
-		ORDER BY A.REGISTERED_DATE DESC
+		<include refid="search"/>
+		<![CDATA[
+			ORDER BY A.REGISTERED_DATE DESC
+			LIMIT #{params.pagination.limitStart}, #{params.recordSize}
+		]]>
+	</select>
+	<select id="SelectBoards_CNT" parameterType="haule.raelfarm.dto.SearchDTO" resultType="int">
+		<![CDATA[
+			SELECT 
+				COUNT(1)
+			FROM 
+				BOARD_TEST
+			WHERE
+				DELETED = 'N'
+		]]>
+			
+		<choose>
+			<when test = "category_num % 100 == 0">
+				<![CDATA[
+					AND CATEGORY_NUM BETWEEN #{category_num_st} AND #{category_num_ed}
+				]]>	
+			</when>
+			<otherwise>
+				<![CDATA[
+					AND CATEGORY_NUM = #{category_num}
+				]]>	
+			</otherwise>
+		</choose>
+		<include refid="search"/>
 	</select>
 	<select id="SelectPreviousNextBoards" resultType="haule.raelfarm.dto.ViewBoardsDTO">
 		<![CDATA[
@@ -87,10 +196,13 @@
 							]]>	
 						</otherwise>
 					</choose>
-						<![CDATA[
+			<![CDATA[
 					) A
 				WHERE
 					A.PREVIOUS_CBN = #{iboardnum} OR A.NEXT_CBN = #{iboardnum}
+			]]>
+				<include refid="search"/>
+			<![CDATA[
 				UNION ALL
 					SELECT 
 						CATEGORY_NUM AS CATEGORYNUM,
@@ -242,7 +354,7 @@
 		]]>
 	</insert>
 	
-	<select id="SelectBoardComments" resultType="haule.raelfarm.dto.BoardCommentDTO">
+	<select id="SelectBoardComments" parameterType="haule.raelfarm.dto.SearchDTO" resultType="haule.raelfarm.dto.BoardCommentDTO">
 		<![CDATA[
 			WITH RECURSIVE CTE AS (
 				SELECT
@@ -258,13 +370,13 @@
 					RECOMMEND_COUNT as recommendcount,
 					NO_RECOMMEND_COUNT as norecommendcount,
 					DELETED as deleted,
-					CONVERT(COMMENT_NO, CHAR) as path
+					CAST(CONVERT(COMMENT_NO, CHAR) as NCHAR(100)) as path
 				FROM
 					BOARD_COMMENT_TEST
 				WHERE
 					PARENT_COMMENT_NO = 0
 				AND
-					I_BOARD_NUM = #{arg0}
+					I_BOARD_NUM = #{iboardnum}
 				UNION all
 				SELECT
 					A.I_BOARD_NUM as iboardnum,
@@ -285,7 +397,7 @@
 				WHERE
 					A.PARENT_COMMENT_NO = B.commentno
 				AND
-					B.iboardnum = #{arg0}
+					B.iboardnum = #{iboardnum}
 			)
 			SELECT 
 				iboardnum, 
@@ -302,7 +414,19 @@
 				deleted
 			FROM CTE
 				ORDER BY path
+			LIMIT #{params.pagination.limitStart}, #{params.recordSize}
 		]]>
+	</select>
+	<select id="SelectBoardComments_CNT" resultType="int">
+		<![CDATA[
+			SELECT
+				COUNT(1)
+			FROM
+				BOARD_COMMENT_TEST
+			WHERE
+				I_BOARD_NUM = #{iboardnum}
+		]]>
+		
 	</select>
 	
 	<select id="SelectBoardCommentMAXCommentNo" resultType="int">

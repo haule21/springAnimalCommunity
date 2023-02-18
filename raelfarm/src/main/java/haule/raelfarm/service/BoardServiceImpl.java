@@ -9,9 +9,12 @@ import haule.raelfarm.dto.BoardCommentDTO;
 import haule.raelfarm.dto.BoardMediaFileInsertDTO;
 import haule.raelfarm.dto.BoardNumSelectDTO;
 import haule.raelfarm.dto.MainSelectDTO;
+import haule.raelfarm.dto.SearchDTO;
 import haule.raelfarm.dto.ViewBoardDTO;
 import haule.raelfarm.dto.ViewBoardsDTO;
 import haule.raelfarm.mapper.BoardMapper;
+import haule.raelfarm.pagination.Pagination;
+import haule.raelfarm.pagination.PagingResponse;
 import haule.raelfarm.repository.BoardDataRepository;
 import haule.raelfarm.repository.CategoryRepository;
 import jakarta.transaction.Transactional;
@@ -29,6 +32,57 @@ public class BoardServiceImpl implements BoardService{
 	CategoryRepository categoryRepository;
 	
 	@Override
+	public int SelectBoardsAll_CNT(SearchDTO searchDTO) {
+		return boardMapper.SelectBoardsAll_CNT(searchDTO);
+	}
+	
+	@Override
+	public PagingResponse<ViewBoardsDTO> SelectBoardsAll(SearchDTO searchDTO){
+		int count = boardMapper.SelectBoardsAll_CNT(searchDTO);
+		Pagination pagination = new Pagination(count, searchDTO);
+		searchDTO.setPagination(pagination);
+		
+		List<ViewBoardsDTO> list = boardMapper.SelectBoardsAll(searchDTO);
+		for(ViewBoardsDTO data : list) {
+			data.SetRegisterDate();
+		}
+		
+		return new PagingResponse<>(list , pagination);
+	}
+	@Override
+	public int SelectBoards_CNT(int category_num, int Starting, int Ending, SearchDTO searchDTO){
+		return boardMapper.SelectBoards_CNT(category_num, Starting, Ending, searchDTO);
+	}
+	
+	@Override
+	public PagingResponse<ViewBoardsDTO> SelectBoards(int category_num, int Starting, int Ending, SearchDTO searchDTO){
+		int count = boardMapper.SelectBoards_CNT(category_num, Starting, Ending, searchDTO);
+		Pagination pagination = new Pagination(count, searchDTO);
+		searchDTO.setPagination(pagination);
+		List<ViewBoardsDTO> list = boardMapper.SelectBoards(category_num, Starting, Ending, searchDTO);
+		for(ViewBoardsDTO data : list) {
+			data.SetRegisterDate();
+		}
+		return new PagingResponse<>(list, pagination);
+	}
+	@Override
+	public PagingResponse<BoardCommentDTO> SelectBoardComments(String iboardnum, SearchDTO searchDTO){
+		int count = boardMapper.SelectBoardComments_CNT(iboardnum);
+		Pagination pagination = new Pagination(count, searchDTO);
+		searchDTO.setPagination(pagination);
+		
+		List<BoardCommentDTO> list = boardMapper.SelectBoardComments(iboardnum, searchDTO);
+		if(list != null) {
+			list.forEach(a -> a.ChangeDate());
+		}
+		
+		return new PagingResponse<>(list, pagination);
+	}
+	@Override
+	public int SelectBoardComments_CNT(String iboardnum){
+		return boardMapper.SelectBoardComments_CNT(iboardnum);
+	}
+	@Override
 	public List<MainSelectDTO> SelectMainDatas() {
 		List<MainSelectDTO> datas = boardMapper.SelectMainDatas();
 		return datas; 
@@ -40,13 +94,8 @@ public class BoardServiceImpl implements BoardService{
 	}
 	
 	@Override
-	public List<ViewBoardsDTO> SelectBoards(int category_num, int Starting, int Ending){
-		return boardMapper.SelectBoards(category_num, Starting, Ending);
-	}
-	
-	@Override
-	public List<ViewBoardsDTO> SelectPreviousNextBoards(int category_num, int board_num, String iboardnum, int Starting, int Ending){
-		return boardMapper.SelectPreviousNextBoards(category_num, board_num, iboardnum, Starting, Ending);
+	public List<ViewBoardsDTO> SelectPreviousNextBoards(int category_num, int board_num, String iboardnum, int Starting, int Ending, SearchDTO searchDTO){
+		return boardMapper.SelectPreviousNextBoards(category_num, board_num, iboardnum, Starting, Ending, searchDTO);
 	}
 	
 	@Override
@@ -71,10 +120,7 @@ public class BoardServiceImpl implements BoardService{
 	public int SelectBoardRecommendCount(String iboardnum) {
 		return boardMapper.SelectBoardRecommendCount(iboardnum);
 	}
-	@Override
-	public List<BoardCommentDTO> SelectBoardComments(String iboardnum){
-		return boardMapper.SelectBoardComments(iboardnum);
-	}
+	
 	@Override
 	public int SelectBoardCommentMAXCommentNo() {
 		return boardMapper.SelectBoardCommentMAXCommentNo();

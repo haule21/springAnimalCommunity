@@ -66,6 +66,30 @@ body{
 	text-align: center;
 }
 
+.search_div input{
+	font-size:13px;
+	border: 3px solid;  
+	border-image: linear-gradient(to right, #5858AC 0%, #7DC0CE 100%);
+  	border-image-slice: 1;
+  	width:200px; 
+  	height:19px; 
+  	margin-right: 3px;
+  	outline: none;
+  	padding: 1px 5px 2px;
+}
+
+.search_div {
+	position: relative; 
+	top: 40px; 
+	left: 350px;
+}
+
+.search_div {
+	position: relative; 
+	top: 40px; 
+	left: 350px;
+}
+
 .content .content_boards .content_comment {
   width: 1050px;
   

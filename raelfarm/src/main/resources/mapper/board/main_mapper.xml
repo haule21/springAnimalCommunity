@@ -15,7 +15,10 @@
 					BOARD_NUM,
 					TITLE,
 					REGISTERED_DATE
-				FROM BOARD_TEST
+				FROM 
+					BOARD_TEST
+				WHERE 
+					CATEGORY_NUM IN (100, 303, 401, 200, 201, 202, 203, 204, 205, 206, 500, 501, 502, 503)
 			) AS A
 			WHERE A.RN <= 5;
 		]]>

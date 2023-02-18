@@ -4,9 +4,9 @@
 <head>
 </head>
 <body>
-	<th:block th:if="${not #lists.isEmpty(commentList)}">
+	<th:block th:if="${not #lists.isEmpty(commentList.list)}">
 		<ul class="comment_ui">
-			<li th:each="comment : ${commentList}" th:class="comment" th:classappend="lv + ${comment.level}" th:id="cn + ${comment.commentno}" style="list-style: none;"><span class="comment_writer">[[${comment.writer}]]
+			<li th:each="comment : ${commentList.list}" th:class="comment" th:classappend="lv + ${comment.level}" th:id="cn + ${comment.commentno}" style="list-style: none;"><span class="comment_writer">[[${comment.writer}]]
 			</span>
 				<div class="comment_header_div">
 					<button class="reply_btn" type="button"

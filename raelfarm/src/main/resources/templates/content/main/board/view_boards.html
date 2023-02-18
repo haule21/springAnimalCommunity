@@ -16,7 +16,7 @@
         <th:block layout:fragment="header" th:include="@{/fragments/header}"></th:block>
 		
         <div layout:fragment="content" class="content">
-	        <div th:if="${not #lists.isEmpty(boardList)}" class="tableContainer">
+	        <div th:if="${not #lists.isEmpty(response.list)}" class="tableContainer">
 	        	<table class="boardTable">
         			<thead>
         				<tr>
@@ -28,8 +28,8 @@
 			            	<th th:text="추천수"></th>
 	            		</tr>	
         			</thead>
-        			<tbody>
-        				<tr th:each="board : ${boardList}">
+        			<tbody th:with="List=${response.list}">
+        				<tr th:each="board : ${List}">
 			            	<td><a th:href="'/board' + '/c' + ${board.categorynum}" th:text="${board.categoryname}"></a> </td>
 			            	<td><a 	th:href="'/board' + '/c' + ${board.categorynum} + '/b' + ${board.boardnum} + '?previouscategorynum=' + ${category_num}" 
 			            			th:text="${board.title} + ' ' +${board.existimgfile}"></a></td>
@@ -39,27 +39,87 @@
 			            	<td th:text="${board.recommendcount}"></td>
 	            		</tr>
         			</tbody>
-
 	        	</table>
+	        	<div class="paging">
+		    	</div>
 			</div>
-			<div th:unless="${not #lists.isEmpty(boardList)}">
+			<div th:unless="${not #lists.isEmpty(response.list)}">
 				<p>게시물이 존재하지 않습니다.</p>
 			</div>
-			<th:block th:if="${category_num} == 100 or ${category_num} >= 500">
-			</th:block>
-			<th:block th:unless="${category_num} == 100 or ${category_num} >= 500">
-				<button th:categorynum="${category_num}" type="button" th:onclick="javascript:getWriteUrl(this.getAttribute('categorynum'))">글쓰기</button>
-			</th:block>
-			
-        
+			<th:block th:if="${category_num} != null">
+				<th:block th:if="${category_num} == 100 or ${category_num} >= 500">
+				</th:block>
+				<th:block th:unless="${category_num} == 100 or ${category_num} >= 500">
+					<button th:categorynum="${category_num}" type="button" th:onclick="javascript:getWriteUrl(this.getAttribute('categorynum'))">글쓰기</button>
+				</th:block>
+			</th:block> 
         </div>
         
         <th:block layout:fragment="footer" th:include="@{/fragments/footer}"></th:block>	
     </body>
-    <script>
+    <script th:inline="javascript">
+	/*<![CDATA[*/
+		window.onload = () => {
+			findPaginationData();
+		}
+	
+	
+	      // 게시글 리스트 조회
+		function findPaginationData() {
+			console.log("나 실행 됐다 find");
+			const pagination = [[ ${response.pagination} ]];
+			const params = [[ ${params} ]];
+	
+	        drawPage(pagination, params);
+		}
+    
        	function getWriteUrl(categorynum){
        		location.href = "/board/c"+categorynum+"/write";
        	}
+       	
+		function drawPage(pagination, params) {
+            if ( !pagination || !params ) {
+              $('.paging').text('');
+              throw new Error('Missing required parameters...');
+            }
+
+            // 첫 페이지, 이전 페이지
+            if (pagination.existPrevPage) {
+            	$('.paging').append(
+                  '<a href="javascript:void(0);" onclick="movePage(1)" class="page_bt first">첫 페이지</a>'+
+                  '<a href="javascript:void(0);" onclick="movePage(${pagination.startPage - 1})" class="page_bt prev">이전 페이지</a>');
+            }
+
+            // 페이지 번호
+            for (var i = pagination.startPage; i <= pagination.endPage; i++) {
+            	$('.paging').append(
+				(i !== params.page) ? '<a href="javascript:void(0);" onclick="movePage('+i+');">'+i+'</a>' : '<span class="on">'+i+'</span>');
+            }
+
+            // 다음 페이지, 마지막 페이지
+            if (pagination.existNextPage) {
+            	$('.paging').append(
+                  '<a href="javascript:void(0);" onclick="movePage(${pagination.endPage + 1});" class="page_bt next">다음 페이지</a>'+
+                  '<a href="javascript:void(0);" onclick="movePage(${pagination.totalPageCount});" class="page_bt last">마지막 페이지</a>');
+            }
+
+          }
+		
+
+          // 페이지 이동
+          function movePage(page) {
+            const queryParams = {
+              page: (page) ? page : 1,
+              recordSize: 20,
+              pageSize: 10
+            }
+            
+            location.href = location.pathname + '?' + new URLSearchParams(queryParams).toString();
+          }
+          
+
+       	
+	/*]]>*/
     </script>
 </html>
 

@@ -70,9 +70,9 @@
 
 	<div layout:fragment="content_comment" class="content_comment">
 		<div class="comment_div">
-			<th:block th:if="${not #lists.isEmpty(commentList)}">
+			<th:block th:if="${not #lists.isEmpty(commentList.list)}">
 				<ul class="comment_ui">
-					<li th:each="comment : ${commentList}" th:class="comment" th:classappend="lv + ${comment.level}" th:id="cn + ${comment.commentno}" style="list-style: none;"><span class="comment_writer">[[${comment.writer}]]
+					<li th:each="comment : ${commentList.list}" th:class="comment" th:classappend="lv + ${comment.level}" th:id="cn + ${comment.commentno}" style="list-style: none;"><span class="comment_writer">[[${comment.writer}]]
 					</span> 
 					<div class="comment_header_div">
 						<button class="reply_btn" th:onclick="javascript:viewWriteRecomment(this)">답글</button>
@@ -101,14 +101,15 @@
 						</th:block>
 					</div>
 						<div class="comment_content_div">
-							<p class="comment_content"><span class="parent_nickname">[[${comment.parentwriter}]]</span>&nbsp;[[${comment.content}]]</p>
+							<p class="comment_content"><span class="parent_nickname" style="color : #aaa;">[[${comment.parentwriter}]]</span>&nbsp;[[${comment.content}]]</p>
 						</div> 
 						<div class="reply_div" style="display: none;">
 							<input class="recomment_write_input" id="recomment_write_input" placeholder="답글을 남겨주세요">
 							<button type="button" class="comment_submit_button"
 								th:iboardnum="${comment.iboardnum}"
 								th:parentcommentno=${comment.commentno}
-								th:onclick="javascript:writeRecomment(this.getAttribute('iboardnum'), this.getAttribute('parentcommentno'), this)">쓰기</button>
+								th:page=${params.page}
+								th:onclick="javascript:writeRecomment(this.getAttribute('iboardnum'), this.getAttribute('parentcommentno'), this, this.getAttribute('page'))">쓰기</button>
 						</div>
 					</li>
 					
@@ -118,20 +119,17 @@
 			<th:block th:unless="${not #lists.isEmpty(commentList)}">
             	댓글이 존재하지 않습니다.
             </th:block>
-
 		</div>
-		<!--  div class="comment_page_div">
-            	<th:block th:each="num : ${#numbers.sequence(1,${comment_total_count})}">
-            		<button>[[${num}]]</button>
-            	</th:block>
-            </div-->
+		<div class="paging">
+		</div>
 		<div class="comment_write_div">
 			<span> <input class="comment_write_input"
 				id="comment_write_input" style="width: 900px; height: 100px;"
 				placeholder="댓글 작성 구간">
 				<button type="button" class="comment_submit_button"
 					th:iboardnum="${iboardnum}"
-					th:onclick="javascript:writeComment(this.getAttribute('iboardnum'))">쓰기</button>
+					th:endpage=${params.pagination.endPage}
+					th:onclick="javascript:writeComment(this.getAttribute('iboardnum'), this.getAttribute('endpage'))">쓰기</button>
 			</span>
 			<hr>
 		</div>
@@ -180,4 +178,74 @@
 	</div>
 	<th:block layout:fragment="footer" th:include="@{/fragments/footer}"></th:block>
 </body>
+    <script th:inline="javascript">
+	/*<![CDATA[*/
+		window.onload = () => {
+			findPaginationData();
+		}
+	
+	
+	      // 게시글 리스트 조회
+		function findPaginationData(page) {
+			
+			const pagination = [[ ${commentList.pagination} ]];
+			const params = [[ ${params} ]];
+			const iboardnum = [[ ${iboardnum} ]];
+			
+			if(page != null) params.page = page;
+			console.log(params);
+			
+
+			drawPage(pagination, params, iboardnum);
+     
+		}
+	      
+		function drawPage(pagination, params, iboardnum) {
+			$('.paging').text('');
+            if ( !pagination || !params ) {
+              $('.paging').text('');
+              throw new Error('Missing required parameters...');
+            }
+
+            // 첫 페이지, 이전 페이지
+            if (pagination.existPrevPage) {
+            	$('.paging').append(
+                  '<a href="javascript:void(0);" onclick="movePage(1, \''+iboardnum+'\')" class="page_bt first">첫 페이지</a>'+
+                  '<a href="javascript:void(0);" onclick="movePage('+pagination.startPage - 1+', \''+iboardnum+'\')" class="page_bt prev">이전 페이지</a>');
+            }
+
+            // 페이지 번호
+            for (var i = pagination.startPage; i <= pagination.endPage; i++) {
+            	$('.paging').append(
+				(i !== params.page) ? '<a href="javascript:void(0);" onclick="movePage('+i+', \''+iboardnum+'\');">'+i+'</a>' : '<span class="on">'+i+'</span>');
+            }
+
+            // 다음 페이지, 마지막 페이지
+            if (pagination.existNextPage) {
+            	$('.paging').append(
+                  '<a href="javascript:void(0);" onclick="movePage('+pagination.endPage + 1 +',\''+iboardnum+'\');" class="page_bt next">다음 페이지</a>'+
+                  '<a href="javascript:void(0);" onclick="movePage('+pagination.totalPageCount +',\''+iboardnum+'\');" class="page_bt last">마지막 페이지</a>');
+            }
+
+          }
+		
+
+          // 페이지 이동
+			function movePage(page, iboardnum) {
+				const queryParams = {
+					iboardnum : iboardnum,
+					page: (page) ? page : 1,
+					recordSize: 50,
+					pageSize: 10
+				}
+            
+            	$(".comment_div").load("/comment/view"+ '?' + new URLSearchParams(queryParams).toString());
+				findPaginationData(page);
+				
+			}
+          
+
+       	
+	/*]]>*/
+    </script>
 </html>

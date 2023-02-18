@@ -22,13 +22,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import haule.raelfarm.dto.MainSelectDTO;
 import haule.raelfarm.dto.UserInsertDTO;
-import haule.raelfarm.repository.CategoryRepository;
 import haule.raelfarm.service.BoardService;
 import haule.raelfarm.service.UsersService;
+import haule.raelfarm.singleton.messageAPI;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import net.nurigo.sdk.NurigoApp;
 import net.nurigo.sdk.message.service.DefaultMessageService;
 
 @RestController
@@ -40,11 +39,10 @@ public class MainController {
 	@Autowired
 	BoardService boardService;
 
-	
 	@Autowired
 	PasswordEncoder passwordEncoder;
 	
-	final DefaultMessageService messageService = NurigoApp.INSTANCE.initialize("NCSFJFSUH6L6KCO8","XBLUZEB202BUC5GIAA2RENJRS5NLPQKM","https://api.coolsms.co.kr");
+	final DefaultMessageService messageService = messageAPI.getInstance().getMessageService();
 	
 	@RequestMapping("/")
 	public ModelAndView Main(ModelAndView mv) {
@@ -55,6 +53,7 @@ public class MainController {
 		List<MainSelectDTO> dataList2 = new ArrayList<MainSelectDTO>();
 		List<MainSelectDTO> dataList3 = new ArrayList<MainSelectDTO>();
 		List<MainSelectDTO> dataList4 = new ArrayList<MainSelectDTO>();
+		List<MainSelectDTO> dataList5 = new ArrayList<MainSelectDTO>();
 		
 		for(MainSelectDTO data : datas) {
 			switch((int)(data.getCategorynum()/100)) {
@@ -70,6 +69,9 @@ public class MainController {
 				case 4:
 					dataList4.add(data);
 					break;
+				case 5:
+					dataList5.add(data);
+					break;
 			}
 		}
 		
@@ -77,13 +79,13 @@ public class MainController {
 		System.out.println("dataList2 :" + dataList2);
 		System.out.println("dataList3 :" + dataList3);
 		System.out.println("dataList4 :" + dataList4);
-		System.out.println("dataList5 :" + dataList4);
+		System.out.println("dataList5 :" + dataList5);
 		
 		mv.addObject("dataList1", dataList1);
 		mv.addObject("dataList2", dataList2);
 		mv.addObject("dataList3", dataList3);
 		mv.addObject("dataList4", dataList4);
-		mv.addObject("dataList5", dataList4);
+		mv.addObject("dataList5", dataList5);
 		mv.setViewName("content/main/main");
 		return mv;
 	}
@@ -163,8 +165,8 @@ public class MainController {
         String authentication_number = excuteGenerate();
         
 //        // 발신번호 및 수신번호는 반드시 01012345678 형태로 입력되어야 합니다.
-//        message.setFrom("01064159075");
-//        message.setTo(tophonenum);
+//        message.setFrom("from_phonenumber");
+//        message.setTo(to_phonenum);
 //        message.setText("[라엘이의 동물농장]\n인증번호 "+ authentication_number + "를 입력해 주세요.");
 //
 //        SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));

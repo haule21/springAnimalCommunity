@@ -10,33 +10,47 @@ import haule.raelfarm.dto.BoardCommentDTO;
 import haule.raelfarm.dto.BoardMediaFileInsertDTO;
 import haule.raelfarm.dto.BoardNumSelectDTO;
 import haule.raelfarm.dto.MainSelectDTO;
+import haule.raelfarm.dto.SearchDTO;
 import haule.raelfarm.dto.ViewBoardDTO;
 import haule.raelfarm.dto.ViewBoardsDTO;
+import haule.raelfarm.pagination.PagingResponse;
 
 @Mapper
 @Component
 public interface BoardMapper {
 	List<MainSelectDTO> SelectMainDatas();
 	
+	List<ViewBoardsDTO> SelectBoardsAll(@Param("params") SearchDTO searchDTO);
+	int SelectBoardsAll_CNT(@Param("params") SearchDTO searchDTO);
 	List<ViewBoardsDTO> SelectBoards(
 			@Param("category_num") int category_num, 
 			@Param("category_num_st") int Starting, 
-			@Param("category_num_ed") int Ending);
+			@Param("category_num_ed") int Ending,
+			@Param("params") SearchDTO searchDTO);
+	int SelectBoards_CNT(
+			@Param("category_num") int category_num, 
+			@Param("category_num_st") int Starting, 
+			@Param("category_num_ed") int Ending,
+			@Param("params") SearchDTO searchDTO);
 	
 	List<ViewBoardsDTO> SelectPreviousNextBoards(
 			@Param("category_num") int category_num, 
 			@Param("board_num") int board_num,
 			@Param("iboardnum") String iboardnum,
 			@Param("category_num_st") int Starting, 
-			@Param("category_num_ed") int Ending);
+			@Param("category_num_ed") int Ending,
+			@Param("params") SearchDTO searchDTO);
+	List<BoardCommentDTO> SelectBoardComments(@Param("iboardnum") String iboardnum, @Param("params") SearchDTO searchDTO);
+	int SelectBoardComments_CNT(@Param("iboardnum") String iboardnum);
 	
 	List<BoardNumSelectDTO> SelectBoardNum();
 	ViewBoardDTO SelectBoard(int categorynum, int boardnum);
 	int SelectBoardRecommendCount(String iboardnum);
 	List<String> SelectBoardMediaData(String iboardnum);	
-	List<BoardCommentDTO> SelectBoardComments(String iboardnum);
+	
 	int SelectCheckBoardCommentRecommendHistory(int commentno, String userid);
 	int SelectBoardCommentMAXCommentNo();
+	
 	
 	int InsertBoardData(String iboardnum);
 	int InsertBoardMedia(BoardMediaFileInsertDTO media);

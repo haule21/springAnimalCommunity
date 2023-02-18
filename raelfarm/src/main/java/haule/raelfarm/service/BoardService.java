@@ -8,21 +8,28 @@ import haule.raelfarm.dto.BoardCommentDTO;
 import haule.raelfarm.dto.BoardMediaFileInsertDTO;
 import haule.raelfarm.dto.BoardNumSelectDTO;
 import haule.raelfarm.dto.MainSelectDTO;
+import haule.raelfarm.dto.SearchDTO;
 import haule.raelfarm.dto.ViewBoardDTO;
 import haule.raelfarm.dto.ViewBoardsDTO;
+import haule.raelfarm.pagination.PagingResponse;
 
 @Component
 public interface BoardService {
+	public PagingResponse<ViewBoardsDTO> SelectBoardsAll(SearchDTO searchDTO);
+	public int SelectBoardsAll_CNT(SearchDTO searchDTO);
+	public PagingResponse<ViewBoardsDTO> SelectBoards(int category_num, int Starting, int Ending, SearchDTO searchDTO);
+	public int SelectBoards_CNT(int category_num, int Starting, int Ending, SearchDTO searchDTO);
+	public List<ViewBoardsDTO> SelectPreviousNextBoards(int category_num, int board_num,String iboardnum,int Starting, int Ending, SearchDTO searchDTO);
+	public PagingResponse<BoardCommentDTO> SelectBoardComments(String iboardnum, SearchDTO searchDTO);
+	public int SelectBoardComments_CNT(String iboardnum);
+	
 	public List<MainSelectDTO> SelectMainDatas();
 	public void ViewCount(String iboardnum);
-	public List<ViewBoardsDTO> SelectBoards(int category_num, int Starting, int Ending);
-	public List<ViewBoardsDTO> SelectPreviousNextBoards(int category_num, int board_num,String iboardnum,int Starting, int Ending);
 	public String ViewCategoryName(int category_num);
 	public List<String> ViewCategorysName(int category_num_st, int category_num_ed);
 	public List<BoardNumSelectDTO> SelectBoardNumMAX();
 	public ViewBoardDTO SelectBoard(int categorynum, int boardnum);
 	public int SelectBoardRecommendCount(String iboardnum);
-	List<BoardCommentDTO> SelectBoardComments(String iboardnum);
 	int SelectBoardCommentMAXCommentNo();
 	int SelectCheckBoardCommentRecommendHistory(int commentno, String userid);
 	public int InsertBoardData(String iboardnum);

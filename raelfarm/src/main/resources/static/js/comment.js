@@ -5,14 +5,14 @@ var header = $("meta[name='_csrf_header']").attr('content');
 var token = $("meta[name='_csrf']").attr('content');
 
 
-function writeComment(iboardnum){
+function writeComment(iboardnum, endpage){
 	var content = $('#comment_write_input').val();
+	console.log(endpage);
 	
 	if(content.trim() == "" || content == undefined){
 		alert("문자를 입력해주세요.");
 		return false;
 	}
-	
 	
 	$.ajax({
 		type : 'POST',
@@ -26,17 +26,21 @@ function writeComment(iboardnum){
         	xhr.setRequestHeader(header, token);
     	},
 		success : function(data){
-			$(".comment_div").load("/comment/view?iboardnum="+iboardnum);
+			$(".comment_div").load("/comment/view?iboardnum="+iboardnum+"&"+"page="+endpage);
+			findPaginationData(Number(endpage));
 			$("#cn"+data.commentno).focus();
+			$('#comment_write_input').val('');
 			console.log(data);
 		},
 		error : function(request,status,error){
 			console.log(request,status,error);
 		}
 	});
+	
+	
 }
 
-function writeRecomment(iboardnum, parentcommentno, button){
+function writeRecomment(iboardnum, parentcommentno, button, page){
 	
 	var content = $(button).parent().children('input.recomment_write_input').val();
 	
@@ -54,7 +58,8 @@ function writeRecomment(iboardnum, parentcommentno, button){
     	},
 		success : function(data) { 
 			
-			$(".comment_div").load("/comment/view?iboardnum="+iboardnum);
+			$(".comment_div").load("/comment/view?iboardnum="+iboardnum+"&"+"page="+page);
+			findPaginationData(Number(page));
 			$("#cn"+data.commentno).focus();
 			console.log(data);
 			

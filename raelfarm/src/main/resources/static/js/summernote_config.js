@@ -122,13 +122,13 @@ function check_board_before_submit(){
 		alert("제목에 사용할 수 없는 문자가 포함 되어 있습니다.");
 		return false;
 	}
-	if(Math.floor(categorynum_number/100) == 4){
+	if(Math.floor(categorynum_number/100) == 2){
 		var images = $("input[name=uploaded_images]");
 		if(images.length > 0){
 			
 		}
 		else{
-			alert("400번 카테고리는 이미지 입력이 필수입니다.");
+			alert("200번 카테고리는 이미지 입력이 필수입니다.");
 			return false;
 		}
 	}

@@ -135,18 +135,38 @@
 }
 .lv5{
 	margin-left: 120px;
+	border-top: 1px solid;
+	border-bottom: 1px solid;
+	border-color: #ddd;
+	margin: -1px -1px -1px 120px;
 }
 .lv6{
 	margin-left: 150px;
+	border-top: 1px solid;
+	border-bottom: 1px solid;
+	border-color: #ddd;
+	margin: -1px -1px -1px 150px;
 }
 .lv7{
-	margin-left: 150px;
+	margin-left: 180px;
+	border-top: 1px solid;
+	border-bottom: 1px solid;
+	border-color: #ddd;
+	margin: -1px -1px -1px 180px;
 }
 .lv8{
-	margin-left: 150px;
+	margin-left: 210px;
+	border-top: 1px solid;
+	border-bottom: 1px solid;
+	border-color: #ddd;
+	margin: -1px -1px -1px 210px;
 }
 .lv9{
-	margin-left: 180px;
+	margin-left: 240px;
+	border-top: 1px solid;
+	border-bottom: 1px solid;
+	border-color: #ddd;
+	margin: -1px -1px -1px 240px;
 }
 
 /*
