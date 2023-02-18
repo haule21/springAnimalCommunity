@@ -70,12 +70,11 @@
 			<li class="right"><a class="categoryTitle" th:href="|/board/c200|">나의 반려</a>
 				<div class="imgContainer">
 					<th:block th:if="${!#lists.isEmpty(dataList2)}">
-						<div th:each="content : ${datalist2}" class="imgTextContainer">
-							<img class="imgImg" src="${content.imgpath}"
-								th:href="@{'/board/c' + ${content.categorynum} + '/b' + ${content.boardnum} + '?previouscategorynum=200'}">
-							<a class="imgText"
-								th:href="@{'/board/c' + ${content.categorynum} + '/b' + ${content.boardnum} + '?previouscategorynum=200'}"
-								th:text="${content.title}"></a>
+						<div th:each="content : ${dataList2}" class="imgTextContainer">
+							<a th:href="@{'/board/c' + ${content.categorynum} + '/b' + ${content.boardnum} + '?previouscategorynum=200'}"><img class="imgImg" th:src="${content.imgpath}"></a>
+							<p class="imgText">
+							<a th:href="@{'/board/c' + ${content.categorynum} + '/b' + ${content.boardnum} + '?previouscategorynum=200'}"
+								th:text="${content.title}"></a></p>
 						</div>
 					</th:block>
 					<th:block th:unless="${!#lists.isEmpty(dataList2)}">
@@ -88,7 +87,7 @@
 				<a class="categoryTitle" th:href="|/board/c500|">소식</a>
 				<div class="imgContainer_news">
 					<th:block th:if="${!#lists.isEmpty(dataList5)}">
-						<div th:each="content : ${datalist4}"
+						<div th:each="content : ${datalist5}"
 							class="imgTextContainer_news">
 							<img class="imgImg" src="${content.imgpath}"
 								th:href="@{'/board/c' + ${content.categorynum} + '/b' + ${content.boardnum} + '?previouscategorynum=500'}">

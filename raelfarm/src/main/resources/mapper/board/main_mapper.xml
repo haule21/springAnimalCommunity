@@ -6,8 +6,31 @@
 			SELECT 
 				A.CATEGORY_NUM,
 				CONVERT(A.BOARD_NUM, CHAR) AS BOARD_NUM,
-				A.TITLE,
-				NULL
+				CASE WHEN 
+					LENGTH(A.TITLE) > 11
+				THEN
+					CONCAT(SUBSTR(A.TITLE,1,11),"...")
+				ELSE
+					A.TITLE END AS TITLE,
+				CASE WHEN
+					A.CATEGORY_NUM between 200 and 299
+					THEN
+						(SELECT
+							CONCAT("/summernoteImage/", FILE_PATH, "/", FILE_NAME) 
+						FROM
+							BOARD_MEDIAFILE_TEST MT1 
+						WHERE
+							I_BOARD_NUM = CONCAT(LPAD(A.CATEGORY_NUM, 5,'0'), A.BOARD_NUM)
+						AND
+							SEQ = (SELECT
+										MIN(SEQ)
+									FROM
+										BOARD_MEDIAFILE_TEST MT2
+									WHERE
+										MT1.I_BOARD_NUM = MT2.I_BOARD_NUM
+									AND
+										DELETED = 'N'))
+					ELSE NULL END AS IMGPATH
 			FROM ( 
 				SELECT
 					ROW_NUMBER() OVER (PARTITION BY CATEGORY_NUM ORDER BY REGISTERED_DATE DESC) AS 'RN',
@@ -20,7 +43,7 @@
 				WHERE 
 					CATEGORY_NUM IN (100, 303, 401, 200, 201, 202, 203, 204, 205, 206, 500, 501, 502, 503)
 			) AS A
-			WHERE A.RN <= 5;
+			WHERE A.RN <= 5
 		]]>
 	</select>
 </mapper>

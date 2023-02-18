@@ -356,6 +356,21 @@
 	
 	<select id="SelectBoardComments" parameterType="haule.raelfarm.dto.SearchDTO" resultType="haule.raelfarm.dto.BoardCommentDTO">
 		<![CDATA[
+		SELECT 
+			iboardnum, 
+			commentno, 
+			parentcommentno, 
+			parentwriter,
+			level, 
+			registereddate, 
+			writer, 
+			content, 
+			modifieddate, 
+			recommendcount,
+			norecommendcount,
+			deleted
+		FROM
+			(
 			WITH RECURSIVE CTE AS (
 				SELECT
 					I_BOARD_NUM as iboardnum,
@@ -413,7 +428,8 @@
 				norecommendcount,
 				deleted
 			FROM CTE
-				ORDER BY path
+				ORDER BY convert(path, unsigned), path
+			) A
 			LIMIT #{params.pagination.limitStart}, #{params.recordSize}
 		]]>
 	</select>

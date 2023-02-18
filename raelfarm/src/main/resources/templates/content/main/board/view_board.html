@@ -26,23 +26,22 @@
 			<hr class="firstline">
 			<div class="boardtitle_div">
 				<th:block th:if="${data.registerdate == data.modifieddate}">
-					<span class="boardregisterdate">등록일자 :
+					<span class="boardregisterdate">
 						[[${data.registerdate}]]</span>
 				</th:block>
 				<th:block th:if="${data.registerdate != data.modifieddate}">
-					<span class="boardmodifieddate">수정일자 :
+					<span class="boardmodifieddate">(수정됨)
 						[[${data.modifieddate}]]</span>
 				</th:block>
-				<label for="boardtitle"> 제목 : <span class="boardtitle">[[${data.title}]]</span>
+				<label for="boardtitle"><span class="boardtitle">[[${data.title}]]</span>
 				</label>
 			</div>
 
 			<hr class="secondline">
 			<div class="boardwriter_div">
-				<span class="boardwriter"> 작성자 : [[${data.writer}]]</span> <span
-					class="viewcount">조회 수 : [[${data.viewcount}]]</span> <span
-					class="recommendcount">추천 수 :
-					[[${data.recommendcount}]]&nbsp;</span>
+				<span class="boardwriter"> [[${data.writer}]]</span> 
+				<span class="recommendcount">추천 수 : [[${data.recommendcount}]]</span>
+				<span class="viewcount">조회 수 : [[${data.viewcount}]]&nbsp;</span>
 			</div>
 		</div>
 
@@ -101,7 +100,7 @@
 						</th:block>
 					</div>
 						<div class="comment_content_div">
-							<p class="comment_content"><span class="parent_nickname" style="color : #aaa;">[[${comment.parentwriter}]]</span>&nbsp;[[${comment.content}]]</p>
+							<p class="comment_content"><span class="parent_nickname">[[${comment.parentwriter}]]</span>&nbsp;[[${comment.content}]]</p>
 						</div> 
 						<div class="reply_div" style="display: none;">
 							<input class="recomment_write_input" id="recomment_write_input" placeholder="답글을 남겨주세요">
@@ -116,7 +115,7 @@
 				</ul>
 
 			</th:block>
-			<th:block th:unless="${not #lists.isEmpty(commentList)}">
+			<th:block th:unless="${not #lists.isEmpty(commentList.list)}">
             	댓글이 존재하지 않습니다.
             </th:block>
 		</div>
@@ -124,7 +123,7 @@
 		</div>
 		<div class="comment_write_div">
 			<span> <input class="comment_write_input"
-				id="comment_write_input" style="width: 900px; height: 100px;"
+				id="comment_write_input"
 				placeholder="댓글 작성 구간">
 				<button type="button" class="comment_submit_button"
 					th:iboardnum="${iboardnum}"
@@ -195,8 +194,10 @@
 			if(page != null) params.page = page;
 			console.log(params);
 			
-
-			drawPage(pagination, params, iboardnum);
+			if(pagination.endPage == 0){
+				
+			}
+			else drawPage(pagination, params, iboardnum);
      
 		}
 	      

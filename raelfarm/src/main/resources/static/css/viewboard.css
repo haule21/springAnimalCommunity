@@ -12,7 +12,7 @@
 }
 
 .content_header{
-	width: 1050px;
+	width: 825px;
 	display: inline-block; 
 	margin-left: auto; 
 	margin-right: auto;
@@ -21,7 +21,7 @@
 .boardcontent{
 	position: relative;
 	display: inline-block;
-	width: 1050px;
+	width: 825px;
 	min-height: 500px;
 	max-height: 100%;
 }
@@ -40,8 +40,9 @@
 }
 
 .boardtitle{
+	padding-left: 15px;
 	text-align: center;
-	font-size: 40px;
+	font-size: 25px;
 }
 
 .boardregisterdate{
@@ -56,6 +57,7 @@
 
 .boardwriter{
 	float: left;
+	padding-left: 7px;
 }
 
 .viewcount{
@@ -71,16 +73,18 @@
 				COMMENT
 =======================================*/ 
 .comment_div{
-	width: 1050px;
+	width: 825px;
 	margin-left: auto; 
 	margin-right: auto;
 }
 
 .comment{
 	display: block;
-	min-height: 100px;
+	height: 66px;
 	padding: 11px 11px 10px ;
 	position : relative;
+	font-size: 14px;
+	padding: 5px;
 }
 
 .comment_date{
@@ -88,7 +92,7 @@
 }
 
 .content_boards_div, .comment_content_div, .comment_write_div{
-	width: 1050px;
+	width: 825px;
 	margin-left: auto;
 	margin-right: auto;
 }
@@ -103,6 +107,10 @@
 
 .comment_writer, .comment_content{
 	float: left;
+}
+
+.parent_nickname{
+	color : #aaa;
 }
 
 .lv1{
@@ -177,6 +185,11 @@
 }
 
 .reply_div .recomment_write_input{
-	width: 100%;
+	width: 600px;
+	min-height: 100px;
+}
+
+.comment_write_input{
+	width: 600px;
 	min-height: 100px;
 }

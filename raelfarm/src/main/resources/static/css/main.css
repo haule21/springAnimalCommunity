@@ -125,9 +125,12 @@
 .right .imgContainer{
 	font-size: 20px;
 	display: grid;
-	grid-template-columns: 150px 150px 150px;
-	grid-template-rows: 150px 150px 150px;
+	grid-template-columns: 140px 140px 140px;
+	grid-template-rows: 150px 150px;
 	line-height: 35px;
+	grid-gap: 10px;
+	margin-top : 10px;
+	
 }
 
 .right h2{
@@ -135,16 +138,28 @@
 }
 
 .right .imgTextContainer{
+	display: inline-block;
 	text-align: center;
+	box-sizing: border-box;
 }
 
 .right .imgImg{
-	width: 200px;
-	height: 200px;
+	width: 110px;
+	height: 125px;
 }
 
 .right .imgText{
 	height: 20px;
+	margin: 0;
+}
+
+.right .imgText a{
+	display: block;
+	width:100%;
+	height: 100%;
+	box-sizing: border-box;
+	font-size: 13px;
+	margin-top: -10px;
 }
 
 
