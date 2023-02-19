@@ -21,60 +21,60 @@
 	<th:block layout:fragment="header" th:include="@{/fragments/header}"></th:block>
 
 	<div layout:fragment="content" class="content">
-		<div class="content_header">
-			<input type="hidden" class="iboardnum" value="${iboardnum}" readonly>
-			<hr class="firstline">
-			<div class="boardtitle_div">
-				<th:block th:if="${data.registerdate == data.modifieddate}">
-					<span class="boardregisterdate">
-						[[${data.registerdate}]]</span>
-				</th:block>
-				<th:block th:if="${data.registerdate != data.modifieddate}">
-					<span class="boardmodifieddate">(수정됨)
-						[[${data.modifieddate}]]</span>
-				</th:block>
-				<label for="boardtitle"><span class="boardtitle">[[${data.title}]]</span>
-				</label>
+		<div class="mainbody">
+			<div class="content_header">
+				<input type="hidden" class="iboardnum" value="${iboardnum}" readonly>
+				<div class="boardtitle_div">
+					<th:block th:if="${data.registerdate == data.modifieddate}">
+						<span class="boardregisterdate">
+							[[${data.registerdate}]]</span>
+					</th:block>
+					<th:block th:if="${data.registerdate != data.modifieddate}">
+						<span class="boardmodifieddate">(수정됨)
+							[[${data.modifieddate}]]</span>
+					</th:block>
+					<label for="boardtitle"><span class="boardtitle">[[${data.title}]]</span>
+					</label>
+				</div>
+	
+				<div class="boardwriter_div">
+					<span class="boardwriter"> [[${data.writer}]]</span> 
+					<span class="recommendcount">추천 수 [[${data.recommendcount}]]</span>
+					<span class="viewcount">조회 수 [[${data.viewcount}]]&nbsp;</span>
+				</div>
+			</div>
+	
+			<div class="boardcontent">
+				<span class="card-body text-dark" th:utext="${data.content}"></span>
+				<div class="recommend_block">
+					<p>
+						<button class="recommendbutton" th:iboardnum="${iboardnum}"
+							th:onclick="javascript:recommend_board(this.getAttribute('iboardnum'), 'Y')">추천</button>
+						&nbsp;[[${recommendcount}]]&nbsp;
+						<button class="norecommendbutton" th:iboardnum="${iboardnum}"
+							th:onclick="javascript:recommend_board(this.getAttribute('iboardnum'), 'N')">비추천</button>
+					</p>
+					<th:block th:if="${checkwriter} == 1">
+						<button class="modifybutton" type="button" th:categorynum="${ctn}" th:boardnum="${bn}" 
+						th:onclick="javascript:modifyboard(this.getAttribute('categorynum'),this.getAttribute('boardnum'))">게시물 수정하기</button>
+					</th:block>
+				</div>
 			</div>
 
-			<hr class="secondline">
-			<div class="boardwriter_div">
-				<span class="boardwriter"> [[${data.writer}]]</span> 
-				<span class="recommendcount">추천 수 : [[${data.recommendcount}]]</span>
-				<span class="viewcount">조회 수 : [[${data.viewcount}]]&nbsp;</span>
-			</div>
-		</div>
-
-		<div class="boardcontent">
-			<hr class="thirdline">
-			<span class="card-body text-dark" th:utext="${data.content}"></span>
-		</div>
-		<div class="recommend_block">
-			<p>
-				<button class="recommendbutton" th:iboardnum="${iboardnum}"
-					th:onclick="javascript:recommend_board(this.getAttribute('iboardnum'), 'Y')">추천</button>
-				&nbsp;[[${recommendcount}]]&nbsp;
-				<button class="norecommendbutton" th:iboardnum="${iboardnum}"
-					th:onclick="javascript:recommend_board(this.getAttribute('iboardnum'), 'N')">비추천</button>
-			</p>
-		</div>
-		<th:block th:if="${checkwriter} == 1">
-			<button type="button" th:categorynum="${ctn}" th:boardnum="${bn}" 
-			th:onclick="javascript:modifyboard(this.getAttribute('categorynum'),this.getAttribute('boardnum'))">게시물 수정하기</button>
-		</th:block>
-		
-		<hr class="commentfirstline">
-	</div>
-
-
-	<div layout:fragment="content_comment" class="content_comment">
+			
+		<div layout:fragment="content_comment" class="content_comment">
 		<div class="comment_div">
 			<th:block th:if="${not #lists.isEmpty(commentList.list)}">
-				<ul class="comment_ui">
+				<ul class="comment_ul">
 					<li th:each="comment : ${commentList.list}" th:class="comment" th:classappend="lv + ${comment.level}" th:id="cn + ${comment.commentno}" style="list-style: none;"><span class="comment_writer">[[${comment.writer}]]
 					</span> 
 					<div class="comment_header_div">
-						<button class="reply_btn" th:onclick="javascript:viewWriteRecomment(this)">답글</button>
+						<button class="reply_btn" 
+							th:level="${comment.level}"
+							th:iboardnum="${comment.iboardnum}"
+							th:parentcommentno="${comment.commentno}"
+							th:page="${params.page}" 
+							th:onclick="javascript:viewWriteRecomment(this,this.getAttribute('level'),this.getAttribute('iboardnum'),this.getAttribute('parentcommentno'),this.getAttribute('page'))">답글</button>
 						<span class="comment_norecommend">
 								<button type="button" th:iboardnum="${comment.iboardnum}"
 									th:commentno="${comment.commentno}" th:recommend="N" th:recommendcountvalue=${comment.norecommendcount}
@@ -102,35 +102,28 @@
 						<div class="comment_content_div">
 							<p class="comment_content"><span class="parent_nickname">[[${comment.parentwriter}]]</span>&nbsp;[[${comment.content}]]</p>
 						</div> 
-						<div class="reply_div" style="display: none;">
-							<input class="recomment_write_input" id="recomment_write_input" placeholder="답글을 남겨주세요">
-							<button type="button" class="comment_submit_button"
-								th:iboardnum="${comment.iboardnum}"
-								th:parentcommentno=${comment.commentno}
-								th:page=${params.page}
-								th:onclick="javascript:writeRecomment(this.getAttribute('iboardnum'), this.getAttribute('parentcommentno'), this, this.getAttribute('page'))">쓰기</button>
-						</div>
 					</li>
 					
 				</ul>
 
 			</th:block>
 			<th:block th:unless="${not #lists.isEmpty(commentList.list)}">
-            	댓글이 존재하지 않습니다.
             </th:block>
 		</div>
 		<div class="paging">
 		</div>
-		<div class="comment_write_div">
-			<span> <input class="comment_write_input"
-				id="comment_write_input"
-				placeholder="댓글 작성 구간">
-				<button type="button" class="comment_submit_button"
+		<div class="comment_write_div_background">
+			<div class="comment_write_div_input">
+				<textarea 
+					class="comment_write_input" 
+					id="comment_write_input"
+					placeholder="댓글 작성 구간"></textarea>
+				<button type="button" class="comment_submit_button" 
 					th:iboardnum="${iboardnum}"
 					th:endpage=${params.pagination.endPage}
-					th:onclick="javascript:writeComment(this.getAttribute('iboardnum'), this.getAttribute('endpage'))">쓰기</button>
-			</span>
-			<hr>
+					th:onclick="javascript:writeComment(this.getAttribute('iboardnum'), this.getAttribute('endpage'))"></button>
+			</div>
+			
 		</div>
 	</div>
 	<div layout:fragment="content_boards" class="content_boards">
@@ -175,6 +168,12 @@
 			</th:block>
 		</div>
 	</div>
+		</div>
+	</div>
+
+
+
+	
 	<th:block layout:fragment="footer" th:include="@{/fragments/footer}"></th:block>
 </body>
     <script th:inline="javascript">
@@ -244,6 +243,10 @@
 				findPaginationData(page);
 				
 			}
+          
+          function enterkey(input){
+        	  $(input).val($(input).val() + '\n');
+          }
           
 
        	

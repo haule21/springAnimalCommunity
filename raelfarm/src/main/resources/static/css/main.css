@@ -5,56 +5,11 @@
 */
 
 .mainbody{
+	width: 1050px;
 	overflow: hidden;
-  	margin: 0 auto;
-  	list-style-type: none;
-}
-
-
-@media screen and (max-width:560px){
-	.mainBody {
-		float: left;
-	}
-	.left {	
-		float: center;
-	}
-	 .right {
-	 	float: center;
-	 }	
-	 .left .container {
-	 	align-items: left;
-	 	text-align : left;
-		font-size: 20px;
-	}
-	.right {
-	 	align-items: left;
-	 	text-align : left;
-		font-size: 20px;
-		margin-top: 30px;
-	}
-	.imgContainer {
-	 	float: center;
-	 	justify-content: center;
-	}
-}
-
-@media screen and (min-width:560px){
-	.mainBody{
-		float: center;
-		padding	: 5px 50px;
-	}
-
-	.left{	
-		float: left;
-		width: 450px;
-		padding	: 5px 0px;
-	}
-	 .right{
-	 	float: right;
-		width: 450px;
-		padding	: 5px 0px;
-	 }	
-	
+	margin-left: auto;
+	margin-right: auto;
+  	list-style-type: none;  	
 }
 
 .boardEmpty{
@@ -76,6 +31,17 @@
 
 .right a{
 	text-decoration-line: none;	
+}
+
+.left{
+	width: 400px;
+	float: left;
+	margin-right: 25px;
+	
+}
+.right{
+	width: 400px;
+	float: left;
 }
 
 /*

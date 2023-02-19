@@ -69,13 +69,24 @@ function writeRecomment(iboardnum, parentcommentno, button, page){
 	
 }
 
-function viewWriteRecomment(button){
-	$(button).parent().parent('li.comment').children('div.reply_div').css('display','block');
+function viewWriteRecomment(button, lvl, iboardnum, parentcommentno, page){
+	var level = parseInt(lvl) + 1;
+	
+	
+	
+	$(button).parent().parent().after('<li class="lv'+level+' writeRecomment_li id="writeRecomment_li" ">'
+	+ '<div class="recomment_write_div_background">'
+	+ '<textarea class="recomment_write_input" id="recomment_write_input" placeholder="답글을 남겨주세요"></textarea>'
+	+ '<button type="button" class="comment_submit_button "'
+								+'onclick="javascript:writeRecomment('+iboardnum+', '+parentcommentno+', this, '+page+')"></button>'
+	+ '</div>'
+	+ '</li>');
 	$(button).removeAttr("onclick");
 	$(button).attr("onclick", "javascript:hideWriteRecomment(this)");
 }
 function hideWriteRecomment(button){
-	$(button).parent().parent('li.comment').children('div.reply_div').css('display','none');
+	console.log($(button).parent().parent().next());
+	$(button).parent().parent().next().remove();
 	$(button).removeAttr("onclick");
-	$(button).attr("onclick", "javascript:viewWriteRecomment(this)");
+	$(button).attr("onclick", "javascript:viewWriteRecomment(this, this.getAttribute('level'))");
 }
