@@ -31,8 +31,16 @@
         			<tbody th:with="List=${response.list}">
         				<tr th:each="board : ${List}">
 			            	<td><a th:href="'/board' + '/c' + ${board.categorynum}" th:text="${board.categoryname}"></a> </td>
-			            	<td><a 	th:href="'/board' + '/c' + ${board.categorynum} + '/b' + ${board.boardnum} + '?previouscategorynum=' + ${category_num}" 
-			            			th:text="${board.title} + ' ' +${board.existimgfile}"></a></td>
+			            	<td>
+			            		<th:block th:if="${category_num == null}">
+			            			<a 	th:href="'/board' + '/c' + ${board.categorynum} + '/b' + ${board.boardnum} + '?previouscategorynum=' + ${board.categorynum}" 
+			            			th:text="${board.title} + ' ' +${board.existimgfile}"></a>
+			            		</th:block>
+			            		<th:block th:unless="${category_num == null}">
+			            			<a 	th:href="'/board' + '/c' + ${board.categorynum} + '/b' + ${board.boardnum} + '?previouscategorynum=' + ${category_num}" 
+			            			th:text="${board.title} + ' ' +${board.existimgfile}"></a>
+			            		</th:block>
+			            	</td>
 			            	<td th:text="${board.writer}"></td>
 			            	<td th:text="${board.registerdate}"></td>
 			            	<td th:text="${board.viewcount}"></td>
@@ -42,17 +50,17 @@
 	        	</table>
 	        	<div class="paging">
 		    	</div>
+		    <th:block th:if="${category_num} != null">
+				<th:block th:if="${category_num} == 100 or ${category_num} >= 500">
+				</th:block>
+				<th:block th:unless="${category_num} == 100 or ${category_num} >= 500">
+					<button th:categorynum="${category_num}" type="button" th:onclick="javascript:getWriteUrl(this.getAttribute('categorynum'))" style="float: left;">글쓰기</button>
+				</th:block>
+			</th:block> 
 			</div>
 			<div th:unless="${not #lists.isEmpty(response.list)}">
 				<p>게시물이 존재하지 않습니다.</p>
 			</div>
-			<th:block th:if="${category_num} != null">
-				<th:block th:if="${category_num} == 100 or ${category_num} >= 500">
-				</th:block>
-				<th:block th:unless="${category_num} == 100 or ${category_num} >= 500">
-					<button th:categorynum="${category_num}" type="button" th:onclick="javascript:getWriteUrl(this.getAttribute('categorynum'))">글쓰기</button>
-				</th:block>
-			</th:block> 
         </div>
         
         <th:block layout:fragment="footer" th:include="@{/fragments/footer}"></th:block>	

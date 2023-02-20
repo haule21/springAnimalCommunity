@@ -16,18 +16,21 @@
         <th:block layout:fragment="header" th:include="@{/fragments/header}"></th:block>
 		
         <div layout:fragment="content" class="content">
-            <form action="/loginProc" method="post">
-				<input type="hidden" th:value="${_csrf.token}" th:name="${_csrf.parameterName}">
-				<input type="text" name="username">
-				<input type="password" name="password">
-				<button type="submit">로그인</button>
-			</form>
-			<span>비밀번호가 기억나지 않으세요?&nbsp;</span><a>비밀번호 찾기</a>
-			<th:block th:if="${result eq 1}">
-				<script>
-					alert("계정 생성 완료");
-				</script>
-			</th:block>
+        	<div class="login_div" style="width:1050px; margin-left: auto; margin-right: auto;">
+        		<form action="/loginProc" method="post">
+					<input type="hidden" th:value="${_csrf.token}" th:name="${_csrf.parameterName}">
+					<input type="text" name="username">
+					<input type="password" name="password">
+					<button type="submit">로그인</button>
+				</form>
+				<span>비밀번호가 기억나지 않으세요?&nbsp;</span><a>비밀번호 찾기</a>
+				<th:block th:if="${result eq 1}">
+					<script>
+						alert("계정 생성 완료");
+					</script>
+				</th:block>
+        	</div>
+
         </div>
         
         <th:block layout:fragment="footer" th:include="@{/fragments/footer}"></th:block>	

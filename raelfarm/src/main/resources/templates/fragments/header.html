@@ -23,94 +23,94 @@
 				<span class="animalName">바우!</span>
 			</div>
 			<div class="search_div">
-				<input type="text" placeholder="통합검색"><button type="button">검색</button>
+				<input class="searchInput_header" type="text" placeholder="통합검색"><button type="button" th:onclick="javascript:search('all')">검색</button>
 			</div>
 		</div>
 		<ul class="mainNav">
 			<li class="category_names">
-				<a class="category_name" href="/board/c100">인기글</a>
+				<a class="category_name" href="/board/c100"><p>인기글</p></a>
 			</li>
 			<li class="category_names">
-				<a class="category_name" href="/board/c200">나의 반려</a>
+				<a class="category_name" href="/board/c200"><p>나의 반려</p></a>
 				<div class="category_list">
 					<ul class="category_ul">
 						<li class="category_li">
-							<a class="category_detail" href="/board/c201">강아지</a>
+							<a class="category_detail" href="/board/c201"><p>강아지</p></a>
 						</li>
 						<li class="category_li">
-							<a class="category_detail" href="/board/c202">고양이</a>
+							<a class="category_detail" href="/board/c202"><p>고양이</p></a>
 						</li>
 						<li class="category_li">
-							<a class="category_detail" href="/board/c203">새</a>
+							<a class="category_detail" href="/board/c203"><p>새</p></a>
 						</li>
 						<li class="category_li">
-							<a class="category_detail" href="/board/c204">파충류</a>
+							<a class="category_detail" href="/board/c204"><p>파충류</p></a>
 						</li>
 						<li class="category_li">
-							<a class="category_detail" href="/board/c205">물고기</a>
+							<a class="category_detail" href="/board/c205"><p>물고기</p></a>
 						</li>
 						<li class="category_li">
-							<a class="category_detail" href="/board/c206">기타</a>
+							<a class="category_detail" href="/board/c206"><p>기타</p></a>
 						</li>
 					</ul>
 				</div>
 			</li>
 			<li class="category_names">
-				<a class="category_name" href="/board/c300">동물 최고</a>
+				<a class="category_name" href="/board/c300"><p>동물 최고</p></a>
 				<div class="category_list">
 					<ul class="category_ul">
 						<li class="category_li">
-							<a class="category_detail" href="/board/c301">동물 백과사전</a>
+							<a class="category_detail" href="/board/c301"><p>동물 백과사전</p></a>
 						</li>
 						<li class="category_li">
-							<a class="category_detail" href="/board/c302">좋은 집사 되기</a>
+							<a class="category_detail" href="/board/c302"><p>좋은 집사 되기</p></a>
 						</li>
 						<li class="category_li">
-							<a class="category_detail" href="/board/c303">동물가 뉴스</a>
+							<a class="category_detail" href="/board/c303"><p>동물가 뉴스</p></a>
 						</li>
 						<li class="category_li">
-							<a class="category_detail" href="/board/c304">동물 지식IN</a>
+							<a class="category_detail" href="/board/c304"><p>동물 지식IN</p></a>
 						</li>
 					</ul>
 				</div>
 			</li>
 			<li class="category_names">
-				<a class="category_name" href="/board/c400">커뮤니티</a>
+				<a class="category_name" href="/board/c400"><p>커뮤니티</p></a>
 				<div class="category_list">
 					<ul class="category_ul">
 						<li class="category_li">
-							<a class="category_detail" href="/board/c401">유머</a>
+							<a class="category_detail" href="/board/c401"><p>유머</p></a>
 						</li>
 						<li class="category_li">
-							<a class="category_detail" href="/board/c402">고민</a>
+							<a class="category_detail" href="/board/c402"><p>고민</p></a>
 						</li>
 						<li class="category_li">
-							<a class="category_detail" href="/board/c403">자유</a>
+							<a class="category_detail" href="/board/c403"><p>자유</p></a>
 						</li>
 						<li class="category_li">
-							<a class="category_detail" href="/board/c404">이슈</a>
+							<a class="category_detail" href="/board/c404"><p>이슈</p></a>
 						</li>
 					</ul>
 				</div>
 			</li>
 			<li class="category_names">
-				<a class="category_name" href="/board/c500">소식</a>
+				<a class="category_name" href="/board/c500"><p>소식</p></a>
 				<div class="category_list">
 					<ul class="category_ul">
 						<li class="category_li">
-							<a class="category_detail" href="/board/c501">공지사항</a>
+							<a class="category_detail" href="/board/c501"><p>공지사항</p></a>
 						</li>
 						<li class="category_li">
-							<a class="category_detail" href="/board/c502">이벤트</a>
+							<a class="category_detail" href="/board/c502"><p>이벤트</p></a>
 						</li>
 						<li class="category_li">
-							<a class="category_detail" href="/board/c503">아이콘샵</a>
+							<a class="category_detail" href="/board/c503"><p>아이콘샵</p></a>
 						</li>
 					</ul>
 				</div>
 			</li>
 			<li class="category_names">
-				<a class="category_name" href="/board/c600">명예의 전당</a>
+				<a class="category_name" href="/board/c600"><p>명예의 전당</p></a>
 			</li>	
 		</ul>
     </div>
@@ -121,17 +121,11 @@
    					var categorylist = $(this).children('.category_list');
    					
    					if(categorylist.length == 0){
-   						$(this).children('.category_name').css('border','1px solid');
-   	   					$(this).children('.category_name').css('border-image','linear-gradient(to right, #5858AC -50%, #7DC0CE 100%');
-   	   					$(this).children('.category_name').css('border-image-slice','1');
    					}
    					else{
    						categorylist.css('display', 'block');
    						
-   						$(this).children('.category_name').css('border','1px solid');
    	   					$(this).children('.category_name').css('border-bottom','0');
-   	   					$(this).children('.category_name').css('border-image','linear-gradient(to right, #5858AC -50%, #7DC0CE 100%');
-   	   					$(this).children('.category_name').css('border-image-slice','1');
    					}
    					
    					
@@ -144,5 +138,16 @@
     			});
     	
     	;
+    	
+    	function search(searchType){
+    		var keyword = $('.searchInput_header').val();
+    		const searchParam = {
+    			searchType: searchType,
+    			keyword: keyword
+    		};
+    		
+    		location.href = '/board/c' + '?' + new URLSearchParams(searchParam).toString();
+    		console.log('/board/c' + '?' + new URLSearchParams(searchParam).toString());
+    	}
     </script>
 </html>

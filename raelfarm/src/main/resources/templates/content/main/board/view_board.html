@@ -46,6 +46,7 @@
 	
 			<div class="boardcontent">
 				<span class="card-body text-dark" th:utext="${data.content}"></span>
+			</div>
 				<div class="recommend_block">
 					<p>
 						<button class="recommendbutton" th:iboardnum="${iboardnum}"
@@ -59,7 +60,6 @@
 						th:onclick="javascript:modifyboard(this.getAttribute('categorynum'),this.getAttribute('boardnum'))">게시물 수정하기</button>
 					</th:block>
 				</div>
-			</div>
 
 			
 		<div layout:fragment="content_comment" class="content_comment">
@@ -239,17 +239,19 @@
 					pageSize: 10
 				}
             
-            	$(".comment_div").load("/comment/view"+ '?' + new URLSearchParams(queryParams).toString());
-				findPaginationData(page);
+				var when1 = $(".comment_div").load("/comment/view"+ '?' + new URLSearchParams(queryParams).toString());
+				var when2 = findPaginationData(page); 
+				
+            	$.when( when1, when2 )
+            	.done(
+            			function(){
+            				var topleft = $(".comment_ul").find("li:first").offset();
+            				window.scrollTo({top:topleft.top, left:topleft.left, behavior:'smooth'});
+            			});
+				
+				
 				
 			}
-          
-          function enterkey(input){
-        	  $(input).val($(input).val() + '\n');
-          }
-          
-
-       	
 	/*]]>*/
     </script>
 </html>

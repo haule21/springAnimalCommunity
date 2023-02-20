@@ -42,7 +42,7 @@ function writeComment(iboardnum, endpage){
 
 function writeRecomment(iboardnum, parentcommentno, button, page){
 	
-	var content = $(button).parent().children('input.recomment_write_input').val();
+	var content = $(button).parent().children('textarea.recomment_write_input').val();
 	
 	$.ajax({
 		type : 'POST',
@@ -74,11 +74,11 @@ function viewWriteRecomment(button, lvl, iboardnum, parentcommentno, page){
 	
 	
 	
-	$(button).parent().parent().after('<li class="lv'+level+' writeRecomment_li id="writeRecomment_li" ">'
+	$(button).parent().parent().after('<li class="lv'+level+' writeRecomment_li" id="writeRecomment_li">'
 	+ '<div class="recomment_write_div_background">'
 	+ '<textarea class="recomment_write_input" id="recomment_write_input" placeholder="답글을 남겨주세요"></textarea>'
 	+ '<button type="button" class="comment_submit_button "'
-								+'onclick="javascript:writeRecomment('+iboardnum+', '+parentcommentno+', this, '+page+')"></button>'
+								+'onclick="javascript:writeRecomment(\''+iboardnum+'\', '+parentcommentno+', this, '+page+')"></button>'
 	+ '</div>'
 	+ '</li>');
 	$(button).removeAttr("onclick");

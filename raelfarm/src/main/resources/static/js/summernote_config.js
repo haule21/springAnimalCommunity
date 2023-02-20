@@ -11,7 +11,7 @@ const DeleteList = { data : new FormData(),
 
 function summernote_config(){
 	$('#summernote').summernote({
-		height: 1000,
+		height: 535,
 		minHeight: null,
 		maxHeight: null,
 		focus: true,                  // set focus to editable area after initializing summernote

@@ -214,15 +214,19 @@ public class BoardController {
 									Principal principal,
 									HttpServletRequest req, HttpServletResponse res) {
 		ModelAndView mv = new ModelAndView();
+		
 		String iboardnum = String.format("%05d",Integer.valueOf(categorynum)) + boardnum; 
 		ViewCountUp(iboardnum, req, res);
 		
-		String userid = principal.getName();
+		String userid = principal != null ? principal.getName() : null;
 		String writer = boardRepository.SelectWriter(Integer.parseInt(categorynum), Integer.parseInt(boardnum));
-		if(userid.equals(writer)) {
-			mv.addObject("checkwriter", 1);
-			mv.addObject("ctn", categorynum);
-			mv.addObject("bn", boardnum);
+		
+		if(userid != null) {
+			if(userid.equals(writer)) {
+				mv.addObject("checkwriter", 1);
+				mv.addObject("ctn", categorynum);
+				mv.addObject("bn", boardnum);
+			}
 		}
 		SearchDTO pnParam = new SearchDTO();
 		

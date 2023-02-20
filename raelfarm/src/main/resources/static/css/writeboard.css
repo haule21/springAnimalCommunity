@@ -1,0 +1,13 @@
+@charset "UTF-8";
+
+.write_content{
+	width: 1050px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#summernote_form{
+	width: 825px;
+	border: 1px solid;
+	padding: 10px;
+}

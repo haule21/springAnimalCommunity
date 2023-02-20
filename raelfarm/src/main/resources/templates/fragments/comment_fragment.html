@@ -5,12 +5,16 @@
 </head>
 <body>
 	<th:block th:if="${not #lists.isEmpty(commentList.list)}">
-		<ul class="comment_ui">
+		<ul class="comment_ul">
 			<li th:each="comment : ${commentList.list}" th:class="comment" th:classappend="lv + ${comment.level}" th:id="cn + ${comment.commentno}" style="list-style: none;"><span class="comment_writer">[[${comment.writer}]]
 			</span>
 				<div class="comment_header_div">
-					<button class="reply_btn" type="button"
-							th:onclick="javascript:viewWriteRecomment(this)">답글</button>
+					<button class="reply_btn" 
+							th:level="${comment.level}"
+							th:iboardnum="${comment.iboardnum}"
+							th:parentcommentno="${comment.commentno}"
+							th:page="${params.page}" 
+							th:onclick="javascript:viewWriteRecomment(this,this.getAttribute('level'),this.getAttribute('iboardnum'),this.getAttribute('parentcommentno'),this.getAttribute('page'))">답글</button>
 					<span class="comment_norecommend">
 							<button type="button" th:iboardnum="${comment.iboardnum}"
 								th:commentno="${comment.commentno}" th:recommend="N" th:recommendcountvalue=${comment.norecommendcount}
@@ -38,14 +42,6 @@
 						<p class="comment_content"><span class="parent_nickname">[[${comment.parentwriter}]]</span>&nbsp;[[${comment.content}]]</p>
 				</div>
 					
-				</div>
-				<div class="reply_div" style="display: none;">
-						<input class="recomment_write_input" id="recomment_write_input" placeholder="답글을 남겨주세요">
-					
-						<button type="button" class="comment_submit_button"
-						th:iboardnum="${comment.iboardnum}"
-						th:parentcommentno=${comment.commentno}
-						th:onclick="javascript:writeRecomment(this.getAttribute('iboardnum'), this.getAttribute('parentcommentno'), this)">쓰기</button>
 				</div>
 			</li>			
 		</ul>

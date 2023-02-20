@@ -3,24 +3,33 @@
 
 .tableContainer {
 	text-align: center;
-	justify-content: center;
+	width:1050px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.paging{
+	width: 825px;
 }
 
 .boardTable {
-	width: 70%;
+	width: 825px;
 	text-align: center;
-	margin-left:auto; 
-    margin-right:auto;
-    border-left: 0px solid #444444;
-    border-right: 0px solid #444444;
-    border-top: 1px solid #444444;
-    border-bottom: 1px solid #444444;
+    border-left: 0px solid;
+    border-right: 0px solid;
+    border-top: 1px solid;
+    border-bottom: 1px solid;
+    
+    border-image: linear-gradient(to right, #5858AC 0%, #7DC0CE 100%);
+  	border-image-slice: 1;
+}
+
+.boardTable tbody{
+    border-top: 1px solid;
+    border-image: linear-gradient(to right, #5858AC 0%, #7DC0CE 100%);
+  	border-image-slice: 1;
 }
 
 .content_header{
 	width: 70%;
-}
-
-.boardTable th{
-	border-bottom: 1px solid #444444;
 }

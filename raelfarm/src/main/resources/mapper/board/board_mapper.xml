@@ -27,13 +27,14 @@
 									WHERE
 										USERID = A.WRITER), #{params.keyword}) > 0)
                         </when>
+                        <when test="'all'.equals( params.searchType)">
+			                AND
+								(INSTR(TITLE, #{params.keyword}) > 0 OR INSTR(CONTENT, #{params.keyword}) > 0) 
+                        </when>
                     </choose>
                 </when>
                 <!-- 전체 검색일 때 때 제목 내용만-->
-                <otherwise>
-                AND
-					(INSTR(TITLE, #{params.keyword}) > 0 OR INSTR(CONTENT, #{params.keyword}) > 0) 
-                </otherwise>
+                
             </choose>
         </if>
     </sql>

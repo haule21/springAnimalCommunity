@@ -12,6 +12,7 @@
 		<meta name="_csrf_header" th:content="${_csrf.headerName}">
 		
         <!--/* css */-->
+        <link th:href="@{/css/writeboard.css}" rel="stylesheet" />
         <link th:href="@{/css/common.css}" rel="stylesheet" />
         <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet" />
         <link href="/summernote/summernote.min.css" rel="stylesheet">
@@ -27,6 +28,7 @@
         <th:block layout:fragment="header" th:include="@{/fragments/header}"></th:block>
 		
         <div layout:fragment="content" class="content">
+        	<div class="write_content">
         	<form id="summernote_form" method="post" th:action="@{/board/write}">
         		<div style="margin-bottom: 50px; margin-left: auto; margin-right: auto;">
         			<input type="hidden" th:value="${_csrf.token}" th:name="${_csrf.parameterName}">
@@ -50,6 +52,7 @@
 
         		<button type="button" onclick="javascript:check_board_before_submit()">제출</button>
         	</form>
+        	</div>
 			<script>
 				$(document).ready(summernote_config());
 
