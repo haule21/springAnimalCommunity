@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+	<table class="boardTable">
+		<thead>
+			<tr>
+				<th th:text="카테고리"></th>
+				<th th:text="제목"></th>
+				<th th:text="작성자"></th>
+				<th th:text="등록날짜"></th>
+				<th th:text="조회수"></th>
+				<th th:text="추천수"></th>
+			</tr>
+		</thead>
+		<tbody th:with="List=${boarddata.list}">
+			<tr th:each="board : ${List}">
+				<td><a th:href="'/board' + '/c' + ${board.categorynum}" th:text="${board.categoryname}"></a></td>
+				<td><th:block th:if="${category_num == null}">
+						<a
+							th:href="'/board' + '/c' + ${board.categorynum} + '/b' + ${board.boardnum} + '?previouscategorynum=' + ${board.categorynum}"
+							th:text="${board.title} + ' ' +${board.existimgfile}"></a>
+					</th:block> <th:block th:unless="${category_num == null}">
+						<a
+							th:href="'/board' + '/c' + ${board.categorynum} + '/b' + ${board.boardnum} + '?previouscategorynum=' + ${category_num}"
+							th:text="${board.title} + ' ' +${board.existimgfile}"></a>
+					</th:block></td>
+				<td th:text="${board.writer}"></td>
+				<td th:text="${board.registerdate}"></td>
+				<td th:text="${board.viewcount}"></td>
+				<td th:text="${board.recommendcount}"></td>
+			</tr>
+		</tbody>
+	</table>
+</body>
+</html>

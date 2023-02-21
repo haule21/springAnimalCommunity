@@ -108,6 +108,20 @@ public class BoardController {
 		return mv;
 	}
 	
+	@RequestMapping("/boards/view")
+	public ModelAndView View_Boards_(
+			ModelAndView mv,
+			@ModelAttribute("categorynum") String categorynum, @ModelAttribute("params") SearchDTO param
+			) {
+		
+		PagingResponse<ViewBoardsDTO> data = CategoryStrategyViewBoard(categoryStrategyList[(int)(Integer.valueOf(categorynum) / 100)], Integer.valueOf(categorynum), param);
+		mv.addObject("category_num", categorynum);
+		mv.addObject("boarddata", data);
+		mv.setViewName("fragments/board_view_fragment");
+		
+		return mv;
+	}
+	
 	
 	@RequestMapping("/board/c{categorynum}/write")
 	public ModelAndView Write_Board( @PathVariable("categorynum") String categorynum, HttpServletRequest request) {
@@ -215,6 +229,8 @@ public class BoardController {
 									HttpServletRequest req, HttpServletResponse res) {
 		ModelAndView mv = new ModelAndView();
 		
+		int page = CategoryStrategyViewSelectBoardPage(Integer.valueOf(previous_cn), categoryStrategyList[(int)(Integer.valueOf(categorynum) / 100)], Integer.valueOf(categorynum), Integer.valueOf(boardnum));
+		
 		String iboardnum = String.format("%05d",Integer.valueOf(categorynum)) + boardnum; 
 		ViewCountUp(iboardnum, req, res);
 		
@@ -230,16 +246,19 @@ public class BoardController {
 		}
 		SearchDTO pnParam = new SearchDTO();
 		
-		List<ViewBoardsDTO> pndatas = CategoryStrategyViewPreviousNextBoards(
+		PagingResponse<ViewBoardsDTO> pndatas = CategoryStrategyViewPreviousNextBoards(
 				categoryStrategyList[(int)(Integer.valueOf(previous_cn) / 100)], 
-				Integer.valueOf(categorynum),
+				Integer.valueOf(previous_cn),
 				Integer.valueOf(boardnum), 
 				iboardnum,
-				pnParam);
-		
-		for(ViewBoardsDTO tempdata : pndatas) {
+				pnParam,
+				page);
+		System.out.println("=========================================");
+		System.out.println(pndatas);
+		for(ViewBoardsDTO tempdata : pndatas.getList()) {
 			switch(tempdata.getSeqtext()) {
 				case "CURRENT":
+					System.out.println("data : "+ tempdata);
 					mv.addObject("data" , tempdata);
 				break;
 				case "NEXT":
@@ -250,15 +269,17 @@ public class BoardController {
 				break;
 			}
 		}
-		
+		System.out.println("=========================================");
 		SearchDTO commentParam = new SearchDTO();
 		commentParam.setRecordSize(50);
 		
 		PagingResponse<BoardCommentDTO> comment = boardService.SelectBoardComments(iboardnum,commentParam);
 		
+		mv.addObject("boarddata", pndatas);
 		mv.addObject("recommendcount", boardService.SelectBoardRecommendCount(iboardnum));
 		mv.addObject("commentList", comment);
-		mv.addObject("params",commentParam);
+		mv.addObject("params", pnParam);
+		mv.addObject("commentParams",commentParam);
 		mv.addObject("category_num", previous_cn);
 		mv.addObject("iboardnum", iboardnum);
 		mv.setViewName("content/main/board/view_board");
@@ -517,9 +538,13 @@ public class BoardController {
 	public PagingResponse<ViewBoardsDTO> CategoryStrategyViewBoard(CategoryStrategy categoryStrategy, int category_num, SearchDTO param) {
 		return categoryStrategy.ViewBoard(category_num, param, boardService);
 	}
-	public List<ViewBoardsDTO> CategoryStrategyViewPreviousNextBoards(CategoryStrategy categoryStrategy, int category_num, int board_num, String iboardnum, SearchDTO param) {
-		return categoryStrategy.ViewPreviousNextBoards(category_num, board_num, iboardnum, param,boardService);
+	public PagingResponse<ViewBoardsDTO> CategoryStrategyViewPreviousNextBoards(CategoryStrategy categoryStrategy, int category_num, int board_num, String iboardnum, SearchDTO param, int page) {
+		return categoryStrategy.ViewPreviousNextBoards(category_num, board_num, iboardnum, param, page,boardService);
 	}
+	public int CategoryStrategyViewSelectBoardPage(int prectn, CategoryStrategy categoryStrategy, int category_num, int board_num) {
+		return categoryStrategy.ViewSelectBoardPage(prectn, category_num, board_num, boardService);
+	}
+	
 	
 	private void ViewCountUp(String id, HttpServletRequest req, HttpServletResponse res) {
 

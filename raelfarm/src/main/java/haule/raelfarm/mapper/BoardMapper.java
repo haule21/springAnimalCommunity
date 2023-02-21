@@ -18,8 +18,14 @@ import haule.raelfarm.pagination.PagingResponse;
 @Mapper
 @Component
 public interface BoardMapper {
-	List<MainSelectDTO> SelectMainDatas();
+	int SelectBoardPage(
+			@Param("pre_ctn") int prectn,
+			@Param("category_num") int category_num, 
+			@Param("board_num") int board_num,
+			@Param("category_num_st") int Starting, 
+			@Param("category_num_ed") int Ending);
 	
+	List<MainSelectDTO> SelectMainDatas();
 	List<ViewBoardsDTO> SelectBoardsAll(@Param("params") SearchDTO searchDTO);
 	int SelectBoardsAll_CNT(@Param("params") SearchDTO searchDTO);
 	List<ViewBoardsDTO> SelectBoards(

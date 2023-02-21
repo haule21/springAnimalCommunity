@@ -15,11 +15,12 @@ import haule.raelfarm.pagination.PagingResponse;
 
 @Component
 public interface BoardService {
+	public int SelectBoardPage(int prectn,int category_num, int board_num, int Starting, int Ending);
 	public PagingResponse<ViewBoardsDTO> SelectBoardsAll(SearchDTO searchDTO);
 	public int SelectBoardsAll_CNT(SearchDTO searchDTO);
 	public PagingResponse<ViewBoardsDTO> SelectBoards(int category_num, int Starting, int Ending, SearchDTO searchDTO);
 	public int SelectBoards_CNT(int category_num, int Starting, int Ending, SearchDTO searchDTO);
-	public List<ViewBoardsDTO> SelectPreviousNextBoards(int category_num, int board_num,String iboardnum,int Starting, int Ending, SearchDTO searchDTO);
+	public PagingResponse<ViewBoardsDTO> SelectPreviousNextBoards(int category_num, int board_num,String iboardnum,int Starting, int Ending, SearchDTO searchDTO, int page);
 	public PagingResponse<BoardCommentDTO> SelectBoardComments(String iboardnum, SearchDTO searchDTO);
 	public int SelectBoardComments_CNT(String iboardnum);
 	

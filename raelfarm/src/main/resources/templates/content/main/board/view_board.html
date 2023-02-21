@@ -73,7 +73,7 @@
 							th:level="${comment.level}"
 							th:iboardnum="${comment.iboardnum}"
 							th:parentcommentno="${comment.commentno}"
-							th:page="${params.page}" 
+							th:page="${commentParams.page}" 
 							th:onclick="javascript:viewWriteRecomment(this,this.getAttribute('level'),this.getAttribute('iboardnum'),this.getAttribute('parentcommentno'),this.getAttribute('page'))">답글</button>
 						<span class="comment_norecommend">
 								<button type="button" th:iboardnum="${comment.iboardnum}"
@@ -120,7 +120,7 @@
 					placeholder="댓글 작성 구간"></textarea>
 				<button type="button" class="comment_submit_button" 
 					th:iboardnum="${iboardnum}"
-					th:endpage=${params.pagination.endPage}
+					th:endpage=${commentParams.pagination.endPage}
 					th:onclick="javascript:writeComment(this.getAttribute('iboardnum'), this.getAttribute('endpage'))"></button>
 			</div>
 			
@@ -166,6 +166,47 @@
 			<th:block th:unless="${nboard != null}">
 				<p>게시물이 존재하지 않습니다.</p>
 			</th:block>
+			<div th:if="${not #lists.isEmpty(boarddata.list)}" class="tableContainer">
+	        	<table class="boardTable">
+        			<thead>
+        				<tr>
+			            	<th th:text="카테고리"></th>
+			            	<th th:text="제목"></th>
+			            	<th th:text="작성자"></th>
+			            	<th th:text="등록날짜"></th>
+			            	<th th:text="조회수"></th>
+			            	<th th:text="추천수"></th>
+	            		</tr>	
+        			</thead>
+        			<tbody th:with="List=${boarddata.list}">
+        				<tr th:each="board : ${List}">
+			            	<td><a th:href="'/board' + '/c' + ${board.categorynum}" th:text="${board.categoryname}"></a> </td>
+			            	<th:block th:if="${board.content == null}">
+			            		<td>
+			            		<th:block th:if="${category_num == null}">
+			            			<a 	th:href="'/board' + '/c' + ${board.categorynum} + '/b' + ${board.boardnum} + '?previouscategorynum=' + ${board.categorynum}" 
+			            			th:text="${board.title} + ' ' +${board.existimgfile}"></a>
+			            		</th:block>
+			            		<th:block th:unless="${category_num == null}">
+			            			<a 	th:href="'/board' + '/c' + ${board.categorynum} + '/b' + ${board.boardnum} + '?previouscategorynum=' + ${category_num}" 
+			            			th:text="${board.title} + ' ' +${board.existimgfile}"></a>
+			            		</th:block>
+			            	</td>
+			            	</th:block>
+			            	<th:block th:unless="${board.content == null}">
+			            		<td class="nowBoardPageTitle" th:text="${board.title}"></td>
+			            	</th:block>
+			            	
+			            	<td th:text="${board.writer}"></td>
+			            	<td th:text="${board.registerdate}"></td>
+			            	<td th:text="${board.viewcount}"></td>
+			            	<td th:text="${board.recommendcount}"></td>
+	            		</tr>
+        			</tbody>
+	        	</table>
+			</div>
+			<div class="board_paging">
+		    </div>
 		</div>
 	</div>
 		</div>
@@ -180,6 +221,7 @@
 	/*<![CDATA[*/
 		window.onload = () => {
 			findPaginationData();
+			board_findPaginationData();
 		}
 	
 	
@@ -187,7 +229,7 @@
 		function findPaginationData(page) {
 			
 			const pagination = [[ ${commentList.pagination} ]];
-			const params = [[ ${params} ]];
+			const params = [[ ${commentParams} ]];
 			const iboardnum = [[ ${iboardnum} ]];
 			
 			if(page != null) params.page = page;
@@ -201,28 +243,29 @@
 		}
 	      
 		function drawPage(pagination, params, iboardnum) {
-			$('.paging').text('');
+			var commentpaging = $('.paging');
+			commentpaging.text('');
             if ( !pagination || !params ) {
-              $('.paging').text('');
+            	commentpaging.text('');
               throw new Error('Missing required parameters...');
             }
 
             // 첫 페이지, 이전 페이지
             if (pagination.existPrevPage) {
-            	$('.paging').append(
+            	commentpaging.append(
                   '<a href="javascript:void(0);" onclick="movePage(1, \''+iboardnum+'\')" class="page_bt first">첫 페이지</a>'+
                   '<a href="javascript:void(0);" onclick="movePage('+pagination.startPage - 1+', \''+iboardnum+'\')" class="page_bt prev">이전 페이지</a>');
             }
 
             // 페이지 번호
             for (var i = pagination.startPage; i <= pagination.endPage; i++) {
-            	$('.paging').append(
+            	commentpaging.append(
 				(i !== params.page) ? '<a href="javascript:void(0);" onclick="movePage('+i+', \''+iboardnum+'\');">'+i+'</a>' : '<span class="on">'+i+'</span>');
             }
 
             // 다음 페이지, 마지막 페이지
             if (pagination.existNextPage) {
-            	$('.paging').append(
+            	commentpaging.append(
                   '<a href="javascript:void(0);" onclick="movePage('+pagination.endPage + 1 +',\''+iboardnum+'\');" class="page_bt next">다음 페이지</a>'+
                   '<a href="javascript:void(0);" onclick="movePage('+pagination.totalPageCount +',\''+iboardnum+'\');" class="page_bt last">마지막 페이지</a>');
             }
@@ -248,10 +291,74 @@
             				var topleft = $(".comment_ul").find("li:first").offset();
             				window.scrollTo({top:topleft.top, left:topleft.left, behavior:'smooth'});
             			});
-				
-				
-				
 			}
+          
+			function board_findPaginationData(page) {
+				
+				const pagination = [[ ${boarddata.pagination} ]];
+				const params = [[ ${params} ]];
+				const categorynum = [[ ${category_num} ]];
+				
+				if(page != null) params.page = page;
+				console.log(params);
+				
+				if(pagination.endPage == 0){
+					
+				}
+				else board_drawPage(pagination, params, categorynum);
+	     
+			}
+		      
+			function board_drawPage(pagination, params, categorynum) {
+				var boardpaging = $('.board_paging');
+				boardpaging.text('');
+	            if ( !pagination || !params ) {
+	            	boardpaging.text('');
+	              throw new Error('Missing required parameters...');
+	            }
+
+	            // 첫 페이지, 이전 페이지
+	            if (pagination.existPrevPage) {
+	            	boardpaging.append(
+	                  '<a href="javascript:void(0);" onclick="board_movePage(1, \''+categorynum+'\')" class="page_bt first">첫 페이지</a>'+
+	                  '<a href="javascript:void(0);" onclick="board_movePage('+pagination.startPage - 1+', \''+categorynum+'\')" class="page_bt prev">이전 페이지</a>');
+	            }
+
+	            // 페이지 번호
+	            for (var i = pagination.startPage; i <= pagination.endPage; i++) {
+	            	boardpaging.append(
+					(i !== params.page) ? '<a href="javascript:void(0);" onclick="board_movePage('+i+', \''+categorynum+'\');">'+i+'</a>' : '<span class="on">'+i+'</span>');
+	            }
+
+	            // 다음 페이지, 마지막 페이지
+	            if (pagination.existNextPage) {
+	            	boardpaging.append(
+	                  '<a href="javascript:void(0);" onclick="board_movePage('+pagination.endPage + 1 +',\''+categorynum+'\');" class="page_bt next">다음 페이지</a>'+
+	                  '<a href="javascript:void(0);" onclick="board_movePage('+pagination.totalPageCount +',\''+categorynum+'\');" class="page_bt last">마지막 페이지</a>');
+	            }
+
+	          }
+			
+
+	          // 페이지 이동
+				function board_movePage(page, categorynum) {
+					const queryParams = {
+						categorynum : categorynum,
+						page: (page) ? page : 1,
+						recordSize: 20,
+						pageSize: 10
+					}
+	            
+					var when1 = $(".tableContainer").load("/boards/view"+ '?' + new URLSearchParams(queryParams).toString());
+					var when2 = board_findPaginationData(page); 
+					
+	            	$.when( when1, when2 )
+	            	.done(
+	            			function(){
+	            				var topleft = $(".tableContainer").find("tr:first").offset();
+	            				window.scrollTo({top:topleft.top, left:topleft.left, behavior:'smooth'});
+	            			});
+				}
 	/*]]>*/
     </script>
 </html>

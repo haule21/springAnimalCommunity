@@ -31,6 +31,11 @@ public class BoardServiceImpl implements BoardService{
 	@Autowired
 	CategoryRepository categoryRepository;
 	
+	
+	@Override
+	public int SelectBoardPage(int prectn,int category_num, int board_num, int Starting, int Ending) {
+		return boardMapper.SelectBoardPage(prectn, category_num, board_num, Starting, Ending);
+	}
 	@Override
 	public int SelectBoardsAll_CNT(SearchDTO searchDTO) {
 		return boardMapper.SelectBoardsAll_CNT(searchDTO);
@@ -94,8 +99,21 @@ public class BoardServiceImpl implements BoardService{
 	}
 	
 	@Override
-	public List<ViewBoardsDTO> SelectPreviousNextBoards(int category_num, int board_num, String iboardnum, int Starting, int Ending, SearchDTO searchDTO){
-		return boardMapper.SelectPreviousNextBoards(category_num, board_num, iboardnum, Starting, Ending, searchDTO);
+	public PagingResponse<ViewBoardsDTO> SelectPreviousNextBoards(int category_num, int board_num, String iboardnum, int Starting, int Ending, SearchDTO searchDTO, int page){
+		searchDTO.setPage(page);
+		System.out.println("===============================");
+		System.out.println("===============================");
+		System.out.println(searchDTO.getPage());
+		System.out.println("===============================");
+		System.out.println("===============================");
+		int count = boardMapper.SelectBoards_CNT(category_num, Starting, Ending, searchDTO);
+		Pagination pagination = new Pagination(count, searchDTO);
+		searchDTO.setPagination(pagination);
+		List<ViewBoardsDTO> list = boardMapper.SelectPreviousNextBoards(category_num, board_num, iboardnum, Starting, Ending, searchDTO);
+		for(ViewBoardsDTO data : list) {
+			data.SetRegisterDate();
+		}
+		return new PagingResponse<>(list, pagination);
 	}
 	
 	@Override
