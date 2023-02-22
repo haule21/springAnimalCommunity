@@ -18,20 +18,22 @@
         <div layout:fragment="content" class="content">
 	        <div th:if="${not #lists.isEmpty(response.list)}" class="tableContainer">
 	        	<table class="boardTable">
-        			<thead>
+        			<thead class="boardTable_head">
         				<tr>
-			            	<th th:text="카테고리"></th>
-			            	<th th:text="제목"></th>
-			            	<th th:text="작성자"></th>
-			            	<th th:text="등록날짜"></th>
-			            	<th th:text="조회수"></th>
-			            	<th th:text="추천수"></th>
+			            	<th class="category" th:text="분류"></th>
+			            	<th class="title" th:text="제목"></th>
+			            	<th class="writer" th:text="작성자"></th>
+			            	<th class="date" th:text="날짜"></th>
+			            	<th class="other" th:text="조회"></th>
+			            	<th class="other" th:text="추천"></th>
 	            		</tr>	
         			</thead>
         			<tbody th:with="List=${response.list}">
         				<tr th:each="board : ${List}">
-			            	<td><a th:href="'/board' + '/c' + ${board.categorynum}" th:text="${board.categoryname}"></a> </td>
-			            	<td>
+			            	<td class="categoryname">
+			            		<a th:href="'/board' + '/c' + ${board.categorynum}" th:text="${board.categoryname}"></a>
+			            	</td>
+			            	<td class="title">
 			            		<th:block th:if="${category_num == null}">
 			            			<a 	th:href="'/board' + '/c' + ${board.categorynum} + '/b' + ${board.boardnum} + '?previouscategorynum=' + ${board.categorynum}" 
 			            			th:text="${board.title} + ' ' +${board.existimgfile}"></a>
@@ -41,10 +43,10 @@
 			            			th:text="${board.title} + ' ' +${board.existimgfile}"></a>
 			            		</th:block>
 			            	</td>
-			            	<td th:text="${board.writer}"></td>
+			            	<td class="writer" th:text="${board.writer}"></td>
 			            	<td th:text="${board.registerdate}"></td>
 			            	<td th:text="${board.viewcount}"></td>
-			            	<td th:text="${board.recommendcount}"></td>
+			            	<td class="recommendcount" th:text="${board.recommendcount}"></td>
 	            		</tr>
         			</tbody>
 	        	</table>
@@ -69,6 +71,7 @@
 	/*<![CDATA[*/
 		window.onload = () => {
 			findPaginationData();
+			categoryname_colorchange();
 		}
 	
 	
@@ -125,7 +128,28 @@
             location.href = location.pathname + '?' + new URLSearchParams(queryParams).toString();
           }
           
-
+	function categoryname_colorchange(){
+		var temp = $('.boardTable').children('tbody').children('tr').children('.categoryname');
+		console.log(temp);
+		
+		for(i = 0; i < temp.length; i++){
+			switch(temp[i].innerText){
+				case '유머':
+					$(temp[i]).children('a').css('color','red');
+					break;
+				case '고민':
+					$(temp[i]).children('a').css('color','blue');
+					break;
+				case '이슈':
+					$(temp[i]).children('a').css('color','navy');
+					break;
+				case '자유':
+					$(temp[i]).children('a').css('color','brown');
+					break;
+			}
+		}
+		console.log(temp);
+	}
        	
 	/*]]>*/
     </script>

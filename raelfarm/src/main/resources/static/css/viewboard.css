@@ -313,9 +313,49 @@
 }
 
 /*
-
+======================================================
+					boards
+======================================================
 */
 
+.content_boards_previous_next{
+	width: 825px;
+	vertical-align: middle;
+}
+.previous_board, .next_board{
+	position: relative;
+	display: inline-block;
+	width: 350px;
+	height: 90px;
+	padding: 15px;
+}
 
-
+.previous_board, .previous_board p{
+	text-align: left;
+}
+.previous_board table{
+	margin-left: 0;
+	font-size: 13px;
+}
+.previous_board table a{
+	text-decoration: none;
+}
+.next_board{
+	float: right;
+}
+.next_board, .next_board p{
+	text-align: right;
+}
+.next_board table{
+	height: 17px;
+	margin-right: 0;
+	font-size: 13px;
+}
+.next_board table a{
+	text-decoration: none;
+}
+	
+.previous_board p, .next_board p{
+	font-size: 13px;
+}
 

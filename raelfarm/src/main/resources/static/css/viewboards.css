@@ -15,6 +15,7 @@
 .boardTable {
 	width: 825px;
 	text-align: center;
+	font-size: 13px;
     border-left: 0px solid;
     border-right: 0px solid;
     border-top: 1px solid;
@@ -22,6 +23,45 @@
     
     border-image: linear-gradient(to right, #5858AC 0%, #7DC0CE 100%);
   	border-image-slice: 1;
+  	border-collapse: collapse;
+}
+.boardTable_head th{
+	padding: 6px 5px 6px 6px;
+}
+
+.boardTable .category{
+	width: 100px;
+	padding-top: 4px;
+	padding-bottom: 4px;
+}
+.boardTable .other{
+	width: 40px;
+	padding-top: 4px;
+	padding-bottom: 4px;
+}
+.boardTable .date{
+	width: 100px;
+	padding-top: 4px;
+	padding-bottom: 4px;
+}
+.boardTable .title{
+	width: 410px;
+	padding-top: 4px;
+	padding-bottom: 4px;
+}
+.boardTable .writer{
+	width: 140px;
+	padding-top: 4px;
+	padding-bottom: 4px;
+}
+
+.boardTable_head{ 
+	border-left: 1px solid;
+    border-right: 1px solid;
+	border-bottom: 1px solid;
+	border-image: linear-gradient(to right, #5858AC 0%, #7DC0CE 100%);
+  	border-image-slice: 1;
+  	box-shadow: 0px 3px 1px 1px rgba(88,88,172, 0.2);
 }
 
 .boardTable tbody{
@@ -29,6 +69,42 @@
     border-image: linear-gradient(to right, #5858AC 0%, #7DC0CE 100%);
   	border-image-slice: 1;
 }
+
+.boardTable tbody tr{
+    border-bottom: 1px solid;
+    border-image: linear-gradient(to right, #5858AC 0%, #7DC0CE 100%);
+  	border-image-slice: 1;
+  	border-color: #ddd;  	
+}
+
+.boardTable tbody tr:last-child{
+    border-bottom: 0px solid;
+    border-image: linear-gradient(to right, #5858AC 0%, #7DC0CE 100%);
+  	border-image-slice: 1;
+}
+
+.boardTable tbody .title, .boardTable tbody .writer{
+	text-align: left;
+}
+
+.boardTable tbody .title a{
+	color: #222222;
+}
+
+.boardTable tbody tr td.recommendcount{
+	color: #5858AC;
+}
+
+.boardTable tbody td{
+	padding: 6px 5px 6px 6px;
+}
+.boardTable tbody a{
+	text-decoration: none;	
+}
+.boardTable tbody a:hover{
+	text-decoration: underline;
+}
+
 
 .content_header{
 	width: 70%;

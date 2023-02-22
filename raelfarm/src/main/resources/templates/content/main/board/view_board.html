@@ -16,6 +16,7 @@
 	<!--/* css */-->
 	<link th:href="@{/css/common.css}" rel="stylesheet" />
 	<link th:href="@{/css/viewboard.css}" rel="stylesheet" />
+	<link th:href="@{/css/viewboards.css}" rel="stylesheet" />
 </th:block>
 <body>
 	<th:block layout:fragment="header" th:include="@{/fragments/header}"></th:block>
@@ -128,61 +129,68 @@
 	</div>
 	<div layout:fragment="content_boards" class="content_boards">
 		<div class="content_boards_div">
-			<span>이전 게시판 </span>
-			<th:block th:if="${pboard != null}">
-				<table>
-					<tr>
-						<td><a th:href="'/board' + '/c' + ${pboard.categorynum}"
-							th:text="${pboard.categoryname}"></a></td>
-						<td><a
-							th:href="'/board' + '/c' + ${pboard.categorynum} + '/b' + ${pboard.boardnum} + '?previouscategorynum=' + ${category_num}"
-							th:text="${pboard.title} + ' ' +${pboard.existimgfile}"></a></td>
-						<td th:text="${pboard.writer}"></td>
-						<td th:text="${pboard.registerdate}"></td>
-						<td th:text="${pboard.viewcount}"></td>
-						<td th:text="${pboard.recommendcount}"></td>
-					</tr>
-				</table>
-			</th:block>
-			<th:block th:unless="${pboard != null}">
-				<p>게시물이 존재하지 않습니다.</p>
-			</th:block>
-			<span>다음 게시판 </span>
-			<th:block th:if="${nboard != null}">
-				<table>
-					<tr>
-						<td><a th:href="'/board' + '/c' + ${nboard.categorynum}"
-							th:text="${nboard.categoryname}"></a></td>
-						<td><a
-							th:href="'/board' + '/c' + ${nboard.categorynum} + '/b' + ${nboard.boardnum} + '?previouscategorynum=' + ${category_num}"
-							th:text="${nboard.title} + ' ' +${nboard.existimgfile}"></a></td>
-						<td th:text="${nboard.writer}"></td>
-						<td th:text="${nboard.registerdate}"></td>
-						<td th:text="${nboard.viewcount}"></td>
-						<td th:text="${nboard.recommendcount}"></td>
-					</tr>
-				</table>
-			</th:block>
-			<th:block th:unless="${nboard != null}">
-				<p>게시물이 존재하지 않습니다.</p>
-			</th:block>
+			<div class="content_boards_previous_next">
+				<div class="previous_board">
+					<p>이전 게시판 </p>
+					<th:block th:if="${pboard != null}">
+							<table>
+								<tr>
+									<td><a th:href="'/board' + '/c' + ${pboard.categorynum}"
+										th:text="${pboard.categoryname}"></a></td>
+									<td><a
+										th:href="'/board' + '/c' + ${pboard.categorynum} + '/b' + ${pboard.boardnum} + '?previouscategorynum=' + ${category_num}"
+										th:text="${pboard.title} + ' ' +${pboard.existimgfile}"></a></td>
+									<td th:text="${pboard.writer}"></td>
+									<td th:text="${pboard.registerdate}"></td>
+									<td th:text="${pboard.viewcount}"></td>
+									<td th:text="${pboard.recommendcount}"></td>
+								</tr>
+							</table>
+						</th:block>
+					<th:block th:unless="${pboard != null}">
+						<p>게시물이 존재하지 않습니다.</p>
+					</th:block>
+				</div>
+				<div class="next_board">
+					<p>다음 게시판 </p>
+					<th:block th:if="${nboard != null}">
+						<table>
+							<tr>
+								<td><a th:href="'/board' + '/c' + ${nboard.categorynum}"
+									th:text="${nboard.categoryname}"></a></td>
+								<td><a
+									th:href="'/board' + '/c' + ${nboard.categorynum} + '/b' + ${nboard.boardnum} + '?previouscategorynum=' + ${category_num}"
+									th:text="${nboard.title} + ' ' +${nboard.existimgfile}"></a></td>
+								<td th:text="${nboard.writer}"></td>
+								<td th:text="${nboard.registerdate}"></td>
+								<td th:text="${nboard.viewcount}"></td>
+								<td th:text="${nboard.recommendcount}"></td>
+							</tr>
+						</table>
+					</th:block>
+					<th:block th:unless="${nboard != null}">
+						<p>게시물이 존재하지 않습니다.</p>
+					</th:block>
+					
+				</div>
+			</div>
 			<div th:if="${not #lists.isEmpty(boarddata.list)}" class="tableContainer">
-	        	<table class="boardTable">
-        			<thead>
+	        	<table class="boardTable" style="margin-left: 0px;">
+        			<thead class="boardTable_head">
         				<tr>
-			            	<th th:text="카테고리"></th>
-			            	<th th:text="제목"></th>
-			            	<th th:text="작성자"></th>
-			            	<th th:text="등록날짜"></th>
-			            	<th th:text="조회수"></th>
-			            	<th th:text="추천수"></th>
+			            	<th class="category" th:text="분류"></th>
+			            	<th class="title" th:text="제목"></th>
+			            	<th class="writer" th:text="작성자"></th>
+			            	<th class="date" th:text="날짜"></th>
+			            	<th class="other" th:text="조회"></th>
+			            	<th class="other" th:text="추천"></th>
 	            		</tr>	
         			</thead>
         			<tbody th:with="List=${boarddata.list}">
         				<tr th:each="board : ${List}">
-			            	<td><a th:href="'/board' + '/c' + ${board.categorynum}" th:text="${board.categoryname}"></a> </td>
+			            	<td class="categoryname"><a th:href="'/board' + '/c' + ${board.categorynum}" th:text="${board.categoryname}"></a> </td>
 			            	<th:block th:if="${board.content == null}">
-			            		<td>
+			            	<td class="title">
 			            		<th:block th:if="${category_num == null}">
 			            			<a 	th:href="'/board' + '/c' + ${board.categorynum} + '/b' + ${board.boardnum} + '?previouscategorynum=' + ${board.categorynum}" 
 			            			th:text="${board.title} + ' ' +${board.existimgfile}"></a>
@@ -194,18 +202,18 @@
 			            	</td>
 			            	</th:block>
 			            	<th:block th:unless="${board.content == null}">
-			            		<td class="nowBoardPageTitle" th:text="${board.title}"></td>
+			            		<td style="text-align: left; color: #888;"class="nowBoardPageTitle" th:text="${board.title}"></td>
 			            	</th:block>
 			            	
-			            	<td th:text="${board.writer}"></td>
+			            	<td class="writer" th:text="${board.writer}"></td>
 			            	<td th:text="${board.registerdate}"></td>
 			            	<td th:text="${board.viewcount}"></td>
-			            	<td th:text="${board.recommendcount}"></td>
+			            	<td class="reommendcount"  th:text="${board.recommendcount}"></td>
 	            		</tr>
         			</tbody>
 	        	</table>
 			</div>
-			<div class="board_paging">
+			<div class="board_paging" style="text-align: center;">
 		    </div>
 		</div>
 	</div>
@@ -341,7 +349,7 @@
 			
 
 	          // 페이지 이동
-				function board_movePage(page, categorynum) {
+			function board_movePage(page, categorynum) {
 					const queryParams = {
 						categorynum : categorynum,
 						page: (page) ? page : 1,

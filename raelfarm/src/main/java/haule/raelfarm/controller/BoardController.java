@@ -229,8 +229,6 @@ public class BoardController {
 									HttpServletRequest req, HttpServletResponse res) {
 		ModelAndView mv = new ModelAndView();
 		
-		int page = CategoryStrategyViewSelectBoardPage(Integer.valueOf(previous_cn), categoryStrategyList[(int)(Integer.valueOf(categorynum) / 100)], Integer.valueOf(categorynum), Integer.valueOf(boardnum));
-		
 		String iboardnum = String.format("%05d",Integer.valueOf(categorynum)) + boardnum; 
 		ViewCountUp(iboardnum, req, res);
 		
@@ -245,7 +243,7 @@ public class BoardController {
 			}
 		}
 		SearchDTO pnParam = new SearchDTO();
-		
+		int page = CategoryStrategyViewSelectBoardPage(Integer.valueOf(previous_cn), categoryStrategyList[(int)(Integer.valueOf(categorynum) / 100)], Integer.valueOf(categorynum), Integer.valueOf(boardnum));
 		PagingResponse<ViewBoardsDTO> pndatas = CategoryStrategyViewPreviousNextBoards(
 				categoryStrategyList[(int)(Integer.valueOf(previous_cn) / 100)], 
 				Integer.valueOf(previous_cn),
@@ -253,22 +251,28 @@ public class BoardController {
 				iboardnum,
 				pnParam,
 				page);
-		System.out.println("=========================================");
-		System.out.println(pndatas);
-		for(ViewBoardsDTO tempdata : pndatas.getList()) {
-			switch(tempdata.getSeqtext()) {
+		// 페이지 때문에 이전 다음 게시물이 보이지 않을 경우에 처리를 위해
+		List<ViewBoardsDTO> tempdatas = new ArrayList<ViewBoardsDTO>();
+		for(int i=0; i < pndatas.getList().size(); i++) {
+			ViewBoardsDTO tempdata = pndatas.getList().get(i);  
+			switch(tempdata.getSeqtext().trim()) {
 				case "CURRENT":
-					System.out.println("data : "+ tempdata);
 					mv.addObject("data" , tempdata);
 				break;
+				
 				case "NEXT":
 					mv.addObject("nboard" , tempdata);
+					tempdatas.add(tempdata);
 				break;
+				
 				case "PREVIOUS":
 					mv.addObject("pboard" , tempdata);
+					tempdatas.add(tempdata);
 				break;
 			}
 		}
+		tempdatas.forEach((a) -> pndatas.getList().remove(a));
+		
 		System.out.println("=========================================");
 		SearchDTO commentParam = new SearchDTO();
 		commentParam.setRecordSize(50);

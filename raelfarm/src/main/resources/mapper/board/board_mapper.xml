@@ -177,7 +177,128 @@
 		</choose>
 		<include refid="search"/>
 	</select>
-	<select id="SelectPreviousNextBoards" resultType="haule.raelfarm.dto.ViewBoardsDTO">
+	
+		<select id="SelectPreviousNextBoards" resultType="haule.raelfarm.dto.ViewBoardsDTO">
+		<![CDATA[
+			SELECT
+				Z.CATEGORYNUM as categorynum,
+				Z.BOARDNUM as boardnum,
+				(SELECT CATEGORY_NAME FROM CATEGORY_BOARD_TEST WHERE CATEGORY_NUM = Z.CATEGORYNUM) as categoryname,
+				Z.TITLE as title,
+				Z.EXISTIMGFILE as existimgfile,
+				(SELECT NICKNAME FROM USERS_TEST WHERE USERID = Z.WRITER) as writer,
+				Z.REGISTERDATE as registerdate,
+				Z.MODIFIEDDATE as modifieddate,
+				Z.CONTENT as content,
+				B.VIEW_COUNT as viewcount,
+				(B.RECOMMEND_COUNT - B.NO_RECOMMEND_COUNT) as recommendcount,
+				Z.SEQTEXT as seqtext
+			FROM
+			(
+				SELECT 
+					* 
+				FROM
+				(
+					select
+					A.CATEGORY_NUM AS CATEGORYNUM,
+					A.BOARD_NUM AS BOARDNUM,
+					A.TITLE AS TITLE,
+					A.WRITER AS WRITER,
+					A.EXIST_IMGFILE AS EXISTIMGFILE,
+					A.REGISTERED_DATE AS REGISTERDATE,
+					A.MODIFIED_DATE AS MODIFIEDDATE,
+					null AS CONTENT,
+					CASE
+						WHEN A.PREVIOUS_CBN = #{iboardnum}
+							THEN 'NEXT'
+						WHEN A.NEXT_CBN = #{iboardnum}
+							THEN 'PREVIOUS'
+						ELSE
+							NULL
+					END AS SEQTEXT
+				FROM
+					(SELECT
+						*,
+						CONCAT(LPAD(LAG(CATEGORY_NUM) OVER(ORDER BY REGISTERED_DATE ASC),5,'0'),LAG(BOARD_NUM) OVER(ORDER BY REGISTERED_DATE ASC)) AS PREVIOUS_CBN,
+						CONCAT(LPAD(LEAD(CATEGORY_NUM) OVER(ORDER BY REGISTERED_DATE ASC),5,'0'),LEAD(BOARD_NUM) OVER(ORDER BY REGISTERED_DATE ASC)) AS NEXT_CBN
+					FROM 
+						BOARD_TEST
+					WHERE
+						]]>
+								<choose>
+									<when test = "category_num % 100 == 0">
+										<![CDATA[
+											CATEGORY_NUM BETWEEN #{category_num_st} AND #{category_num_ed}
+										]]>	
+									</when>
+									<otherwise>
+										<![CDATA[
+											CATEGORY_NUM = #{category_num}
+										]]>	
+									</otherwise>
+								</choose>
+						<![CDATA[
+					) A
+				ORDER BY SEQTEXT DESC
+				LIMIT 0, 2
+				) X
+			UNION ALL
+				SELECT 
+					* 
+				FROM (
+					SELECT
+						A.CATEGORY_NUM AS CATEGORYNUM,
+						A.BOARD_NUM AS BOARDNUM,
+						A.TITLE AS TITLE,
+						A.WRITER AS WRITER,
+						A.EXIST_IMGFILE AS EXISTIMGFILE,
+						A.REGISTERED_DATE AS REGISTERDATE,
+						A.MODIFIED_DATE AS MODIFIEDDATE,
+						CASE
+							WHEN A.CURRENT_CBN = #{iboardnum}
+								THEN A.CONTENT
+							ELSE NULL
+						END AS CONTENT,
+						CASE
+							WHEN A.CURRENT_CBN = #{iboardnum}
+								THEN 'CURRENT'
+							ELSE 'OTHER'
+						END AS SEQTEXT
+					FROM
+						(SELECT
+							*,
+							CONCAT(LPAD(CATEGORY_NUM,5,'0'),BOARD_NUM)AS CURRENT_CBN
+						FROM 
+							BOARD_TEST
+						WHERE
+						]]>
+								<choose>
+									<when test = "category_num % 100 == 0">
+										<![CDATA[
+											CATEGORY_NUM BETWEEN #{category_num_st} AND #{category_num_ed}
+										]]>	
+									</when>
+									<otherwise>
+										<![CDATA[
+											CATEGORY_NUM = #{category_num}
+										]]>	
+									</otherwise>
+								</choose>
+						<![CDATA[
+						ORDER BY REGISTERED_DATE DESC
+						LIMIT #{params.pagination.limitStart}, #{params.recordSize}
+						) A
+					)Y
+				) Z, 
+				BOARD_DATA_TEST B 
+			WHERE 
+				B.I_BOARD_NUM = CONCAT(LPAD(Z.CATEGORYNUM,5,'0'), Z.BOARDNUM)
+			AND
+				Z.SEQTEXT IS NOT NULL
+			
+		]]>
+	</select>
+	<!--  select id="SelectPreviousNextBoards" resultType="haule.raelfarm.dto.ViewBoardsDTO">
 		<![CDATA[
 			SELECT 
 				X.CATEGORYNUM as categorynum,
@@ -241,16 +362,16 @@
 			<![CDATA[
 					) A
 				ORDER BY A.REGISTERED_DATE DESC
-				LIMIT #{params.pagination.limitStart}, #{params.recordSize}
 				) X, 
 				BOARD_DATA_TEST B 
 			WHERE 
 				B.I_BOARD_NUM = CONCAT(LPAD(X.CATEGORYNUM,5,'0'), X.BOARDNUM)
 			ORDER BY registerdate DESC
+			LIMIT #{params.pagination.limitStart}, #{params.recordSize}
 			
 			
 		]]>
-	</select>
+	</select -->
 	<select id="SelectBoardNum" resultType="haule.raelfarm.dto.BoardNumSelectDTO">
 		<![CDATA[
 			SELECT 

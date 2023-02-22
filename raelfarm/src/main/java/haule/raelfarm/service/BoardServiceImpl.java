@@ -101,11 +101,6 @@ public class BoardServiceImpl implements BoardService{
 	@Override
 	public PagingResponse<ViewBoardsDTO> SelectPreviousNextBoards(int category_num, int board_num, String iboardnum, int Starting, int Ending, SearchDTO searchDTO, int page){
 		searchDTO.setPage(page);
-		System.out.println("===============================");
-		System.out.println("===============================");
-		System.out.println(searchDTO.getPage());
-		System.out.println("===============================");
-		System.out.println("===============================");
 		int count = boardMapper.SelectBoards_CNT(category_num, Starting, Ending, searchDTO);
 		Pagination pagination = new Pagination(count, searchDTO);
 		searchDTO.setPagination(pagination);

@@ -56,6 +56,7 @@ public class SecurityConfig{
 								"/register_page/nicknamecheck",
 								"/board/c*/b*",
 								"/board/c*",
+								"/boards/view",
 								"/comment/view",
 								"/js/*",".js","/css/*.css","/img/*.PNG","/summernoteImage/*/*/*/*").permitAll()
 						.anyRequest().authenticated()
