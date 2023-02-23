@@ -17,6 +17,7 @@ public class ViewBoardsDTO {
 	int boardnum;
 	String title;
 	String existimgfile;
+	String imgpath;
 	String writer;
 	// "year-month-day hour:minutes:second"
 	String registerdate;

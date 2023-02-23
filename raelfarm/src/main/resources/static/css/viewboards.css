@@ -91,6 +91,11 @@
 	color: #222222;
 }
 
+.boardTable tbody .title img{
+	vertical-align: middle;
+	margin-right: 9px;
+}
+
 .boardTable tbody tr td.recommendcount{
 	color: #5858AC;
 }

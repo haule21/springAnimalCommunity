@@ -112,8 +112,70 @@
 		]]>
 			<include refid="search"/>
 	</select>
-	
-	<select id="SelectBoards" parameterType="haule.raelfarm.dto.SearchDTO" resultType="haule.raelfarm.dto.ViewBoardsDTO">
+		<select id="SelectBoards" parameterType="haule.raelfarm.dto.SearchDTO" resultType="haule.raelfarm.dto.ViewBoardsDTO">
+		<![CDATA[
+		SELECT 
+			A.CATEGORY_NUM as categorynum,
+			A.BOARD_NUM as boardnum,
+			C.CATEGORY_NAME  as categoryname,
+			A.TITLE as title,
+			A.EXIST_IMGFILE as existimgfile,
+			(
+				CASE WHEN
+					A.CATEGORY_NUM BETWEEN 200 AND 299 THEN
+				(
+					SELECT
+						A.IMGPATH
+					FROM
+						(
+						SELECT
+							CONCAT("/summernoteImage/",file_path,"/",file_name) as IMGPATH
+						FROM
+							BOARD_MEDIAFILE_TEST
+						WHERE
+							I_BOARD_NUM = CONCAT(LPAD(A.CATEGORY_NUM, 5, '0'), A.BOARD_NUM)
+					ORDER BY SEQ 
+					) A
+					LIMIT 0, 1
+				)
+				ELSE "NONE" END) as imgpath,
+			D.NICKNAME as writer,
+			DATE_FORMAT(A.REGISTERED_DATE, '%Y-%m-%d %H:%i:%S') as registerdate,
+			null as content,
+			B.VIEW_COUNT as viewcount,
+			(B.RECOMMEND_COUNT - B.NO_RECOMMEND_COUNT) as recommendcount,
+			null as sqltext
+		FROM 
+			BOARD_TEST A, BOARD_DATA_TEST B, CATEGORY_BOARD_TEST C, USERS_TEST D
+		where
+			A.CATEGORY_NUM = C.CATEGORY_NUM
+		AND
+			B.I_BOARD_NUM = CONCAT(LPAD(A.CATEGORY_NUM, 5, '0'), A.BOARD_NUM)
+		AND
+			A.DELETED = 'N'
+		AND
+			D.USERID = A.WRITER
+		]]>
+			
+		<choose>
+			<when test = "category_num % 100 == 0">
+				<![CDATA[
+					AND A.CATEGORY_NUM BETWEEN #{category_num_st} AND #{category_num_ed}
+				]]>	
+			</when>
+			<otherwise>
+				<![CDATA[
+					AND A.CATEGORY_NUM = #{category_num}
+				]]>	
+			</otherwise>
+		</choose>
+		<include refid="search"/>
+		<![CDATA[
+			ORDER BY A.REGISTERED_DATE DESC
+			LIMIT #{params.pagination.limitStart}, #{params.recordSize}
+		]]>
+	</select>
+	<!--  select id="SelectBoards" parameterType="haule.raelfarm.dto.SearchDTO" resultType="haule.raelfarm.dto.ViewBoardsDTO">
 		<![CDATA[
 			SELECT 
 				A.CATEGORY_NUM as categorynum,
@@ -121,6 +183,7 @@
 				(SELECT CATEGORY_NAME FROM CATEGORY_BOARD_TEST WHERE A.CATEGORY_NUM = CATEGORY_NUM) as categoryname,
 				A.TITLE as title,
 				A.EXIST_IMGFILE as existimgfile,
+				IFNULL((SELECT CONCAT("/summernoteImage/",file_path,file_name) FROM BOARD_MEDIAFILE_TEST WHERE B.I_BOARD_NUM = I_BOARD_NUM AND A.CATEGORY_N),"NONE") as imgpath,
 				(SELECT NICKNAME FROM USERS_TEST WHERE USERID = A.WRITER) as writer,
 				DATE_FORMAT(A.REGISTERED_DATE, '%Y-%m-%d %H:%i:%S') as registerdate,
 				null as content,
@@ -152,7 +215,7 @@
 			ORDER BY A.REGISTERED_DATE DESC
 			LIMIT #{params.pagination.limitStart}, #{params.recordSize}
 		]]>
-	</select>
+	</select-->
 	<select id="SelectBoards_CNT" parameterType="haule.raelfarm.dto.SearchDTO" resultType="int">
 		<![CDATA[
 			SELECT 
@@ -298,80 +361,7 @@
 			
 		]]>
 	</select>
-	<!--  select id="SelectPreviousNextBoards" resultType="haule.raelfarm.dto.ViewBoardsDTO">
-		<![CDATA[
-			SELECT 
-				X.CATEGORYNUM as categorynum,
-				X.BOARDNUM as boardnum,
-				(SELECT CATEGORY_NAME FROM CATEGORY_BOARD_TEST WHERE CATEGORY_NUM = X.CATEGORYNUM) as categoryname,
-				X.TITLE as title,
-				X.EXISTIMGFILE as existimgfile,
-				(SELECT NICKNAME FROM USERS_TEST WHERE USERID = X.WRITER) as writer,
-				X.REGISTERDATE as registerdate,
-				X.MODIFIEDDATE as modifieddate,
-				X.CONTENT as content,
-				B.VIEW_COUNT as viewcount,
-				(B.RECOMMEND_COUNT - B.NO_RECOMMEND_COUNT) as recommendcount,
-				X.SEQTEXT as seqtext
-			FROM
-			(
-				SELECT
-					A.CATEGORY_NUM AS CATEGORYNUM,
-					A.BOARD_NUM AS BOARDNUM,
-					A.TITLE AS TITLE,
-					A.WRITER AS WRITER,
-					A.EXIST_IMGFILE AS EXISTIMGFILE,
-					A.REGISTERED_DATE AS REGISTERDATE,
-					A.MODIFIED_DATE AS MODIFIEDDATE,
-					CASE
-						WHEN A.CURRENT_CBN = #{iboardnum}
-							THEN A.CONTENT
-						ELSE NULL
-					END AS CONTENT,
-					CASE
-						WHEN A.PREVIOUS_CBN = #{iboardnum}
-							THEN 'NEXT'
-						WHEN A.NEXT_CBN = #{iboardnum}
-							THEN 'PREVIOUS'
-						WHEN A.CURRENT_CBN = #{iboardnum}
-							THEN 'CURRENT'
-						ELSE 'OTHER'
-					END AS SEQTEXT
-				FROM
-					(SELECT
-						*,
-						CONCAT(LPAD(LAG(CATEGORY_NUM) OVER(ORDER BY REGISTERED_DATE ASC),5,'0'),LAG(BOARD_NUM) OVER(ORDER BY REGISTERED_DATE ASC)) AS PREVIOUS_CBN,
-						CONCAT(LPAD(LEAD(CATEGORY_NUM) OVER(ORDER BY REGISTERED_DATE ASC),5,'0'),LEAD(BOARD_NUM) OVER(ORDER BY REGISTERED_DATE ASC)) AS NEXT_CBN,
-						CONCAT(LPAD(CATEGORY_NUM,5,'0'),BOARD_NUM)AS CURRENT_CBN
-					FROM 
-						BOARD_TEST
-					WHERE
-					]]>
-					<choose>
-						<when test = "category_num % 100 == 0">
-							<![CDATA[
-								CATEGORY_NUM BETWEEN #{category_num_st} AND #{category_num_ed}
-							]]>	
-						</when>
-						<otherwise>
-							<![CDATA[
-								CATEGORY_NUM = #{category_num}
-							]]>	
-						</otherwise>
-					</choose>
-			<![CDATA[
-					) A
-				ORDER BY A.REGISTERED_DATE DESC
-				) X, 
-				BOARD_DATA_TEST B 
-			WHERE 
-				B.I_BOARD_NUM = CONCAT(LPAD(X.CATEGORYNUM,5,'0'), X.BOARDNUM)
-			ORDER BY registerdate DESC
-			LIMIT #{params.pagination.limitStart}, #{params.recordSize}
-			
-			
-		]]>
-	</select -->
+
 	<select id="SelectBoardNum" resultType="haule.raelfarm.dto.BoardNumSelectDTO">
 		<![CDATA[
 			SELECT 
