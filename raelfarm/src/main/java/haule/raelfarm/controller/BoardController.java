@@ -46,6 +46,7 @@ import haule.raelfarm.singleton.CommentInfo;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import kotlin.collections.builders.MapBuilderValues;
 
 @RestController
 public class BoardController {
@@ -86,8 +87,11 @@ public class BoardController {
 	@RequestMapping("/board/c{categorynum}")
 	public ModelAndView View_Boards( 
 			@PathVariable("categorynum") String categorynum, 
-			@ModelAttribute(value="params") SearchDTO param) {
+			@ModelAttribute(value="params") SearchDTO param,
+			Principal principal) {
 		ModelAndView mv = new ModelAndView();
+		
+
 		
 		PagingResponse<ViewBoardsDTO> data;
 		System.out.println("categorynum : " + categorynum.equals(""));
@@ -101,7 +105,7 @@ public class BoardController {
 			mv.addObject("category_num", categorynum);
 		}
 		
-		
+		mv.addObject("loginstate", principal != null ? true : false); 
 		mv.addObject("response", data);
 		mv.setViewName("content/main/board/view_boards");
 		
@@ -232,7 +236,16 @@ public class BoardController {
 		String iboardnum = String.format("%05d",Integer.valueOf(categorynum)) + boardnum; 
 		ViewCountUp(iboardnum, req, res);
 		
-		String userid = principal != null ? principal.getName() : null;
+		String userid;
+		if(principal != null) {
+			userid = principal.getName();
+			mv.addObject("loginstate", true); 
+		}
+		else {
+			userid = null;
+			mv.addObject("loginstate", false);
+		}
+		
 		String writer = boardRepository.SelectWriter(Integer.parseInt(categorynum), Integer.parseInt(boardnum));
 		
 		if(userid != null) {
@@ -286,6 +299,7 @@ public class BoardController {
 		mv.addObject("commentParams",commentParam);
 		mv.addObject("category_num", previous_cn);
 		mv.addObject("iboardnum", iboardnum);
+		mv.addObject("loginstate", principal != null ? true : false); 
 		mv.setViewName("content/main/board/view_board");
 		return mv;
 	}
@@ -388,6 +402,12 @@ public class BoardController {
 		
 		Map<String, String> map = new HashMap<String, String>();
 		
+		
+		if(principal == null) {
+			map.put("responseCode", "error");
+			return map;
+		}
+		
 		BoardRecommendHistory_PK boardRecommendHistoryPK = new BoardRecommendHistory_PK(iboardnum, principal.getName());
 		BoardRecommendHistory data = boardRecommendHistoryRepository.findById(boardRecommendHistoryPK).orElse(null);
 		
@@ -464,7 +484,7 @@ public class BoardController {
 		PagingResponse<BoardCommentDTO> comment = boardService.SelectBoardComments(iboardnum, param);
 
 		mv.addObject("commentList", comment);
-		mv.addObject("commentParams", param);		
+		mv.addObject("commentParams", param);
 		mv.setViewName("fragments/comment_fragment");
 		return mv;
 	}

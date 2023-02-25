@@ -5,10 +5,7 @@
 var header = $("meta[name='_csrf_header']").attr('content');
 var token = $("meta[name='_csrf']").attr('content');
  
-function recommend_board(iboardnum, recommend){
-	console.log(iboardnum, recommend);
-	console.log(typeof(iboardnum), recommend);
-	
+function recommend_board(iboardnum, recommend){	
     $.ajax({
         type : 'POST',
         data : {
@@ -25,9 +22,18 @@ function recommend_board(iboardnum, recommend){
 			console.log(data);
 		},
 		error : function(request,status,error){
-			alert("이미 추천을 진행 하였습니다.");
-			console.log(request,status,error);
+			if(request.status == 401){
+				alert('로그인 먼저 진행해주세요!');
+			}
+			else{
+				alert("이미 추천을 진행 하였습니다.");	
+			}
+			
+			console.log(request);
+			console.log(status);
+			console.log(error);
 		},
+		
 	});
 }
 

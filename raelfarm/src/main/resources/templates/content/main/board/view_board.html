@@ -115,14 +115,23 @@
 		</div>
 		<div class="comment_write_div_background">
 			<div class="comment_write_div_input">
-				<textarea 
+				<th:block th:if="${loginstate} == true">
+					<textarea 
 					class="comment_write_input" 
 					id="comment_write_input"
 					placeholder="댓글 작성 구간"></textarea>
-				<button type="button" class="comment_submit_button" 
+					<button type="button" class="comment_submit_button" 
 					th:iboardnum="${iboardnum}"
 					th:endpage=${commentParams.pagination.endPage}
-					th:onclick="javascript:writeComment(this.getAttribute('iboardnum'), this.getAttribute('endpage'))"></button>
+					th:onclick="javascript:writeComment(this.getAttribute('iboardnum'), this.getAttribute('endpage'))">등록</button>
+				</th:block>
+				<th:block th:unless="${loginstate} == true">
+					<textarea 
+					class="comment_write_input" 
+					id="comment_write_input"
+					placeholder="로그인을 먼저 진행해주세요." readonly></textarea>
+					<button type="button" class="comment_submit_button" disabled>등록</button>
+				</th:block>
 			</div>
 			
 		</div>
@@ -137,9 +146,15 @@
 								<tr>
 									<td><a th:href="'/board' + '/c' + ${pboard.categorynum}"
 										th:text="${pboard.categoryname}"></a></td>
-									<td><a
-										th:href="'/board' + '/c' + ${pboard.categorynum} + '/b' + ${pboard.boardnum} + '?previouscategorynum=' + ${category_num}"
-										th:text="${pboard.title} + ' ' +${pboard.existimgfile}"></a></td>
+									<td>
+									<a th:href="'/board' + '/c' + ${pboard.categorynum} + '/b' + ${pboard.boardnum} + '?previouscategorynum=' + ${category_num}"
+										th:text="${pboard.title}"></a>			            		
+										<th:block th:if="${pboard.existimgfile == 'Y'}">
+				            				<th:block th:if="${pboard.categorynum < 200} or ${pboard.categorynum > 299}">
+				            					<img class="existimg" style="width:11px; height:11px;" src="/img/Existimg_icon.PNG"/>
+				            				</th:block>
+				            			</th:block>
+			            			</td>
 									<td th:text="${pboard.writer}"></td>
 									<td th:text="${pboard.registerdate}"></td>
 									<td th:text="${pboard.viewcount}"></td>
@@ -160,7 +175,13 @@
 									th:text="${nboard.categoryname}"></a></td>
 								<td><a
 									th:href="'/board' + '/c' + ${nboard.categorynum} + '/b' + ${nboard.boardnum} + '?previouscategorynum=' + ${category_num}"
-									th:text="${nboard.title} + ' ' +${nboard.existimgfile}"></a></td>
+									th:text="${nboard.title}"></a>
+									<th:block th:if="${nboard.existimgfile == 'Y'}">
+				            			<th:block th:if="${nboard.categorynum < 200} or ${nboard.categorynum > 299}">
+				            				<img class="existimg" style="width:11px; height:11px;" src="/img/Existimg_icon.PNG"/>
+				            			</th:block>
+				            		</th:block>
+			            		</td>
 								<td th:text="${nboard.writer}"></td>
 								<td th:text="${nboard.registerdate}"></td>
 								<td th:text="${nboard.viewcount}"></td>
@@ -188,27 +209,32 @@
         			</thead>
         			<tbody th:with="List=${boarddata.list}">
         				<tr th:each="board : ${List}">
-			            	<td class="categoryname"><a th:href="'/board' + '/c' + ${board.categorynum}" th:text="${board.categoryname}"></a> </td>
-			            	<th:block th:if="${board.content == null}">
+			            	<td class="categoryname">
+			            		<a th:href="'/board' + '/c' + ${board.categorynum}" th:text="${board.categoryname}"></a>
+			            	</td>
 			            	<td class="title">
+			            		<th:block th:unless="${board.categorynum < 200} or ${board.categorynum > 299}">
+			            			<img style="width:70px; height:50px" th:src="${board.imgpath}">
+			            		</th:block>
 			            		<th:block th:if="${category_num == null}">
 			            			<a 	th:href="'/board' + '/c' + ${board.categorynum} + '/b' + ${board.boardnum} + '?previouscategorynum=' + ${board.categorynum}" 
-			            			th:text="${board.title} + ' ' +${board.existimgfile}"></a>
+			            			th:text="${board.title}"></a>
 			            		</th:block>
 			            		<th:block th:unless="${category_num == null}">
 			            			<a 	th:href="'/board' + '/c' + ${board.categorynum} + '/b' + ${board.boardnum} + '?previouscategorynum=' + ${category_num}" 
-			            			th:text="${board.title} + ' ' +${board.existimgfile}"></a>
+			            			th:text="${board.title}"></a>
+			            		</th:block>
+			            		<th:block th:if="${board.existimgfile == 'Y'}">
+			            			<th:block th:if="${board.categorynum < 200} or ${board.categorynum > 299}">
+			            				<img class="existimg" style="width:11px; height:11px;" src="/img/Existimg_icon.PNG"/>
+			            			</th:block>
 			            		</th:block>
 			            	</td>
-			            	</th:block>
-			            	<th:block th:unless="${board.content == null}">
-			            		<td style="text-align: left; color: #888;"class="nowBoardPageTitle" th:text="${board.title}"></td>
-			            	</th:block>
 			            	
 			            	<td class="writer" th:text="${board.writer}"></td>
 			            	<td th:text="${board.registerdate}"></td>
 			            	<td th:text="${board.viewcount}"></td>
-			            	<td class="reommendcount"  th:text="${board.recommendcount}"></td>
+			            	<td class="recommendcount" th:text="${board.recommendcount}"></td>
 	            		</tr>
         			</tbody>
 	        	</table>

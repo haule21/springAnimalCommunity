@@ -175,47 +175,7 @@
 			LIMIT #{params.pagination.limitStart}, #{params.recordSize}
 		]]>
 	</select>
-	<!--  select id="SelectBoards" parameterType="haule.raelfarm.dto.SearchDTO" resultType="haule.raelfarm.dto.ViewBoardsDTO">
-		<![CDATA[
-			SELECT 
-				A.CATEGORY_NUM as categorynum,
-				A.BOARD_NUM as boardnum,
-				(SELECT CATEGORY_NAME FROM CATEGORY_BOARD_TEST WHERE A.CATEGORY_NUM = CATEGORY_NUM) as categoryname,
-				A.TITLE as title,
-				A.EXIST_IMGFILE as existimgfile,
-				IFNULL((SELECT CONCAT("/summernoteImage/",file_path,file_name) FROM BOARD_MEDIAFILE_TEST WHERE B.I_BOARD_NUM = I_BOARD_NUM AND A.CATEGORY_N),"NONE") as imgpath,
-				(SELECT NICKNAME FROM USERS_TEST WHERE USERID = A.WRITER) as writer,
-				DATE_FORMAT(A.REGISTERED_DATE, '%Y-%m-%d %H:%i:%S') as registerdate,
-				null as content,
-				B.VIEW_COUNT as viewcount,
-				(B.RECOMMEND_COUNT - B.NO_RECOMMEND_COUNT) as recommendcount,
-				null as sqltext
-			FROM 
-				BOARD_TEST A, BOARD_DATA_TEST B
-			WHERE
-				B.I_BOARD_NUM = CONCAT(LPAD(A.CATEGORY_NUM, 5, '0'), A.BOARD_NUM)
-			AND
-				A.DELETED = 'N'
-		]]>
-			
-		<choose>
-			<when test = "category_num % 100 == 0">
-				<![CDATA[
-					AND A.CATEGORY_NUM BETWEEN #{category_num_st} AND #{category_num_ed}
-				]]>	
-			</when>
-			<otherwise>
-				<![CDATA[
-					AND A.CATEGORY_NUM = #{category_num}
-				]]>	
-			</otherwise>
-		</choose>
-		<include refid="search"/>
-		<![CDATA[
-			ORDER BY A.REGISTERED_DATE DESC
-			LIMIT #{params.pagination.limitStart}, #{params.recordSize}
-		]]>
-	</select-->
+
 	<select id="SelectBoards_CNT" parameterType="haule.raelfarm.dto.SearchDTO" resultType="int">
 		<![CDATA[
 			SELECT 
@@ -249,7 +209,26 @@
 				(SELECT CATEGORY_NAME FROM CATEGORY_BOARD_TEST WHERE CATEGORY_NUM = Z.CATEGORYNUM) as categoryname,
 				Z.TITLE as title,
 				Z.EXISTIMGFILE as existimgfile,
-				(SELECT NICKNAME FROM USERS_TEST WHERE USERID = Z.WRITER) as writer,
+				(
+				CASE WHEN
+					Z.CATEGORYNUM BETWEEN 200 AND 299 THEN
+					(
+					SELECT
+						A.IMGPATH
+					FROM
+						(
+						SELECT
+							CONCAT("/summernoteImage/",file_path,"/",file_name) as IMGPATH
+						FROM
+							BOARD_MEDIAFILE_TEST
+						WHERE
+							I_BOARD_NUM = CONCAT(LPAD(Z.CATEGORYNUM, 5, '0'), Z.BOARDNUM)
+					ORDER BY SEQ 
+					) A
+					LIMIT 0, 1
+				)
+				ELSE "NONE" END) as imgpath,
+				C.NICKNAME as writer,
 				Z.REGISTERDATE as registerdate,
 				Z.MODIFIEDDATE as modifieddate,
 				Z.CONTENT as content,
@@ -353,9 +332,11 @@
 						) A
 					)Y
 				) Z, 
-				BOARD_DATA_TEST B 
+				BOARD_DATA_TEST B, USERS_TEST C
 			WHERE 
 				B.I_BOARD_NUM = CONCAT(LPAD(Z.CATEGORYNUM,5,'0'), Z.BOARDNUM)
+			AND
+				C.USERID = Z.WRITER
 			AND
 				Z.SEQTEXT IS NOT NULL
 			
