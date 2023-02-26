@@ -216,18 +216,26 @@
 			            		<th:block th:unless="${board.categorynum < 200} or ${board.categorynum > 299}">
 			            			<img style="width:70px; height:50px" th:src="${board.imgpath}">
 			            		</th:block>
-			            		<th:block th:if="${category_num == null}">
-			            			<a 	th:href="'/board' + '/c' + ${board.categorynum} + '/b' + ${board.boardnum} + '?previouscategorynum=' + ${board.categorynum}" 
-			            			th:text="${board.title}"></a>
+			            		<th:block th:if="${board.seqtext == 'CURRENT'}">
+			            			<span class="nowboard" style="color:#888">[[${board.title}]]</span>
+			            			<span class="commentcount" style="color:#888" th:text="'[' + ${board.commentcount} + ']'"></span>
 			            		</th:block>
-			            		<th:block th:unless="${category_num == null}">
-			            			<a 	th:href="'/board' + '/c' + ${board.categorynum} + '/b' + ${board.boardnum} + '?previouscategorynum=' + ${category_num}" 
-			            			th:text="${board.title}"></a>
-			            		</th:block>
-			            		<th:block th:if="${board.existimgfile == 'Y'}">
-			            			<th:block th:if="${board.categorynum < 200} or ${board.categorynum > 299}">
-			            				<img class="existimg" style="width:11px; height:11px;" src="/img/Existimg_icon.PNG"/>
-			            			</th:block>
+			            		<th:block th:unless="${board.seqtext == 'CURRENT'}">
+				            		<th:block th:if="${category_num == null}">
+				            			<a th:href="'/board' + '/c' + ${board.categorynum} + '/b' + ${board.boardnum} + '?previouscategorynum=' + ${board.categorynum}" 
+				            			th:text="${board.title}"></a>
+				            			<span class="commentcount" th:text="'[' + ${board.commentcount} + ']'"></span>
+				            		</th:block>
+				            		<th:block th:unless="${category_num == null}">
+				            			<a th:href="'/board' + '/c' + ${board.categorynum} + '/b' + ${board.boardnum} + '?previouscategorynum=' + ${category_num}" 
+				            			th:text="${board.title}"></a>
+				            			<span class="commentcount" th:text="'[' + ${board.commentcount} + ']'"></span>
+				            		</th:block>
+				            		<th:block th:if="${board.existimgfile == 'Y'}">
+				            			<th:block th:if="${board.categorynum < 200} or ${board.categorynum > 299}">
+				            				<img class="existimg" style="width:11px; height:11px;" src="/img/Existimg_icon.PNG"/>
+				            			</th:block>
+				            		</th:block>
 			            		</th:block>
 			            	</td>
 			            	

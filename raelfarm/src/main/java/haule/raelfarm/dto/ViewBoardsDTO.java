@@ -27,6 +27,7 @@ public class ViewBoardsDTO {
 	int viewcount;
 	int recommendcount;
 	String seqtext;
+	int commentcount;
 	
 	public void SetRegisterDate() {
 		Date date = new Date(System.currentTimeMillis());

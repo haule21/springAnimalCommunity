@@ -34,20 +34,29 @@
 			            		<a th:href="'/board' + '/c' + ${board.categorynum}" th:text="${board.categoryname}"></a>
 			            	</td>
 			            	<td class="title">
-			            		<th:block th:unless="${board.categorynum < 200} or ${board.categorynum > 299}">
-			            			<img style="width:70px; height:50px" th:src="${board.imgpath}">
+			            		<th:block th:if="${category_num != null}">
+			            			<th:block th:unless="${board.categorynum < 200} or ${board.categorynum > 299}">
+			            				<img style="width:70px; height:50px" th:src="${board.imgpath}">
+			            			</th:block>
 			            		</th:block>
 			            		<th:block th:if="${category_num == null}">
 			            			<a 	th:href="'/board' + '/c' + ${board.categorynum} + '/b' + ${board.boardnum} + '?previouscategorynum=' + ${board.categorynum}" 
 			            			th:text="${board.title}"></a>
+			            			<span class="commentcount" th:text="'[' + ${board.commentcount} + ']'"></span>
 			            		</th:block>
 			            		<th:block th:unless="${category_num == null}">
 			            			<a 	th:href="'/board' + '/c' + ${board.categorynum} + '/b' + ${board.boardnum} + '?previouscategorynum=' + ${category_num}" 
 			            			th:text="${board.title}"></a>
+			            			<span class="commentcount" th:text="'[' + ${board.commentcount} + ']'"></span>
 			            		</th:block>
 			            		<th:block th:if="${board.existimgfile == 'Y'}">
-			            			<th:block th:if="${board.categorynum < 200} or ${board.categorynum > 299}">
+			            			<th:block th:if="${category_num == null}">
 			            				<img class="existimg" style="width:11px; height:11px;" src="/img/Existimg_icon.PNG"/>
+			            			</th:block>
+			            			<th:block th:unless="${category_num == null}">
+			            				<th:block th:if="${board.categorynum < 200} or ${board.categorynum > 299}">
+				            				<img class="existimg" style="width:11px; height:11px;" src="/img/Existimg_icon.PNG"/>
+				            			</th:block>
 			            			</th:block>
 			            		</th:block>
 			            	</td>
@@ -70,13 +79,15 @@
 				margin-right: auto;">
 				<p>게시물이 존재하지 않습니다.</p>
 			</div>
-			<th:block th:if="${category_num} != null and ${loginstate} == true">
-				<th:block th:if="${category_num} == 100 or ${category_num} >= 500">
+			<div style="margin-left: auto; margin-right: auto;">
+				<th:block th:if="${category_num} != null and ${loginstate} == true">
+					<th:block th:if="${category_num} == 100 or ${category_num} >= 500">
+					</th:block>
+					<th:block th:unless="${category_num} == 100 or ${category_num} >= 500">
+						<button th:categorynum="${category_num}" type="button" th:onclick="javascript:getWriteUrl(this.getAttribute('categorynum'))" style="">글쓰기</button>
+					</th:block>
 				</th:block>
-				<th:block th:unless="${category_num} == 100 or ${category_num} >= 500">
-					<button th:categorynum="${category_num}" type="button" th:onclick="javascript:getWriteUrl(this.getAttribute('categorynum'))" style="">글쓰기</button>
-				</th:block>
-			</th:block>
+			</div>
         </div>
         
         <th:block layout:fragment="footer" th:include="@{/fragments/footer}"></th:block>	
@@ -131,16 +142,18 @@
           }
 		
 
-          // 페이지 이동
-          function movePage(page) {
-            const queryParams = {
-              page: (page) ? page : 1,
-              recordSize: 20,
-              pageSize: 10
-            }
-            
-            location.href = location.pathname + '?' + new URLSearchParams(queryParams).toString();
-          }
+	// 페이지 이동
+	function movePage(page) {
+		const queryParams = {
+			searchType : [[${params.searchType}]],
+			keyword : [[${params.keyword}]],
+			page: (page) ? page : 1,
+			recordSize: 20,
+			pageSize: 10
+		}
+		
+		location.href = location.pathname + '?' + new URLSearchParams(queryParams).toString();
+	}
           
 	function categoryname_colorchange(){
 		var temp = $('.boardTable').children('tbody').children('tr').children('.categoryname');

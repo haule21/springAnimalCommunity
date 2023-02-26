@@ -87,7 +87,7 @@ public class BoardCommentDTO {
 				return result;
 			}
 			else {
-				return data;
+				return data.substring(0, 10);
 			}
 			
 			

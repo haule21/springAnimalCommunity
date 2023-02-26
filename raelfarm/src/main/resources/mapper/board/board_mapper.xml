@@ -86,7 +86,14 @@
 				null as content,
 				B.VIEW_COUNT as viewcount,
 				(B.RECOMMEND_COUNT - B.NO_RECOMMEND_COUNT) as recommendcount,
-				null as sqltext
+				null as sqltext,
+				(
+					SELECT 
+						COUNT(1) 
+					FROM 
+						BOARD_COMMENT_TEST 
+					WHERE I_BOARD_NUM = CONCAT(LPAD(A.CATEGORY_NUM, 5, '0'), A.BOARD_NUM)
+				) as commentcount
 			FROM 
 				BOARD_TEST A, BOARD_DATA_TEST B
 			WHERE
@@ -144,7 +151,14 @@
 			null as content,
 			B.VIEW_COUNT as viewcount,
 			(B.RECOMMEND_COUNT - B.NO_RECOMMEND_COUNT) as recommendcount,
-			null as sqltext
+			null as sqltext,
+			(
+				SELECT 
+					COUNT(1) 
+				FROM 
+					BOARD_COMMENT_TEST 
+				WHERE I_BOARD_NUM = CONCAT(LPAD(A.CATEGORY_NUM, 5, '0'), A.BOARD_NUM)
+			) as commentcount
 		FROM 
 			BOARD_TEST A, BOARD_DATA_TEST B, CATEGORY_BOARD_TEST C, USERS_TEST D
 		where
@@ -234,7 +248,8 @@
 				Z.CONTENT as content,
 				B.VIEW_COUNT as viewcount,
 				(B.RECOMMEND_COUNT - B.NO_RECOMMEND_COUNT) as recommendcount,
-				Z.SEQTEXT as seqtext
+				Z.SEQTEXT as seqtext,
+				Z.COMMENTCOUNT as commentcount
 			FROM
 			(
 				SELECT 
@@ -257,7 +272,14 @@
 							THEN 'PREVIOUS'
 						ELSE
 							NULL
-					END AS SEQTEXT
+					END AS SEQTEXT,
+					(
+						SELECT 
+							COUNT(1) 
+						FROM 
+							BOARD_COMMENT_TEST 
+						WHERE I_BOARD_NUM = CONCAT(LPAD(A.CATEGORY_NUM, 5, '0'), A.BOARD_NUM)
+					) as COMMENTCOUNT
 				FROM
 					(SELECT
 						*,
@@ -305,7 +327,14 @@
 							WHEN A.CURRENT_CBN = #{iboardnum}
 								THEN 'CURRENT'
 							ELSE 'OTHER'
-						END AS SEQTEXT
+						END AS SEQTEXT,
+						(
+							SELECT 
+								COUNT(1) 
+							FROM 
+								BOARD_COMMENT_TEST 
+							WHERE I_BOARD_NUM = CONCAT(LPAD(A.CATEGORY_NUM, 5, '0'), A.BOARD_NUM)
+						) as COMMENTCOUNT
 					FROM
 						(SELECT
 							*,
