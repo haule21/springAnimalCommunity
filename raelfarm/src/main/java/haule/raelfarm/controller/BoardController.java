@@ -271,6 +271,7 @@ public class BoardController {
 			switch(tempdata.getSeqtext().trim()) {
 				case "CURRENT":
 					mv.addObject("data" , tempdata);
+					mv.addObject("commentcount", tempdata.getCommentcount());
 				break;
 				
 				case "NEXT":
@@ -482,8 +483,10 @@ public class BoardController {
 
 		param.setRecordSize(50);
 		PagingResponse<BoardCommentDTO> comment = boardService.SelectBoardComments(iboardnum, param);
+		int count = boardService.SelectBoardComments_CNT(iboardnum);
 
 		mv.addObject("commentList", comment);
+		mv.addObject("commentcount", count);
 		mv.addObject("commentParams", param);
 		mv.setViewName("fragments/comment_fragment");
 		return mv;

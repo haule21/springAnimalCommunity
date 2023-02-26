@@ -55,6 +55,7 @@ public class BoardCommentDTO {
 	public void ChangeDate() {
 		this.registereddate = ChangeDateString(registereddate);
 		this.modifieddate = ChangeDateString(modifieddate);
+		this.content = this.content.replace("\n", "<br/>");
 	}
 	
 	private String ChangeDateString(String data){

@@ -79,8 +79,7 @@
 
 .boardregisterdate{
 	display: flex;
-	float: right;
-	
+	float: right;	
 }
 
 .boardmodifieddate{
@@ -123,11 +122,13 @@
 =======================================*/ 
 .comment_div{
 	width: 825px;
+	height: auto;
 }
 
 .comment{
 	display: block;
-	height: 66px;
+	min-height: 66px;
+	height: auto;
 	padding: 11px 11px 10px ;
 	position : relative;
 	font-size: 14px;
@@ -139,7 +140,22 @@
 }
 
 .comment_date{
-	float: left;
+	position: relative;
+	color: #888;
+	font-size: 13px;
+}
+
+.comment_count_div{
+	border: 0.2px solid;
+	padding: 10px;
+	background : linear-gradient(to right,#5858AC 0%,#7DC0CE 70%);
+  	border-radius: 7px;
+  	box-shadow: 0px 3px 1px 1px rgba(88,88,172, 0.2);
+}
+
+.comment_count_span{
+	font-size: 11px;
+	color: #fff;
 }
 
 .content_boards_div, .comment_content_div, .comment_write_div{
@@ -230,6 +246,17 @@
 
 .comment_content{
 	float: left;
+	width: 90%;
+	height: auto;
+}
+
+.comment_content_{
+	font-size: 13px;
+}
+
+.comment_content_div{
+	height: auto;
+	overflow:auto; 
 }
 
 .comment .comment_norecommend ,.comment .comment_recommend, .reply_btn{
@@ -238,6 +265,11 @@
 
 .comment_writer, .comment_content{
 	float: left;
+	font-size: 13px;
+}
+
+.comment_writer{
+	font-weight: bold;
 }
 
 .comment_ul{

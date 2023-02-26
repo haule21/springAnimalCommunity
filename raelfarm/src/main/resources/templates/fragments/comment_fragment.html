@@ -5,6 +5,9 @@
 </head>
 <body>
 	<th:block th:if="${not #lists.isEmpty(commentList.list)}">
+		<div class="comment_count_div">
+			<span class="comment_count_span" th:text="'댓글 ' +${commentcount}"></span>
+		</div>
 		<ul class="comment_ul">
 			<li th:each="comment : ${commentList.list}" th:class="comment" th:classappend="lv + ${comment.level}" th:id="cn + ${comment.commentno}" style="list-style: none;"><span class="comment_writer">[[${comment.writer}]]
 			</span>

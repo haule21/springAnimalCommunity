@@ -65,17 +65,24 @@
 			
 		<div layout:fragment="content_comment" class="content_comment">
 		<div class="comment_div">
+			
 			<th:block th:if="${not #lists.isEmpty(commentList.list)}">
+				<div class="comment_count_div">
+					<span class="comment_count_span" th:text="'댓글 ' +${commentcount}"></span>
+				</div>
 				<ul class="comment_ul">
 					<li th:each="comment : ${commentList.list}" th:class="comment" th:classappend="lv + ${comment.level}" th:id="cn + ${comment.commentno}" style="list-style: none;"><span class="comment_writer">[[${comment.writer}]]
 					</span> 
 					<div class="comment_header_div">
-						<button class="reply_btn" 
-							th:level="${comment.level}"
-							th:iboardnum="${comment.iboardnum}"
-							th:parentcommentno="${comment.commentno}"
-							th:page="${commentParams.page}" 
-							th:onclick="javascript:viewWriteRecomment(this,this.getAttribute('level'),this.getAttribute('iboardnum'),this.getAttribute('parentcommentno'),this.getAttribute('page'))">답글</button>
+						<th:block th:if="${loginstate} == true">
+							<button class="reply_btn" 
+								th:level="${comment.level}"
+								th:iboardnum="${comment.iboardnum}"
+								th:parentcommentno="${comment.commentno}"
+								th:page="${commentParams.page}" 
+								th:onclick="javascript:viewWriteRecomment(this,this.getAttribute('level'),this.getAttribute('iboardnum'),this.getAttribute('parentcommentno'),this.getAttribute('page'))">답글</button>
+						</th:block>
+						
 						<span class="comment_norecommend">
 								<button type="button" th:iboardnum="${comment.iboardnum}"
 									th:commentno="${comment.commentno}" th:recommend="N" th:recommendcountvalue=${comment.norecommendcount}
@@ -101,7 +108,11 @@
 						</th:block>
 					</div>
 						<div class="comment_content_div">
-							<p class="comment_content"><span class="parent_nickname">[[${comment.parentwriter}]]</span>&nbsp;[[${comment.content}]]</p>
+							<p class="comment_content">
+								<span class="parent_nickname">[[${comment.parentwriter}]]</span>
+								&nbsp;
+								<span class="comment_content_" th:utext="${comment.content}"></span>
+							</p>
 						</div> 
 					</li>
 					
@@ -117,13 +128,13 @@
 			<div class="comment_write_div_input">
 				<th:block th:if="${loginstate} == true">
 					<textarea 
-					class="comment_write_input" 
-					id="comment_write_input"
-					placeholder="댓글 작성 구간"></textarea>
+						class="comment_write_input" 
+						id="comment_write_input"
+						placeholder="댓글 작성 구간"></textarea>
 					<button type="button" class="comment_submit_button" 
-					th:iboardnum="${iboardnum}"
-					th:endpage=${commentParams.pagination.endPage}
-					th:onclick="javascript:writeComment(this.getAttribute('iboardnum'), this.getAttribute('endpage'))">등록</button>
+						th:iboardnum="${iboardnum}"
+						th:endpage=${commentParams.pagination.endPage}
+						th:onclick="javascript:writeComment(this.getAttribute('iboardnum'), this.getAttribute('endpage'))">등록</button>
 				</th:block>
 				<th:block th:unless="${loginstate} == true">
 					<textarea 
@@ -142,25 +153,25 @@
 				<div class="previous_board">
 					<p>이전 게시판 </p>
 					<th:block th:if="${pboard != null}">
-							<table>
-								<tr>
-									<td><a th:href="'/board' + '/c' + ${pboard.categorynum}"
-										th:text="${pboard.categoryname}"></a></td>
-									<td>
-									<a th:href="'/board' + '/c' + ${pboard.categorynum} + '/b' + ${pboard.boardnum} + '?previouscategorynum=' + ${category_num}"
-										th:text="${pboard.title}"></a>			            		
-										<th:block th:if="${pboard.existimgfile == 'Y'}">
-				            				<th:block th:if="${pboard.categorynum < 200} or ${pboard.categorynum > 299}">
-				            					<img class="existimg" style="width:11px; height:11px;" src="/img/Existimg_icon.PNG"/>
-				            				</th:block>
-				            			</th:block>
-			            			</td>
-									<td th:text="${pboard.writer}"></td>
-									<td th:text="${pboard.registerdate}"></td>
-									<td th:text="${pboard.viewcount}"></td>
-									<td th:text="${pboard.recommendcount}"></td>
-								</tr>
-							</table>
+						<table>
+							<tr>
+								<td><a th:href="'/board' + '/c' + ${pboard.categorynum}"
+									th:text="${pboard.categoryname}"></a></td>
+								<td>
+								<a th:href="'/board' + '/c' + ${pboard.categorynum} + '/b' + ${pboard.boardnum} + '?previouscategorynum=' + ${category_num}"
+									th:text="${pboard.title}"></a>			            		
+									<th:block th:if="${pboard.existimgfile == 'Y'}">
+			            				<th:block th:if="${pboard.categorynum < 200} or ${pboard.categorynum > 299}">
+			            					<img class="existimg" style="width:11px; height:11px;" src="/img/Existimg_icon.PNG"/>
+			            				</th:block>
+			            			</th:block>
+		            			</td>
+								<td th:text="${pboard.writer}"></td>
+								<td th:text="${pboard.registerdate}"></td>
+								<td th:text="${pboard.viewcount}"></td>
+								<td th:text="${pboard.recommendcount}"></td>
+							</tr>
+						</table>
 						</th:block>
 					<th:block th:unless="${pboard != null}">
 						<p>게시물이 존재하지 않습니다.</p>
@@ -265,8 +276,7 @@
 			findPaginationData();
 			board_findPaginationData();
 		}
-	
-	
+		
 	      // 게시글 리스트 조회
 		function findPaginationData(page) {
 			
