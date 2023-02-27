@@ -16,12 +16,15 @@
         <th:block layout:fragment="header" th:include="@{/fragments/header}"></th:block>
 		
         <div layout:fragment="content" class="content">
-            <form action="register_page">
-				<input type="checkbox" name="agree1" value="1Y">이용약관 동의
-				<input type="checkbox" name="agree2" value="2Y">개인정보 수집 및 동의
-				<hr>
-				<input type="submit" value="확인">
-			</form>
+        	<div class="register_page_div" style="width:1050px; margin-left: auto; margin-right: auto;">
+        		<form action="register_page" style="width:825px">
+					<input type="checkbox" name="agree1" value="1Y">이용약관 동의
+					<input type="checkbox" name="agree2" value="2Y">개인정보 수집 및 동의
+					<hr>
+					<input type="submit" value="확인">
+				</form>
+        	</div>
+            
         </div>
         
         <th:block layout:fragment="footer" th:include="@{/fragments/footer}"></th:block>	

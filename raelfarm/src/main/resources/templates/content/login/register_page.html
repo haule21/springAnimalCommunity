@@ -159,65 +159,86 @@
         <th:block layout:fragment="header" th:include="@{/fragments/header}"></th:block>
 		
         <div layout:fragment="content" class="content">
-            <form id='register_form' action="register_page/register" method="POST">
-				<input type="hidden" th:value="${_csrf.token}" th:name="${_csrf.parameterName}">
-				<ul class="register_ul">
-					<li>
-						<label for='userid'>* 아이디</label>		
-						<input type='text' id='userid' name='userid' autocomplete='username' maxlength='16'> <button type="button" id="idck" onclick="javascript:clickidcheck()">아이디 중복 확인</button>
-						<span id='userid-description'></span>
-					</li>
-					<li>
-						<label for='password'>* 패스워드 </label>
-						<input type='password' name='password' id='password' maxlength='36' autocomplete="new-password"  >
-						<span id='password-description'></span>
-					</li>
-					<li>
-						<label for='recheck-password'>* 패스워드 확인</label>
-						<input type='password' name='recheck-password' id='recheck-password' maxlength='36' autocomplete="new-password"  >
-						<span id='recheck-description'></span>
-					</li>
+        	<div class="register_form_div" >
+				<form id='register_form' action="register_page/register" method="POST">
+					<input type="hidden" th:value="${_csrf.token}" th:name="${_csrf.parameterName}">
+					<table class="register_table">
+						<tr>
+							<th>아이디</th>
+							<td>
+								<input type='text' id='userid' name='userid' autocomplete='off' maxlength='16'> <button type="button" id="idck" onclick="javascript:clickidcheck()">아이디 중복 확인</button>
+								<span id='userid-description'></span>
+							</td>		
+							
+						</tr>
+						<tr>
+							<th>패스워드</th>
+							<td>
+								<input type='password' name='password' id='password' maxlength='36' autocomplete="new-password"  >
+								<span id='password-description'></span>
+							</td>
+						</tr>
+						<tr>
+							<th>패스워드 확인</th>
+							<td>
+								<input type='password' name='recheck-password' id='recheck-password' maxlength='36' autocomplete="new-password"  >
+								<span id='recheck-description'></span>
+							</td>
+						</tr>
+						
+						<tr>
+							<th>이름</th>
+							<td>
+								<input type='text' name='name' id='name' maxlength='7' autocomplete="off" >
+								<span id='name-description'></span>
+							</td>
+						</tr>
+						<tr>
+							<th>닉네임</th>
+							<td>
+								<input type='text' name='nickname' id='nickname' maxlength='11' autocomplete="off" > <button type="button" id="nick" onclick="javascript:clicknicknamecheck()">닉네임 중복 확인</button>
+								<span id='nickname-description'></span>
+							</td>
+						</tr>
+						<tr>
+							<th>이메일</th>
+							<td>	
+								<input type='text' name='email' id='email' style="width:200px" autocomplete="off" > 
+								<span id='email-description'></span>
+							</td>
+						</tr>
+						<tr>
+							<th>전화번호</th>
+							<td>
+								<input type='text' name='phonenumber' id='phonenumber' autocomplete="off" > 
+								<button type='button' name="phone_number_authenticate_btn" id="phone_number_authenticate_btn" onclick="javascript:click_authenticate_phonenumber()">인증번호 받기</button>
+								<span id='phone-description'></span> 
+							</td>
+						</tr>
+						<tr>
+							<th>주소</th>
+							<td>
+								<input type='text' name='address' id='address' placeholder="우편번호" readonly > <button type="button" onclick="execPostCode()">우편번호 찾기</button>
+								<div>
+									<input type='text' name='address_detail1' id='address_detail1' value="" placeholder="도로명주소" readonly>
+									<input type='text' name='address_detail2' id='address_detail2' value="" placeholder="상세 주소" maxlength='60' autocomplete="off" >
+									<span id="address-description"></span>
+								</div>
+							</td>							
+						</tr>
+					</table>
+					<div style="width: 825px; text-align: right; margin-top: 15px;">
+						<button class="register_btn" type="button" onclick="javascript:submit_register_data()">가입하기</button>
+					</div>
 					
-					<li>
-						<label for='name'>* 이름</label>
-						<input type='text' name='name' id='name' maxlength='7'>
-						<span id='name-description'></span>
-					</li>
-					<li>
-						<label for='nickname'>* 닉네임</label>
-						<input type='text' name='nickname' id='nickname' maxlength='11'> <button type="button" id="nick" onclick="javascript:clicknicknamecheck()">닉네임 중복 확인</button>
-						<span id='nickname-description'></span>
-					</li>
-					<li>
-						<label for='email'>* 이메일</label>
-						<input type='text' name='email' id='email' style="width:200px"> 
-						<span id='email-description'></span>
-					</li>
-					<li>
-						<label for='phonenumber'>* 전화번호</label>
-						<input type='text' name='phonenumber' id='phonenumber'> 
-						<button type='button' name="phone_number_authenticate_btn" id="phone_number_authenticate_btn" onclick="javascript:click_authenticate_phonenumber()">인증번호 받기</button>
-						<span id='phone-description'></span> 
-					</li>
-					<li>
-						<label for='address'>주소</label>
-						<input type='text' name='address' id='address' placeholder="우편번호" readonly> <button type="button" onclick="execPostCode()">우편번호 찾기</button>
-						<div>
-							<input type='text' name='address_detail1' id='address_detail1' value="" placeholder="도로명주소" readonly>
-							<input type='text' name='address_detail2' id='address_detail2' value="" placeholder="상세 주소" maxlength='60'>
-							<span id="address-description"></span>
-						</div>
-					</li>
-					<li>
-						<button type="button" onclick="javascript:submit_register_data()">가입하기</button>
-					</li>
-				</ul>
-			</form>
-			<th:block th:if="${result eq 0}">
-				<script>
-					alert("등록에 실패 하였습니다.");
-				</script>
-			</th:block>
+				</form>
+				<th:block th:if="${result eq 0}">
+					<script>
+						alert("등록에 실패 하였습니다.");
+					</script>
+				</th:block>
+        	</div>
+
         </div>
         
         <th:block layout:fragment="footer" th:include="@{/fragments/footer}"></th:block>	

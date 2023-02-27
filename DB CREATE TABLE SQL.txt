@@ -21,15 +21,15 @@ create table CATEGORY_400(
 )
 
 create table BOARD(
-	CATEGORY_NUM INT not null,
-	BOARD_NUM INT not_null,
+	CATEGORY_NUM INT UNSIGNED not null,
+	BOARD_NUM INT UNSIGNED not_null,
 	REGISTERED_DATE DATETIME not null default CURRENT_TIMESTAMP,
 	TITLE VARCHAR(300) not null,
 	WRITER VARCHAR(33) not null,
 	MODIFIED_DATE DATETIME not null default CURRENT_TIMESTAMP,
 	DELETED ENUM('Y','N') not null default 'N',
 	EXIST_IMGFILE not null,
-	CONTENT VARCHAR(65535) not null,
+	CONTENT BLOB(65535) not null,
 	constraint BOARD_PK primary key (CATEGORY_NUM, BOARD_NUM, REGISTERED_DATE)
 ) engine=INNODB default CHARSET=UTF8MB4
 partition by range( CATEGORY_NUM )(
@@ -47,7 +47,7 @@ partition by range( CATEGORY_NUM )(
 
 create table BOARD_MEDIAFILE(
 	I_BOARD_NUM VARCHAR(20) not null,
-	SEQ INT not null,
+	SEQ INT UNSIGNED not null,
 	CONTENT_TYPE VARCHAR(10) not null,
 	FILE_NAME VARCHAR(100) not null,
 	FILE_PATH VARCHAR(300) not null,
@@ -57,15 +57,15 @@ create table BOARD_MEDIAFILE(
 
 create table BOARD_DATA(
 	I_BOARD_NUM VARCHAR(20) not null,
-	VIEW_COUNT INT not null default 0,
-	RECOMMEND_COUNT INT not null default 0,
-	NO_RECOMMEND_COUNT INT not null default 0,
+	VIEW_COUNT INT UNSIGNED not null default 0,
+	RECOMMEND_COUNT INT UNSIGNED not null default 0,
+	NO_RECOMMEND_COUNT INT UNSIGNED not null default 0,
 	constraint BOARD_DATA_PK primary key(I_BOARD_NUM)
 ) engine=INNODB default CHARSET=UTF8MB4
 
 create table BOARD_PREVIOUS_CONTENT_TEST(
 	I_BOARD_NUM VARCHAR(20) not null,
-	SEQ INT not null,
+	SEQ INT UNSIGNED not null,
 	MODIFIED_DATE DATETIME not null default CURRENT_TIMESTAMP,
 	TITLE VARCHAR(300) not null,
 	CONTENT BLOB not null,
@@ -81,14 +81,14 @@ create table BOARD_RECOMMEND_HISTORY(
 
 create table BOARD_COMMENT(
 	I_BOARD_NUM VARCHAR(20) not null, 
-	COMMENT_NO INT not null,
-	PARENT_COMMENT_NO INT not null default 0,
+	COMMENT_NO INT UNSIGNED not null,
+	PARENT_COMMENT_NO INT UNSIGNED not null default 0,
 	REGISTERED_DATE DATETIME not null default CURRENT_TIMESTAMP,
 	WRITER VARCHAR(33) not null,
 	CONTENT VARCHAR(1500) not null,
 	MODIFIED_DATE DATETIME not null default CURRENT_TIMESTAMP,
-	RECOMMEND_COUNT INT not null default 0,
-	NO_RECOMMEND_COUNT INT not null default 0,
+	RECOMMEND_COUNT INT UNSIGNED not null default 0,
+	NO_RECOMMEND_COUNT INT UNSIGNED not null default 0,
 	DELETED ENUM('Y','N') not null default 'N',
 	constraint BOARD_COMMENT_PK primary key(I_BOARD_NUM, COMMENT_NO, SEQ)
 )engine=INNODB default CHARSET=UTF8MB4
@@ -131,15 +131,17 @@ create table USER_STAT(
 ) engine=INNODB default CHARSET=UTF8MB4
 
 create table USER_ROLE(
-	ROLE_NUM tinyint(1) not null,
+	ROLE_NUM tinyint(1) UNSIGNED not null,
 	ROLE_NAME VARCHAR(20) not null,
 	constraint USER_ROLE_PK primary key(ROLE_NUM)
 ) engine=INNODB default CHARSET=UTF8MB4
 
 create table ACCESS_LOG(
+	ACCESS_USERID VARCHAR(16) not null,
+	CONNECT ENUM('Y','N') not null default 'Y',
+	DEVICE_INFORMATION VARCHAR(200) not null,
 	IP_ADDRESS VARCHAR(30) not null,
 	ACCESS_DATE DATETIME not null default CURRENT_TIMESTAMP,
-	ACCESS_USERID VARCHAR(16) default null,
 ) engine= ARCHIVE default CHARSET=UTF8MB4
 
 create procedure USER_INSERT_PROCEDURE(

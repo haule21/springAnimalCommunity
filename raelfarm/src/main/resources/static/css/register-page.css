@@ -1,5 +1,57 @@
 @charset "UTF-8";
 
-.register_ul li input{
-	outline : none;
+.register_table{
+	width: 825px;
+	border : 1px solid;
+	border-radius : 5px;
+	background: #ffffff;
+}
+
+.register_table tr td input{
+	outline-color : #7DC0CE;
+	width: 200px;
+	height: 10px;
+	padding: 10px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+.register_form_div{
+	width:1050px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.register_form_div tr{
+	margin : 10px;
+}
+
+.register_ul li{
+	width: 825px;
+	list-style-type: none;
+	padding : 15px;
+	border-bottom : 1px solid;
+	border-image: linear-gradient(to right, #5858AC 0%, #7DC0CE 100%);
+	border-image-slice: 1;
+	
+	
+}
+
+.register_ul li:first-child{
+	border-top : 1px solid;
+	
+}
+
+.register_ul li label{
+	color : #444;
+	font-weight: bold;
+	background : #fff;
+	border : 1px solid;
+	border-radius : 8px;
+	margin-right: 10px;
+	padding : 10px;
+}
+
+.register_btn{
+	width: 150px;
 }
