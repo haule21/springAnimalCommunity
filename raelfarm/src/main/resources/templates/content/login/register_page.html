@@ -100,8 +100,8 @@
 				$( "#nickname" ).on("blur change keyup paste", function(){
 					$(this).val( $(this).val().replace(/| |[\{\}\[\]\/?.,;:|\)*~`!^\-+<>@\#$%&\\\=\(\'\"]/gi, '' ));
 					if(user.nickname != $('#nickname').val){
-						$("#nickname").css({"border-color" : "#ff0000" });
-						$("#nickname-description").text("");
+						// $("#nickname").css({"border-color" : "#ff0000" });
+						// $("#nickname-description").text("");
 						nick = 0;
 					}
 				});
@@ -113,10 +113,6 @@
 					$(this).val( $(this).val().replace(/| |[\{\}\[\]\/?.,;:|\)*~`!^\-+<>@\#$%&\\\=\(\'\"]/gi, '' ));
 					if($( "#name" ).val().length > 0){
 						$("#name").css({"border-color" : "#0982f0" });
-						$("#name-description").text("");
-					}
-					else{
-						$("#name").css({"border-color" : "#ff0000" });
 						$("#name-description").text("");
 					}
 				});
@@ -151,7 +147,7 @@
 			
 			// 닉네임 특수문자, 초성, 자음 replace
 			$(function(){
-				$("#nickname").on("keyup", function(){$(this).val( $(this).val().replace(/[ㄱ-ㅎ|ㅏ-ㅣ| |[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi, '' ));});
+				$("#nickname").on("keyup", function(){$(this).val( $(this).val().replace(/[ㅏ-ㅣ| |[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi, '' ));});
 			})
 			
 			
@@ -164,7 +160,7 @@
 					<input type="hidden" th:value="${_csrf.token}" th:name="${_csrf.parameterName}">
 					<table class="register_table">
 						<tr>
-							<th>아이디</th>
+							<th scope="row">아이디</th>
 							<td>
 								<input type='text' id='userid' name='userid' autocomplete='off' maxlength='16'> <button type="button" id="idck" onclick="javascript:clickidcheck()">아이디 중복 확인</button>
 								<span id='userid-description'></span>
@@ -172,14 +168,14 @@
 							
 						</tr>
 						<tr>
-							<th>패스워드</th>
+							<th scope="row">패스워드</th>
 							<td>
 								<input type='password' name='password' id='password' maxlength='36' autocomplete="new-password"  >
 								<span id='password-description'></span>
 							</td>
 						</tr>
 						<tr>
-							<th>패스워드 확인</th>
+							<th scope="row">패스워드 확인</th>
 							<td>
 								<input type='password' name='recheck-password' id='recheck-password' maxlength='36' autocomplete="new-password"  >
 								<span id='recheck-description'></span>
@@ -187,28 +183,28 @@
 						</tr>
 						
 						<tr>
-							<th>이름</th>
+							<th scope="row">이름</th>
 							<td>
 								<input type='text' name='name' id='name' maxlength='7' autocomplete="off" >
 								<span id='name-description'></span>
 							</td>
 						</tr>
 						<tr>
-							<th>닉네임</th>
+							<th scope="row">닉네임</th>
 							<td>
 								<input type='text' name='nickname' id='nickname' maxlength='11' autocomplete="off" > <button type="button" id="nick" onclick="javascript:clicknicknamecheck()">닉네임 중복 확인</button>
 								<span id='nickname-description'></span>
 							</td>
 						</tr>
 						<tr>
-							<th>이메일</th>
+							<th scope="row">이메일</th>
 							<td>	
 								<input type='text' name='email' id='email' style="width:200px" autocomplete="off" > 
 								<span id='email-description'></span>
 							</td>
 						</tr>
 						<tr>
-							<th>전화번호</th>
+							<th scope="row">전화번호</th>
 							<td>
 								<input type='text' name='phonenumber' id='phonenumber' autocomplete="off" > 
 								<button type='button' name="phone_number_authenticate_btn" id="phone_number_authenticate_btn" onclick="javascript:click_authenticate_phonenumber()">인증번호 받기</button>
@@ -216,7 +212,7 @@
 							</td>
 						</tr>
 						<tr>
-							<th>주소</th>
+							<th scope="row" class="th_lastchild">주소</th>
 							<td>
 								<input type='text' name='address' id='address' placeholder="우편번호" readonly > <button type="button" onclick="execPostCode()">우편번호 찾기</button>
 								<div>

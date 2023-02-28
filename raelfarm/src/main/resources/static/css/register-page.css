@@ -2,18 +2,46 @@
 
 .register_table{
 	width: 825px;
-	border : 1px solid;
+	border : 1px solid #5858AC;
 	border-radius : 5px;
 	background: #ffffff;
+	border-collapse: collapse;
 }
 
 .register_table tr td input{
 	outline-color : #7DC0CE;
-	width: 200px;
+	width: 170px;
 	height: 10px;
 	padding: 10px;
 	margin-top: 5px;
 	margin-bottom: 5px;
+	box-shadow: 5px 3px 1px #efefef;
+	margin-right: 5px;
+	border: 0.2px solid;
+}
+
+.register_table tr th{
+	display: table-cell;
+	border-right: 1px solid #ffffff;
+	border-bottom: 1px solid #ffffff;
+	width: 200px;
+	line-height: 70px;
+	color: #ffffff;
+	background: linear-gradient(to right, #5858AC 79%, #7DC0CE 120%);
+}
+
+.th_lastchild{
+	border-bottom: 0px !important;
+
+}
+
+.register_table tr td span{
+	font-size : 11px;
+}
+
+.register_table tr td{
+	padding: 10px;
+	border-bottom: 1px solid;
 }
 
 .register_form_div{
@@ -24,32 +52,6 @@
 
 .register_form_div tr{
 	margin : 10px;
-}
-
-.register_ul li{
-	width: 825px;
-	list-style-type: none;
-	padding : 15px;
-	border-bottom : 1px solid;
-	border-image: linear-gradient(to right, #5858AC 0%, #7DC0CE 100%);
-	border-image-slice: 1;
-	
-	
-}
-
-.register_ul li:first-child{
-	border-top : 1px solid;
-	
-}
-
-.register_ul li label{
-	color : #444;
-	font-weight: bold;
-	background : #fff;
-	border : 1px solid;
-	border-radius : 8px;
-	margin-right: 10px;
-	padding : 10px;
 }
 
 .register_btn{

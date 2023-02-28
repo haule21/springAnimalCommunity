@@ -3,10 +3,11 @@
  */
 
 // 닉네임 정규식 (20230211 닉넥임에 특수문자나 ID에 특수문자 검사 정규식도 만들어서 진행 해야 됨.)
-let nire = /^[ㄱ-ㅎ가-힣a-zA-Z0-9]{3,11}/; 
+let nire = /^[가-힣a-zA-Z0-9]{2,11}/; 
 let idre = /^[a-zA-Z0-9]{6,16}$/; // 아이디와 패스워드가 적합한지 검사할 정규식
 let adre = /^[가-힣a-zA-Z0-9]|[-_.,\(\)\[\]@\#$~`!]$/
-let phre = /^[0-9]{10,11}$/;
+// let phre = /^[0-9]{10,11}$/;
+let phre = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/
 let re2 = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i; //이메일 정규식
 
 let idck = 0;
@@ -80,6 +81,28 @@ function clickidcheck(){
 function clicknicknamecheck(){
     let nickname =  $("#nickname").val(); 
     
+    if(nickname == null){
+		$("#nickname").css({"border-color" : red });
+		$("#nickname-description").css({"color" : red});
+		$("#nickname-description").text("닉네임을 입력해주세요.");
+		$("#nickname").focus();
+		return false;
+	}
+    else if(nickname.length < 2){
+		$("#nickname").css({"border-color" : red });
+		$("#nickname-description").css({"color" : red});
+		$("#nickname-description").text("닉네임을 2글자 이상 입력해주세요.");
+		$("#nickname").focus();
+		return false;
+	}
+	else if(!nire.test($("#nickname").val())){
+		$("#nickname").css({"border-color" : red });
+		$("#nickname-description").css({"color" : red});
+		$("#nickname-description").text("닉네임을 형식에 맞게 입력해주세요.");
+		$("#nickname").focus();
+		return false;
+	}
+    
     
     $.ajax({
         async: true,
@@ -123,6 +146,13 @@ function click_authenticate_phonenumber(){
 		$("#phonenumber").css({"border-color" : red });
 		$("#phone-description").css({"color" : red});
 		$("#phone-description").text("휴대폰 형식에 맞게 입력해주세요.");
+		return false;
+	}
+	else if(!phre.test($("#phonenumber").val())){
+		$("#phonenumber").css({"border-color" : red });
+		$("#phone-description").css({"color" : red});
+		$("#phone-description").text("휴대폰 번호 형식에 맞게 입력해주세요.(010-0000-0000)");
+		$("#phonenumber").focus();
 		return false;
 	}
     

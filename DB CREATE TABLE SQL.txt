@@ -116,19 +116,64 @@ create table USER_PRIVACY(
 	NAME VARCHAR(15) not null,
 	EMAIL VARCHAR(100) not null,
 	PHONE_NUMBER VARCHAR(15) not null,
-	ADDRESS VARCHAR(300) not null,
+	ADDRESS VARCHAR(300),
 	constraint USER_PRIVACY_PK primary key(USERID),
 	constraint USER_PRIVACY_FK foreign key(USERID) references USERS(USERID)
 ) engine=INNODB default CHARSET=UTF8MB4
 
 create table USER_STAT(
 	USERID VARCHAR(16) not null,
-	level tinyint(3) not null,
-	exp smallint not null,
-	GRADE tinyint(3) not null,
-	USER_POINT INT not null,
+	LEVEL tinyint(3) not null default 1,
+	ICON_NUM INT UNSIGNED not null default 0,
+	POINT INT UNSIGNED not null default 0,
 	constraint USER_STAT_PK primary key(USERID)
 ) engine=INNODB default CHARSET=UTF8MB4
+
+create table USER_ICON_HISTORY(
+	USERID VARCHAR(16) not null,
+	ICON_NUM INT UNSIGNED not null,
+	BUY_DATE DATE not null default CURRENT_TIMESTAMP,
+	MADE_USERID VARCHAR(16) not null,
+	constraint USER_STAT_PK primary key(USERID, ICON_NUM)
+) engine=INNODB default CHARSET=UTF8MB4
+
+create table ICON_CATEGORY(
+	ICON_CATEGORY_NUM INT UNSIGNED not null,
+	ICON_CATEGORY_NAME VARCHAR(100) not null,
+	constraint ICON_CATEGORY_PK primary key(ICON_CATEGORY_NUM)
+) engine=INNODB default CHARSET=UTF8MB4
+
+create table ICON(
+	ICON_CATEGORY_NUM INT UNSIGNED not null,
+	ICON_NUM INT not null,
+	FILE_NAME VARCHAR(100) not null,
+	FILE_PATH VARCHAR(300) not null,
+	CONTENT_TYPE VARCHAR(10) not null,
+	constraint ICON_PK primary key(ICON_CATEGORY_NUM, ICON_NUM)
+) engine=INNODB default CHARSET=UTF8MB4
+
+create table ICON_DETAIL(
+	ICON_CATEGORY_NUM INT UNSIGNED not null,
+	ICON_NUM INT not null,
+	REGISTERED_DATE DATE not null default CURRENT_TIMESTAMP,
+	PRICE INT not null,
+	MADE_USERID VARCHAR(16) not null,
+	QUANTITY SMALLINT not null,
+	constraint ICON_PK primary key(ICON_CATEGORY_NUM, ICON_NUM)
+) engine=INNODB default CHARSET=UTF8MB4
+
+create table USER_POINT_HISTORY(
+	USERID VARCHAR(16) not null,
+	POINT_TYPE SMALLINT not null,
+	GETTING_DATE not null default CURRENT_TIMESTAMP
+) engine=ARCHIVE default CHARSET=UTF8MB4
+
+create table POINT_TYPE(
+	POINT_TYPE SMALLINT not null,
+	TYPE_NAME VARCHAR(100) not null,
+	DESCRIPTION VARCHAR(100),
+	constraint POINT_TYPE_PK primary key(POINT_TYPE)	
+)
 
 create table USER_ROLE(
 	ROLE_NUM tinyint(1) UNSIGNED not null,
@@ -148,10 +193,12 @@ create procedure USER_INSERT_PROCEDURE(
 	USERID_ VARCHAR(16), PASSWORD_ VARCHAR(88), NICKNAME_ VARCHAR(33),
 	NAME_ VARCHAR(15), EMAIL_ VARCHAR(100), PHONE_NUMBER_ VARCHAR(15), ADDRESS_ VARCHAR(300))
 BEGIN
+	START TRANSACTION;
 	insert into USERS values(
 		USERID_, PASSWORD_, NICKNAME_, DEFAULT, 1, DEFAULT
 	);
 	insert into USER_PRIVACY values(
 		USERID_, NAME_, EMAIL_, PHONE_NUMBER_, ADDRESS_
 	);
+	COMMIT;
 END
