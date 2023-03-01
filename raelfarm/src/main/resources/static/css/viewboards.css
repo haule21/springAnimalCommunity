@@ -89,11 +89,13 @@
 
 .boardTable tbody .title a{
 	color: #222222;
+	display: inline;
 }
 
 .boardTable tbody .title img{
 	vertical-align: middle;
 	margin-right: 9px;
+	position: relative;
 }
 
 .boardTable tbody tr td.recommendcount{

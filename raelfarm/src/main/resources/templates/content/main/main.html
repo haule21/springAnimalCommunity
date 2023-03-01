@@ -14,7 +14,7 @@
 </th:block>
 <body>
 	<th:block layout:fragment="header" th:include="@{/fragments/header}"></th:block>
-
+	
 	<div layout:fragment="content" class="content">
 		<ul class="mainbody">
 			<li class="left">
@@ -22,9 +22,18 @@
 					<a class="categoryTitle" th:href="|/board/c100|">인기글</a>
 					<th:block th:if="${!#lists.isEmpty(dataList1)}">
 						<ul>
-							<li class="boardTitle" th:each="content : ${dataList1}"><a
-								th:href="@{'/board/c' + ${content.categorynum} + '/b' + ${content.boardnum} + '?previouscategorynum=100'}"
-								th:text="${content.title}"></a></li>
+							<li class="boardTitle" th:each="content : ${dataList1}">
+
+								<a th:href="@{'/board/c' + ${content.categorynum} + '/b' + ${content.boardnum} + '?previouscategorynum=100'}"
+								th:text="${content.title}"></a>
+								<th:block th:if="${content.commentcount != 0}">
+		            				<span class="commentcount" th:text="'[' + ${content.commentcount} + ']'"></span>
+		            			</th:block>
+							
+								<th:block th:if="${content.existimgfile == 'Y'}">
+									<img class="existimg" style="width:11px; height:11px;" src="/img/Existimg_icon.PNG"/>
+								</th:block>
+							</li>
 						</ul>
 					</th:block>
 					<th:block th:unless="${!#lists.isEmpty(dataList1)}">
@@ -38,9 +47,16 @@
 					<a class="categoryTitle" th:href="|/board/c401|">유머</a>
 					<th:block th:if="${!#lists.isEmpty(dataList4)}">
 						<ul>
-							<li class="boardTitle" th:each="content : ${dataList4}"><a
-								th:href="@{'/board/c' + ${content.categorynum} + '/b' + ${content.boardnum} + '?previouscategorynum=401'}"
-								th:text="${content.title}"></a></li>
+							<li class="boardTitle" th:each="content : ${dataList4}">
+								<a th:href="@{'/board/c' + ${content.categorynum} + '/b' + ${content.boardnum} + '?previouscategorynum=401'}"
+								th:text="${content.title}"></a>
+								<th:block th:if="${content.commentcount != 0}">
+		            				<span class="commentcount" th:text="'[' + ${content.commentcount} + ']'"></span>
+		            			</th:block>
+							
+								<th:block th:if="${content.existimgfile == 'Y'}">
+									<img class="existimg" style="width:11px; height:11px;" src="/img/Existimg_icon.PNG"/>
+								</th:block></li>
 						</ul>
 					</th:block>
 					<th:block th:unless="${!#lists.isEmpty(dataList4)}">
@@ -54,9 +70,16 @@
 					<a class="categoryTitle" th:href="|/board/c303|">동물가 뉴스</a>
 					<th:block th:if="${!#lists.isEmpty(dataList3)}">
 						<ul>
-							<li class="boardTitle" th:each="content : ${dataList3}"><a
-								th:href="@{'/board/c' + ${content.categorynum} + '/b' + ${content.boardnum} + '?previouscategorynum=303'}"
-								th:text="${content.title}"></a></li>
+							<li class="boardTitle" th:each="content : ${dataList3}">
+								<a th:href="@{'/board/c' + ${content.categorynum} + '/b' + ${content.boardnum} + '?previouscategorynum=303'}"
+								th:text="${content.title}"></a>
+								<th:block th:if="${content.commentcount != 0}">
+		            				<span class="commentcount" th:text="'[' + ${content.commentcount} + ']'"></span>
+		            			</th:block>
+								<th:block th:if="${content.existimgfile == 'Y'}">
+									<img class="existimg" style="width:11px; height:11px;" src="/img/Existimg_icon.PNG"/>
+								</th:block>
+							</li>
 						</ul>
 					</th:block>
 					<th:block th:unless="${!#lists.isEmpty(dataList3)}">
@@ -73,8 +96,18 @@
 						<div th:each="content : ${dataList2}" class="imgTextContainer">
 							<a th:href="@{'/board/c' + ${content.categorynum} + '/b' + ${content.boardnum} + '?previouscategorynum=200'}"><img class="imgImg" th:src="${content.imgpath}"></a>
 							<p class="imgText">
-							<a th:href="@{'/board/c' + ${content.categorynum} + '/b' + ${content.boardnum} + '?previouscategorynum=200'}"
-								th:text="${content.title}"></a></p>
+							<th:block th:if="${content.commentcount != 0}">
+								<a th:href="@{'/board/c' + ${content.categorynum} + '/b' + ${content.boardnum} + '?previouscategorynum=200'}"
+								th:text="${content.title} + '[' + ${content.commentcount} + ']'">
+								</a>
+							</th:block>
+							<th:block th:unless="${content.commentcount != 0}">
+								<a th:href="@{'/board/c' + ${content.categorynum} + '/b' + ${content.boardnum} + '?previouscategorynum=200'}"
+								th:text="${content.title}">
+								</a>
+							</th:block>
+								
+							</p>
 						</div>
 					</th:block>
 					<th:block th:unless="${!#lists.isEmpty(dataList2)}">
@@ -91,9 +124,17 @@
 							class="imgTextContainer_news">
 							<img class="imgImg" src="${content.imgpath}"
 								th:href="@{'/board/c' + ${content.categorynum} + '/b' + ${content.boardnum} + '?previouscategorynum=500'}">
-							<a class="imgText"
-								th:href="@{'/board/c' + ${content.categorynum} + '/b' + ${content.boardnum} + '?previouscategorynum=500'}"
-								th:text="${content.title}"></a>
+							<th:block th:if="${content.commentcount != 0}">
+								<a class="imgText"
+									th:href="@{'/board/c' + ${content.categorynum} + '/b' + ${content.boardnum} + '?previouscategorynum=500'}"
+									th:text="${content.title} + '[' + ${content.commentcount} + ']'"></a>
+							</th:block>
+							<th:block th:unless="${content.commentcount != 0}">
+								<a class="imgText"
+									th:href="@{'/board/c' + ${content.categorynum} + '/b' + ${content.boardnum} + '?previouscategorynum=500'}"
+									th:text="${content.title}"></a>
+							</th:block>
+
 						</div>
 					</th:block>
 					<th:block th:unless="${!#lists.isEmpty(dataList5)}">

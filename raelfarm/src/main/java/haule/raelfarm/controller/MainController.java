@@ -61,7 +61,7 @@ public class MainController {
 					dataList1.add(data);
 					break;
 				case 2:
-					dataList2.add(data);
+					dataList2.add(data.imageTitleSet());
 					break;
 				case 3:
 					dataList3.add(data);
@@ -211,13 +211,13 @@ public class MainController {
     
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
     public ModelAndView logout(HttpServletRequest request, HttpServletResponse response, ModelAndView mv) throws Exception {
-    	
+    	String referer = request.getHeader("Referer");
     	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {
             new SecurityContextLogoutHandler().logout(request, response, auth);
         }
         
-        mv.setViewName("redirect:login");
+        mv.setViewName("redirect:"+ referer);
         return mv;
     }
     

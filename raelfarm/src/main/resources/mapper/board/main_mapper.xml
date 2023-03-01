@@ -7,9 +7,9 @@
 				A.CATEGORY_NUM,
 				CONVERT(A.BOARD_NUM, CHAR) AS BOARD_NUM,
 				CASE WHEN 
-					LENGTH(A.TITLE) > 11
+					CHAR_LENGTH(A.TITLE) > 29
 				THEN
-					CONCAT(SUBSTR(A.TITLE,1,11),"...")
+					CONCAT(SUBSTR(A.TITLE,1,30),"...")
 				ELSE
 					A.TITLE END AS TITLE,
 				CASE WHEN
@@ -30,20 +30,29 @@
 										MT1.I_BOARD_NUM = MT2.I_BOARD_NUM
 									AND
 										DELETED = 'N'))
-					ELSE NULL END AS IMGPATH
+					ELSE NULL END AS IMGPATH,
+					(
+						SELECT 
+							COUNT(1) 
+						FROM 
+							BOARD_COMMENT_TEST 
+						WHERE I_BOARD_NUM = CONCAT(LPAD(A.CATEGORY_NUM, 5, '0'), A.BOARD_NUM)
+					) as commentcount,
+					A.EXIST_IMGFILE as existimgfile
 			FROM ( 
 				SELECT
 					ROW_NUMBER() OVER (PARTITION BY CATEGORY_NUM ORDER BY REGISTERED_DATE DESC) AS 'RN',
 					CATEGORY_NUM,
 					BOARD_NUM,
 					TITLE,
+					EXIST_IMGFILE,
 					REGISTERED_DATE
 				FROM 
 					BOARD_TEST
 				WHERE 
 					CATEGORY_NUM IN (100, 303, 401, 200, 201, 202, 203, 204, 205, 206, 500, 501, 502, 503)
 			) AS A
-			WHERE A.RN <= 5
+			WHERE A.RN <= 9
 		]]>
 	</select>
 </mapper>
