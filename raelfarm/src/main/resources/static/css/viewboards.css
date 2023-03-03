@@ -49,6 +49,12 @@
 	padding-top: 4px;
 	padding-bottom: 4px;
 }
+
+.boardTable .title .board_title{
+	width:240px;
+	display: inline-block;
+	font-size: 12px;
+}
 .boardTable .writer{
 	width: 140px;
 	padding-top: 4px;
@@ -89,7 +95,6 @@
 
 .boardTable tbody .title a{
 	color: #222222;
-	display: inline;
 }
 
 .boardTable tbody .title img{
