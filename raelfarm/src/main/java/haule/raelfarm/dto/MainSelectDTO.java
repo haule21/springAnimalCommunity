@@ -12,6 +12,8 @@ public class MainSelectDTO {
 	private String imgpath;
 	private int commentcount;
 	private String existimgfile;
+	private String hot;
+	private String sqltext;
 	
 	public MainSelectDTO imageTitleSet(){
 		if(this.title.length() > 7) {

@@ -56,10 +56,8 @@ public class MainController {
 		List<MainSelectDTO> dataList5 = new ArrayList<MainSelectDTO>();
 		
 		for(MainSelectDTO data : datas) {
+			if(data.getSqltext().equals("other"))
 			switch((int)(data.getCategorynum()/100)) {
-				case 1:
-					dataList1.add(data);
-					break;
 				case 2:
 					dataList2.add(data.imageTitleSet());
 					break;
@@ -73,6 +71,7 @@ public class MainController {
 					dataList5.add(data);
 					break;
 			}
+			else dataList1.add(data);
 		}
 		
 		System.out.println("dataList1 :" + dataList1);

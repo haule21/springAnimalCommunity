@@ -161,6 +161,17 @@
 			) as commentcount
 		FROM 
 			BOARD_TEST A, BOARD_DATA_TEST B, CATEGORY_BOARD_TEST C, USERS_TEST D
+		]]>
+		<choose>
+			<when test = "category_num == 100">
+				<![CDATA[
+				, HOT_BOARD_TEST E
+				]]>
+			</when> 
+			<otherwise>
+			</otherwise>
+		</choose>
+		<![CDATA[
 		where
 			A.CATEGORY_NUM = C.CATEGORY_NUM
 		AND
@@ -172,6 +183,11 @@
 		]]>
 			
 		<choose>
+			<when test = "category_num == 100">
+				<![CDATA[
+					AND (A.CATEGORY_NUM, A.BOARD_NUM) = (E.CATEGORY_NUM, E.BOARD_NUM) 
+				]]>
+			</when> 
 			<when test = "category_num % 100 == 0">
 				<![CDATA[
 					AND A.CATEGORY_NUM BETWEEN #{category_num_st} AND #{category_num_ed}
@@ -184,8 +200,19 @@
 			</otherwise>
 		</choose>
 		<include refid="search"/>
+		<choose>
+			<when test = "category_num == 100">
+				<![CDATA[
+					ORDER BY E.HOTREG_DATE DESC
+				]]>
+			</when> 
+			<otherwise>
+				<![CDATA[
+					ORDER BY A.REGISTERED_DATE DESC
+				]]>
+			</otherwise>
+		</choose>
 		<![CDATA[
-			ORDER BY A.REGISTERED_DATE DESC
 			LIMIT #{params.pagination.limitStart}, #{params.recordSize}
 		]]>
 	</select>
@@ -195,12 +222,17 @@
 			SELECT 
 				COUNT(1)
 			FROM 
-				BOARD_TEST
+				BOARD_TEST A
 			WHERE
 				DELETED = 'N'
 		]]>
 			
 		<choose>
+			<when test = "category_num == 100">
+				<![CDATA[
+					AND EXISTS ( SELECT 'x' FROM HOT_BOARD_TEST WHERE A.CATEGORY_NUM = CATEGORY_NUM AND A.BOARD_NUM = BOARD_NUM)
+				]]>	
+			</when>
 			<when test = "category_num % 100 == 0">
 				<![CDATA[
 					AND CATEGORY_NUM BETWEEN #{category_num_st} AND #{category_num_ed}
@@ -282,25 +314,40 @@
 					) as COMMENTCOUNT
 				FROM
 					(SELECT
-						*,
-						CONCAT(LPAD(LAG(CATEGORY_NUM) OVER(ORDER BY REGISTERED_DATE ASC),5,'0'),LAG(BOARD_NUM) OVER(ORDER BY REGISTERED_DATE ASC)) AS PREVIOUS_CBN,
-						CONCAT(LPAD(LEAD(CATEGORY_NUM) OVER(ORDER BY REGISTERED_DATE ASC),5,'0'),LEAD(BOARD_NUM) OVER(ORDER BY REGISTERED_DATE ASC)) AS NEXT_CBN
+						A.*,
+						CONCAT(LPAD(LAG(A.CATEGORY_NUM) OVER(ORDER BY A.REGISTERED_DATE ASC),5,'0'),LAG(A.BOARD_NUM) OVER(ORDER BY A.REGISTERED_DATE ASC)) AS PREVIOUS_CBN,
+						CONCAT(LPAD(LEAD(A.CATEGORY_NUM) OVER(ORDER BY A.REGISTERED_DATE ASC),5,'0'),LEAD(A.BOARD_NUM) OVER(ORDER BY A.REGISTERED_DATE ASC)) AS NEXT_CBN
 					FROM 
-						BOARD_TEST
+						BOARD_TEST A
+					]]>
+					
+						<choose>
+							<when test = "category_num == 100">
+							<![CDATA[
+								, HOT_BOARD_TEST B
+							]]>		
+							</when>
+						</choose>
+					<![CDATA[
 					WHERE
-						]]>
-								<choose>
-									<when test = "category_num % 100 == 0">
-										<![CDATA[
-											CATEGORY_NUM BETWEEN #{category_num_st} AND #{category_num_ed}
-										]]>	
-									</when>
-									<otherwise>
-										<![CDATA[
-											CATEGORY_NUM = #{category_num}
-										]]>	
-									</otherwise>
-								</choose>
+					]]>
+						<choose>
+							<when test = "category_num == 100">
+								<![CDATA[
+									(A.CATEGORY_NUM, A.BOARD_NUM) = (B.CATEGORY_NUM, B.BOARD_NUM)
+								]]> 
+							</when>
+							<when test = "category_num % 100 == 0">
+								<![CDATA[
+									A.CATEGORY_NUM BETWEEN #{category_num_st} AND #{category_num_ed}
+								]]>	
+							</when>
+							<otherwise>
+								<![CDATA[
+									A.CATEGORY_NUM = #{category_num}
+								]]>	
+							</otherwise>
+						</choose>
 						<![CDATA[
 					) A
 				ORDER BY SEQTEXT DESC
@@ -337,24 +384,39 @@
 						) as COMMENTCOUNT
 					FROM
 						(SELECT
-							*,
-							CONCAT(LPAD(CATEGORY_NUM,5,'0'),BOARD_NUM)AS CURRENT_CBN
+							A.*,
+							CONCAT(LPAD(A.CATEGORY_NUM,5,'0'),A.BOARD_NUM)AS CURRENT_CBN
 						FROM 
-							BOARD_TEST
-						WHERE
-						]]>
-								<choose>
-									<when test = "category_num % 100 == 0">
-										<![CDATA[
-											CATEGORY_NUM BETWEEN #{category_num_st} AND #{category_num_ed}
-										]]>	
-									</when>
-									<otherwise>
-										<![CDATA[
-											CATEGORY_NUM = #{category_num}
-										]]>	
-									</otherwise>
-								</choose>
+							BOARD_TEST A
+					]]>
+					
+						<choose>
+							<when test = "category_num == 100">
+							<![CDATA[
+								, HOT_BOARD_TEST B
+							]]>		
+							</when>
+						</choose>
+					<![CDATA[
+					WHERE
+					]]>
+						<choose>
+							<when test = "category_num == 100">
+								<![CDATA[
+									(A.CATEGORY_NUM, A.BOARD_NUM) = (B.CATEGORY_NUM, B.BOARD_NUM)
+								]]> 
+							</when>
+							<when test = "category_num % 100 == 0">
+								<![CDATA[
+									CATEGORY_NUM BETWEEN #{category_num_st} AND #{category_num_ed}
+								]]>	
+							</when>
+							<otherwise>
+								<![CDATA[
+									CATEGORY_NUM = #{category_num}
+								]]>	
+							</otherwise>
+						</choose>
 						<![CDATA[
 						ORDER BY REGISTERED_DATE DESC
 						LIMIT #{params.pagination.limitStart}, #{params.recordSize}

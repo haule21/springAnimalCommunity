@@ -20,6 +20,13 @@ create table CATEGORY_400(
 	ID INT not null auto_increment primary key
 )
 
+CREATE TABLE HOT_BOARD( 
+	CATEGORY_NUM INT UNSIGNED not null,
+	BOARD_NUM INT UNSIGNED not null,
+	HOTREG_DATE DATETIME not null default CURRENT_TIMESTAMP,
+	constraint HOT_BOARD_TEST_PK primary key(CATEGORY_NUM, BOARD_NUM, HOTREG_DATE desc)
+)
+
 create table BOARD(
 	CATEGORY_NUM INT UNSIGNED not null,
 	BOARD_NUM INT UNSIGNED not_null,
@@ -30,6 +37,7 @@ create table BOARD(
 	DELETED ENUM('Y','N') not null default 'N',
 	EXIST_IMGFILE not null,
 	CONTENT BLOB(65535) not null,
+	HOT ENUM('Y','N') not null default 'N',
 	constraint BOARD_PK primary key (CATEGORY_NUM, BOARD_NUM, REGISTERED_DATE)
 ) engine=INNODB default CHARSET=UTF8MB4
 partition by range( CATEGORY_NUM )(

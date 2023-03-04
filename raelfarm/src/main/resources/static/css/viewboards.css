@@ -50,6 +50,10 @@
 	padding-bottom: 4px;
 }
 
+.commentcount{
+	color : #ff0000;
+}
+
 .boardTable .title .board_title{
 	width:240px;
 	display: inline-block;
