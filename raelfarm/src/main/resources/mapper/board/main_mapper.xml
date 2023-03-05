@@ -71,6 +71,7 @@
 					(A.CATEGORY_NUM, A.BOARD_NUM) = (B.CATEGORY_NUM, B.BOARD_NUM)
 			) AS A
 			WHERE A.RN <= 9
+			ORDER BY A.REGISTERED_DATE DESC
 		]]>
 	</select>
 </mapper>

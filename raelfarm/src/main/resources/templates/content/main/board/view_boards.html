@@ -93,6 +93,15 @@
 	        	</table>
 	        	<div class="paging">
 		    	</div>
+		    	<div style="width: 825px; text-align: right;">
+				<th:block th:if="${category_num} != null and ${loginstate} == true">
+					<th:block th:if="${category_num} == 100 or ${category_num} >= 500">
+					</th:block>
+					<th:block th:unless="${category_num} == 100 or ${category_num} >= 500">
+						<button th:categorynum="${category_num}" type="button" th:onclick="javascript:getWriteUrl(this.getAttribute('categorynum'))" style="">글쓰기</button>
+					</th:block>
+				</th:block>
+			</div>
 			</div>
 			<div th:unless="${not #lists.isEmpty(response.list)}" 
 			style="
@@ -101,15 +110,6 @@
 				margin-left: auto;
 				margin-right: auto;">
 				<p>게시물이 존재하지 않습니다.</p>
-			</div>
-			<div style="margin-left: auto; margin-right: auto;">
-				<th:block th:if="${category_num} != null and ${loginstate} == true">
-					<th:block th:if="${category_num} == 100 or ${category_num} >= 500">
-					</th:block>
-					<th:block th:unless="${category_num} == 100 or ${category_num} >= 500">
-						<button th:categorynum="${category_num}" type="button" th:onclick="javascript:getWriteUrl(this.getAttribute('categorynum'))" style="">글쓰기</button>
-					</th:block>
-				</th:block>
 			</div>
         </div>
         

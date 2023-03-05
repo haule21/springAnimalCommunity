@@ -8,6 +8,7 @@ body{
 	box-sizing: obarder-box;
 	min-height: 100vh;
 	overflow-x: hidden;
+	background : #fff;
 }
 
 .header {

@@ -18,6 +18,7 @@
 	<div layout:fragment="content" class="content">
 		<ul class="mainbody">
 			<li class="left">
+				<hr class="mainBoardLine">
 				<div class="container">
 					<a class="categoryTitle" th:href="|/board/c100|">인기글</a>
 					<th:block th:if="${!#lists.isEmpty(dataList1)}">
@@ -88,9 +89,10 @@
 						</div>
 					</th:block>
 				</div>
-			<hr class="mainBoardLine">
 			</li>
-			<li class="right"><a class="categoryTitle" th:href="|/board/c200|">나의 반려</a>
+			<li class="right">
+			<hr class="mainBoardLine">
+			<a class="categoryTitle" th:href="|/board/c200|">나의 반려</a>
 				<div class="imgContainer">
 					<th:block th:if="${!#lists.isEmpty(dataList2)}">
 						<div th:each="content : ${dataList2}" class="imgTextContainer">
@@ -143,7 +145,6 @@
 						</div>
 					</th:block>
 				</div>
-				<hr class="mainBoardLine">
 			</li>
 		</ul>
 	</div>
