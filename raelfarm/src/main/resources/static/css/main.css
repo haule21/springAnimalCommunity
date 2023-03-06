@@ -59,7 +59,7 @@
 .left .container{
 	padding: 3px 0px;
 	line-height: 25px;
-	height: 300px;
+	height: 400px;
 }
 
 .left .container ul{
@@ -91,8 +91,6 @@
 
 
 .right .imgContainer{
-	font-size: 20px;
-	font-family: "Malgun Gothic", "맑은 고딕", helvetica, "Apple SD Gothic Neo", sans-serif;
 	display: grid;
 	grid-template-columns: 125px 125px 125px;
 	grid-template-rows: 185px 185px;
@@ -102,6 +100,17 @@
 	padding-top: 10px;
 	margin-top: 20px;
 	height: 579px;
+}
+
+.right .imgContainer .imgTextContainer{
+	padding : 5px;
+	border: 2px solid #aaa;
+
+}
+
+.right .imgContainer .imgTextContainer a{
+	font-size: 13px;
+	font-weight: bolder;
 }
 
 .right .imgContainer_news{
@@ -153,7 +162,7 @@
 */
 
 .categoryTitle {
-	font-size: 15px;
+	font-size: 19px;
 	font-weight: bold;
 	color: #8774B6;
 	
@@ -162,13 +171,14 @@
 
 
 .boardTitle a{
-	font-size: 13px;
+	font-size: 15px;
+	font-weight: bolder;
 	color: #5858AC;
 }
 
 
 .commentcount{
-	font-size: 11px;
+	font-size: 15px;
 	color: #ff0000;
 }
 
