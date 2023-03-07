@@ -54,6 +54,7 @@
 	max-height: 100%;
 	border-bottom: 1px solid;
 	margin-bottom: 15px;
+	margin-top: 15px;
 	border-image: linear-gradient(to right, #5858AC 0%, #7DC0CE 100%);
   	border-image-slice: 1;
 }
