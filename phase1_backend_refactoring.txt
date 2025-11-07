@@ -1,0 +1,52 @@
+Phase 1: 백엔드 리팩토링 및 고도화 작업 완료
+
+작업 일시: 2024년
+작업자: AGI
+
+=== 작업 내용 ===
+
+1. Spring Boot 버전 업그레이드
+   - 3.0.1 -> 3.2.0으로 업그레이드
+   - io.spring.dependency-management 버전 1.1.0 -> 1.1.2로 업그레이드
+   - JPA 의존성 버전 명시 제거 (부모에서 관리)
+   - JUnit 4 제거 (JUnit 5 사용)
+
+2. Spring Security 비밀번호 암호화 개선
+   - StandardPasswordEncoder (SHA-256) 제거
+   - BcryptPasswordEncoder 적용
+   - 더 안전하고 표준적인 비밀번호 암호화 방식 사용
+
+3. Service 레이어 @Transactional 적용
+   - UsersServiceimpl: 기본 읽기 전용, createUser에 쓰기 트랜잭션 적용
+   - BoardServiceImpl: 기본 읽기 전용, 모든 Insert/Update 메서드에 쓰기 트랜잭션 적용
+   - jakarta.transaction.Transactional -> org.springframework.transaction.annotation.Transactional 변경
+
+4. 전역 예외 처리기 구현
+   - GlobalExceptionHandler 클래스 생성
+   - @ControllerAdvice 적용
+   - Exception, IllegalArgumentException, NullPointerException, RuntimeException 처리
+   - 로깅 및 일관된 에러 응답 제공
+
+=== 변경된 파일 ===
+- raelfarm/build.gradle
+- raelfarm/src/main/java/haule/raelfarm/config/SecurityConfig.java
+- raelfarm/src/main/java/haule/raelfarm/service/UsersServiceimpl.java
+- raelfarm/src/main/java/haule/raelfarm/service/BoardServiceImpl.java
+- raelfarm/src/main/java/haule/raelfarm/exception/GlobalExceptionHandler.java (신규)
+
+=== 개선 사항 ===
+1. 보안 강화
+   - BcryptPasswordEncoder로 비밀번호 암호화 보안 강화
+   
+2. 코드 품질 향상
+   - 트랜잭션 관리 명확화
+   - 예외 처리 표준화
+   
+3. 유지보수성 향상
+   - Spring Boot 최신 버전으로 업그레이드
+   - 표준 예외 처리 패턴 적용
+
+=== 참고 사항 ===
+- Java 18은 비-LTS 버전이므로 Java 17 또는 21(LTS)로 변경을 권장합니다.
+- DTO 패턴은 이미 적용되어 있어 추가 작업이 필요하지 않았습니다.
+

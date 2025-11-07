@@ -14,12 +14,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
-
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
+// HikariConfig, HikariDataSource는 더 이상 필요하지 않습니다.
+// Spring Boot가 application.yml에서 자동으로 DataSource를 생성합니다.
 
 @Configuration
 @ComponentScan(basePackages={"haule.raelfarm"})
@@ -30,26 +26,16 @@ public class RootConfig {
     private ApplicationContext applicationContext;
 
 	
-	@Bean
-	public DataSource dataSource() {
-		HikariConfig hikariConfig = new HikariConfig();
-//		hikariConfig.setDriverClassName("com.mysql.cj.jdbc.Driver");
-		hikariConfig.setDriverClassName("net.sf.log4jdbc.sql.jdbcapi.DriverSpy");
-		
-//		hikariConfig.setJdbcUrl("jdbc:mysql://localhost:3306/test?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true");
-		hikariConfig.setJdbcUrl("jdbc:log4jdbc:mysql://localhost:3306/test?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true");
-		
-		hikariConfig.setUsername("tester");
-		hikariConfig.setPassword("haul2");
-		
-		HikariDataSource dataSource = new HikariDataSource(hikariConfig);
-		return dataSource;
-	}
+	// DataSource는 Spring Boot가 application.yml과 application-local.properties에서 자동으로 생성합니다.
+	// 하드코딩된 DB 정보를 제거하고 Spring Boot의 자동 설정을 사용합니다.
+	
+	@Autowired
+	private DataSource dataSource; // Spring Boot가 자동으로 생성한 DataSource 주입
 	
 	@Bean
     public SqlSessionFactory sqlSessionFactory() throws Exception {
         SqlSessionFactoryBean sessionFactoryBean = new SqlSessionFactoryBean();
-        sessionFactoryBean.setDataSource(dataSource());
+        sessionFactoryBean.setDataSource(dataSource);
 
         Resource[] res = new PathMatchingResourcePatternResolver().getResources("classpath:mapper/**/*.xml");
         sessionFactoryBean.setMapperLocations(res);

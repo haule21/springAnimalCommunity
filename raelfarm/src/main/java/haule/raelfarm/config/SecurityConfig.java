@@ -33,10 +33,9 @@ public class SecurityConfig{
 	
 	@Bean
     public PasswordEncoder passwordEncoder() {
-		String encodingId = "sha256";
-		Map<String, PasswordEncoder> encoders = new HashMap<>();  
-		encoders.put("sha256", new org.springframework.security.crypto.password.StandardPasswordEncoder());
-		return new DelegatingPasswordEncoder(encodingId, encoders);
+		// BcryptPasswordEncoder 사용 (SHA-256 기반 StandardPasswordEncoder는 deprecated)
+		// Bcrypt는 더 안전하고 표준적인 비밀번호 암호화 방식입니다.
+		return new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder();
     }
 
 	

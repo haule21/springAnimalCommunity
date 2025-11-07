@@ -1,0 +1,19 @@
+# 로컬 개발 환경 설정 파일 예시
+# 이 파일을 복사하여 application-local.properties로 만들고 실제 값을 입력하세요.
+# application-local.properties는 .gitignore에 포함되어 Git에 커밋되지 않습니다.
+
+# Database Configuration
+spring.datasource.hikari.jdbc-url=jdbc:log4jdbc:mysql://localhost:3306/test?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8
+spring.datasource.hikari.username=your_username
+spring.datasource.hikari.password=your_password
+
+# SSL Configuration
+server.ssl.key-store=C:\\path\\to\\your\\keystore.jks
+server.ssl.key-store-password=your_keystore_password
+server.ssl.key-alias=your_alias
+
+# SMS API Configuration (CoolSMS)
+sms.api.key=your_api_key
+sms.api.secret=your_api_secret
+sms.api.url=https://api.coolsms.co.kr
+

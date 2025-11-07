@@ -1,11 +1,20 @@
+<!DOCTYPE html>
 <html lang="ko"
 	xmlns:th="http://www.thymeleaf.org"
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
-    <!--/* 이곳에 각 view가 위치합니다. */-->    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <!-- Bootstrap 5 Icons (선택사항) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!--/* 이곳에 각 view의 추가 head 요소가 위치합니다. */-->    
     <th:block layout:fragment="head"></th:block>
-    
-    <div>
+</head>
+<body>
+    <div class="container-fluid">
         <div layout:fragment="header"></div>
 		
         <div layout:fragment="content"></div>
@@ -16,4 +25,10 @@
 
         <div layout:fragment="footer"></div>
     </div>
+    
+    <!-- Bootstrap 5 JS Bundle (Popper 포함) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <!--/* 이곳에 각 view의 추가 script가 위치합니다. */-->
+    <th:block layout:fragment="scripts"></th:block>
+</body>
 </html>

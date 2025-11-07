@@ -17,9 +17,10 @@ import haule.raelfarm.pagination.Pagination;
 import haule.raelfarm.pagination.PagingResponse;
 import haule.raelfarm.repository.BoardDataRepository;
 import haule.raelfarm.repository.CategoryRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true) // 기본적으로 읽기 전용 트랜잭션
 public class BoardServiceImpl implements BoardService{
 	
 	@Autowired
@@ -143,20 +144,23 @@ public class BoardServiceImpl implements BoardService{
 		return boardMapper.SelectCheckBoardCommentRecommendHistory(commentno, userid);
 	}
 	@Override
+	@Transactional
 	public int InsertBoardData(String iboardnum) {
 		return boardMapper.InsertBoardData(iboardnum);
 	}
 	@Override
+	@Transactional
 	public int InsertBoardMedia(BoardMediaFileInsertDTO media){
 		return boardMapper.InsertBoardMedia(media);
 	}
 	@Override
+	@Transactional
 	public int InsertBoard(int categorynum, int boardnum, String title, String writer, String existimgfile, String content){
 		return boardMapper.InsertBoard(categorynum, boardnum, title, writer, existimgfile, content);
 	}
 	
 	@Override
-	@Transactional
+	@Transactional // 쓰기 작업은 별도로 트랜잭션 적용
 	public void InvokeBoard(List<BoardMediaFileInsertDTO> media, String iboardnum, int categorynum, int boardnum, String title, String writer, String existimgfile, String content){
 		System.out.print("================InvokeBoard Start=================");
 		
@@ -172,25 +176,30 @@ public class BoardServiceImpl implements BoardService{
 	}
 	
 	@Override
+	@Transactional
 	public int InsertBoardPreviousContent(String iboardnum, int seq, String title, String content) {
 		return boardMapper.InsertBoardPreviousContent(iboardnum, seq, title, content);
 	}
 	
 	@Override
+	@Transactional
 	public int InsertBoardComment(String iboardnum,int commentno, int parentcommentno, String writer,String content) {
 		return boardMapper.InsertBoardComment(iboardnum, commentno, parentcommentno, writer, content);
 	}
 	
 	@Override
+	@Transactional
 	public int InsertBoardCommentRecommendHistory(int commentno, String userid, String recommend) {
 		return boardMapper.InsertBoardCommentRecommendHistory(commentno, userid, recommend);
 	}
 	
 	@Override
+	@Transactional
 	public int UpdateBoardTitleContent(int categorynum, int boardnum,String title, String content) {
 		return boardMapper.UpdateBoardTitleContent(categorynum, boardnum, title, content);
 	}
 	@Override
+	@Transactional
 	public int UpdateIncreaseBoardCommentRecommend(String iboardnum, int commentno, String recommend) {
 		return boardMapper.UpdateIncreaseBoardCommentRecommend(iboardnum, commentno, recommend);
 	}

@@ -35,3 +35,14 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Eclipse ###
+.metadata/
+
+### Sensitive Configuration Files ###
+application-local.properties
+application-local.yml
+*.jks
+*.p12
+*.key
+messageAPI.java

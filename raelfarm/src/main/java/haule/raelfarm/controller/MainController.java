@@ -42,7 +42,12 @@ public class MainController {
 	@Autowired
 	PasswordEncoder passwordEncoder;
 	
-	final DefaultMessageService messageService = messageAPI.getInstance().getMessageService();
+	@Autowired
+	messageAPI messageAPI; // Spring Bean으로 주입받음
+	
+	private DefaultMessageService getMessageService() {
+		return messageAPI.getMessageService();
+	}
 	
 	@RequestMapping("/")
 	public ModelAndView Main(ModelAndView mv) {

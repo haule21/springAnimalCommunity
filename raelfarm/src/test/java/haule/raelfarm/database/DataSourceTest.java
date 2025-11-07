@@ -4,25 +4,27 @@ import java.sql.Connection;
 
 import javax.sql.DataSource;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import haule.raelfarm.config.RootConfig;
-
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = {RootConfig.class})
-public class DataSourceTest {
+@SpringBootTest
+@DisplayName("DataSource 통합 테스트")
+class DataSourceTest {
     
 	@Autowired
 	DataSource ds;
 	
 	@Test
-	public void testConn() throws Exception{
-		
+	@DisplayName("데이터베이스 연결 테스트")
+	void testConn() throws Exception{
 		Connection con = ds.getConnection();
+		assertNotNull(con);
+		assertFalse(con.isClosed());
 		con.close();
+		assertTrue(con.isClosed());
 	}
 }

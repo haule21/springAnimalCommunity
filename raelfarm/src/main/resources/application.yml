@@ -1,10 +1,11 @@
 spring:
+  profiles:
+    active: local # application-local.properties를 활성화
   datasource:
     hikari:
       driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-      jdbc-url: jdbc:log4jdbc:mysql://localhost:3306/test?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true&?characterEncoding=UTF-8"
-      username: tester
-      password: haul2
+      # 민감 정보는 application-local.properties에서 관리합니다
+      # jdbc-url, username, password는 application-local.properties에 정의
 
   thymeleaf:  
     prefix: classpath:templates/
@@ -35,10 +36,9 @@ server:
   port: 8443
   
   ssl:
-    key-store: C:\Users\sungw\springAnimalCommunitySSL\test.jks
-    key-store-password: 123456
+    # SSL 설정은 application-local.properties에서 관리합니다
     key-store-type: jks
-    key-alias: test
+    # key-store, key-store-password, key-alias는 application-local.properties에 정의
     
 mybatis:
   mapper-locations: classpath:mapper/**/*.xml 
